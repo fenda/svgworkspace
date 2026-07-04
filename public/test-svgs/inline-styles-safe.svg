@@ -1,0 +1,11 @@
+<!-- Fixture: safely convertible inline styles should become presentation attributes. -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>Inline Styles Safe</title>
+  <desc>Fixture for testing safe inline style conversion to attributes.</desc>
+  <circle
+    cx="12"
+    cy="12"
+    r="7"
+    style="fill: #000; stroke: red; stroke-width: 2; opacity: 0.5"
+  />
+</svg>

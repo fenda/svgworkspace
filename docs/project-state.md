@@ -393,6 +393,7 @@ Safe automatic fixes are implemented for:
 - Remove empty paths
 - Remove hidden elements
 - PERFORMANCE_005 — Remove unused definitions
+- Convert simple inline styles to presentation attributes when every declaration is safely convertible
 
 The global Apply Safe Fixes action applies all safe automatic fixes and then re-runs analysis.
 
@@ -459,6 +460,8 @@ Current fixtures include:
 - metadata.svg
 - comments.svg
 - unused-defs.svg
+- inline-styles-safe.svg
+- inline-styles-unsafe.svg
 - empty-groups.svg
 - empty-paths.svg
 - hidden-elements.svg
@@ -476,6 +479,8 @@ good.svg is the canonical regression fixture and should always return:
 ✓ No issues detected.
 
 `Fixed Width & Height` is only treated as an automatic fix when a valid `viewBox` already exists.
+
+`Inline Styles` is only treated as an automatic fix when every inline declaration is a safe SVG presentation property.
 
 ---
 

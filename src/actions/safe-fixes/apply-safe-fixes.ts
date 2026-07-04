@@ -1,5 +1,6 @@
 import { parseSvgMarkup, serializeSvg } from "@/lib/svg/parse";
 import type { Finding } from "@/analysis";
+import { convertInlineStyles } from "./fixes/convert-inline-styles-to-attributes";
 import { removeComments } from "./fixes/remove-comments";
 import { removeFixedDimensions } from "./fixes/remove-fixed-dimensions";
 import { roundDecimals } from "./fixes/round-decimals";
@@ -20,6 +21,7 @@ const SAFE_FIXES_BY_FINDING_ID: Record<string, SafeFix> = {
   STRUCTURE_002: removeFixedDimensions,
   STRUCTURE_004: removeEmptyGroups,
   STRUCTURE_005: removeEmptyPaths,
+  MAINTAINABILITY_001: convertInlineStyles,
 };
 
 function withParsedSvg(content: string, applyFix: (svg: SVGSVGElement) => void): string {
@@ -35,6 +37,7 @@ export function applySafeFixes(content: string): string {
     removeHiddenElements(svg);
     removeUnusedDefs(svg);
     removeFixedDimensions(svg);
+    convertInlineStyles(svg);
     removeEmptyPaths(svg);
     removeEmptyGroups(svg);
     roundDecimals(svg);

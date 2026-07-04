@@ -15,7 +15,6 @@ const AUTOMATIC_FIX_IDS = new Set([
 const CHOICE_FIX_IDS = new Set([
   "COLORS_001",
   "COLORS_002",
-  "MAINTAINABILITY_001",
 ]);
 
 export function getFixType(finding: Finding): FixType {

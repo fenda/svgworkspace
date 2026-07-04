@@ -1,0 +1,11 @@
+<!-- Fixture: unsafe inline styles should remain manual-only and unchanged. -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>Inline Styles Unsafe</title>
+  <desc>Fixture for testing unsafe inline style declarations.</desc>
+  <circle
+    cx="12"
+    cy="12"
+    r="7"
+    style="stroke: currentColor; stroke-width: 2; transform: rotate(10deg)"
+  />
+</svg>
