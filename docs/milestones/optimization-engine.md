@@ -7,7 +7,9 @@ Status: Next
 - [ ] Improve formatted SVG output
 - [ ] Better diff visualization
 
-## Safe Fixes
+## Optimize SVG Improvements
+
+These improvements continue expanding the safe-fix engine behind the user-facing `Optimize SVG` action.
 
 - [ ] Remove unused defs
 - [ ] Normalize whitespace

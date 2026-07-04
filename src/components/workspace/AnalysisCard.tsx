@@ -66,6 +66,10 @@ export function AnalysisCard() {
   const { findings, health } = document.analysis;
   const hasFindings = health.findingCount > 0;
   const automaticFixCount = findings.filter(isAutomaticFixFinding).length;
+  const automaticOptimizationLabel =
+    automaticFixCount === 1
+      ? "1 available"
+      : `${automaticFixCount} available`;
   const gradeTone = hasFindings
     ? "text-amber-300"
     : "text-emerald-300";
@@ -85,7 +89,7 @@ export function AnalysisCard() {
           className="border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
           onClick={applyCurrentSafeFixes}
         >
-          Apply Safe Fixes
+          Optimize SVG
         </Button>
       </div>
 
@@ -113,6 +117,19 @@ export function AnalysisCard() {
         </div>
 
         <Progress value={health.score} className={progressTone} />
+
+        <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+              Automatic optimizations
+            </p>
+            <p className="text-xs text-zinc-600">
+              {automaticFixCount > 0
+                ? automaticOptimizationLabel
+                : "No automatic optimizations available"}
+            </p>
+          </div>
+        </div>
 
         <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
           <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">

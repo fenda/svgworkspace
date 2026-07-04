@@ -41,6 +41,7 @@ export function createSvgDocument(
   originalContent = content,
 ): SvgDocument {
   const svg = parseSvgMarkup(content.trim());
+  const originalSvg = parseSvgMarkup(originalContent.trim());
 
   if (!hasDrawableContent(svg)) {
     throw createValidationError("empty_svg");
@@ -50,6 +51,7 @@ export function createSvgDocument(
     filename,
     originalContent,
     content,
+    originalMetadata: extractSvgMetadata(originalSvg, originalContent, filename),
     metadata: extractSvgMetadata(svg, content, filename),
     analysis: analyzeSvg(svg),
   };

@@ -2,6 +2,31 @@
 
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 
+function hasChanged(current: string | number, original: string | number): boolean {
+  return current !== original;
+}
+
+function formatComparisonValue(
+  current: string | number,
+  original: string | number,
+) {
+  if (!hasChanged(current, original)) {
+    return (
+      <p className="font-metric mt-1 text-sm font-medium text-zinc-300">
+        {current}
+      </p>
+    );
+  }
+
+  return (
+    <p className="font-metric mt-1 text-sm font-medium text-zinc-300">
+      <span className="text-zinc-500">{original}</span>
+      <span className="mx-1.5 text-zinc-600">→</span>
+      <span>{current}</span>
+    </p>
+  );
+}
+
 export function DetailsCard() {
   const { document } = useSvgWorkspace();
 
@@ -9,7 +34,7 @@ export function DetailsCard() {
     return null;
   }
 
-  const { metadata } = document;
+  const { metadata, originalMetadata } = document;
 
   return (
     <div className="rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
@@ -19,11 +44,31 @@ export function DetailsCard() {
 
       <div className="flex flex-wrap gap-3 px-4 py-4">
         {[
-          { label: "ViewBox", value: metadata.viewBox },
-          { label: "Size", value: metadata.size },
-          { label: "Paths", value: metadata.paths },
-          { label: "Colors", value: metadata.colors },
-          { label: "Responsive", value: metadata.responsive },
+          {
+            label: "ViewBox",
+            value: metadata.viewBox,
+            originalValue: originalMetadata.viewBox,
+          },
+          {
+            label: "Size",
+            value: metadata.size,
+            originalValue: originalMetadata.size,
+          },
+          {
+            label: "Paths",
+            value: metadata.paths,
+            originalValue: originalMetadata.paths,
+          },
+          {
+            label: "Colors",
+            value: metadata.colors,
+            originalValue: originalMetadata.colors,
+          },
+          {
+            label: "Responsive",
+            value: metadata.responsive,
+            originalValue: originalMetadata.responsive,
+          },
         ].map((item) => (
           <div
             key={item.label}
@@ -32,9 +77,10 @@ export function DetailsCard() {
             <p className="text-[10px] uppercase tracking-wider text-zinc-500">
               {item.label}
             </p>
-            <p className="font-metric mt-1 text-sm font-medium text-zinc-300">
-              {item.value}
-            </p>
+            {formatComparisonValue(
+              item.value,
+              item.originalValue,
+            )}
           </div>
         ))}
       </div>

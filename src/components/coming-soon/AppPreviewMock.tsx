@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { CheckCircle2, Code2 } from "lucide-react";
 import { EXAMPLE_SVG } from "@/lib/mock-data";
 

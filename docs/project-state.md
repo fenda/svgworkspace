@@ -395,7 +395,9 @@ Safe automatic fixes are implemented for:
 - PERFORMANCE_005 — Remove unused definitions
 - Convert simple inline styles to presentation attributes when every declaration is safely convertible
 
-The global Apply Safe Fixes action applies all safe automatic fixes and then re-runs analysis.
+The user-facing `Optimize SVG` action applies all safe automatic fixes and then re-runs analysis.
+
+Internally, this workflow is still powered by safe fixes.
 
 Individual Fix buttons are implemented for automatic issues.
 
@@ -510,7 +512,7 @@ Actions become available based on findings.
 
 Implemented:
 
-- Apply Safe Fixes
+- Optimize SVG
 - Individual Fix buttons for automatic issues
 
 Future:
@@ -665,7 +667,7 @@ Analyze SVG Health
 ↓
 Review Issues
 ↓
-Apply Safe Fixes or individual automatic fixes
+Optimize SVG or use individual automatic fixes
 ↓
 Re-analyze
 ↓

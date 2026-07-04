@@ -7,12 +7,16 @@ Status: Ready for Launch
 - [x] Upload SVG
 - [x] Drag & Drop
 - [x] Paste SVG
+- [x] Upload validation
 - [x] SVG Health
 - [x] SVG Details
-- [x] Safe Fixes
+- [x] Metadata comparison
+- [x] Optimize SVG
 - [x] Individual Fixes
 - [x] Optimized Output
-- [x] Preview / SVG / Diff
+- [x] Preview
+- [x] SVG
+- [x] Diff
 - [x] Copy SVG
 - [x] Download SVG
 

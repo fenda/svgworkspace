@@ -46,7 +46,7 @@ const VALIDATION_STATES: Record<SvgValidationCode, SvgValidationState> = {
     code: "optimization_cancelled",
     title: "Optimization cancelled",
     message:
-      "Applying safe fixes would remove all drawable elements from this SVG, so no changes were applied.",
+      "Optimizing this SVG would remove all drawable elements, so no changes were applied.",
   },
   unexpected_error: {
     code: "unexpected_error",

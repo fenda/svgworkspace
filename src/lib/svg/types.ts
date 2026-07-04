@@ -13,6 +13,7 @@ export type SvgDocument = {
   filename: string;
   originalContent: string;
   content: string;
+  originalMetadata: SvgMetadata;
   metadata: SvgMetadata;
   analysis: AnalysisResult;
 };

@@ -113,7 +113,7 @@ export function PreviewCard() {
           ) : (
             <div className="flex h-full items-center justify-center p-6 text-center">
               <p className="max-w-xs text-sm text-zinc-500">
-                No changes yet. Apply safe fixes to compare output.
+                No changes yet. Optimize SVG to compare output.
               </p>
             </div>
           )}
