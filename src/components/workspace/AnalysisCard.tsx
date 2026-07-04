@@ -49,12 +49,12 @@ export function AnalysisCard() {
     : "[&_[data-slot=progress-indicator]]:bg-emerald-400 [&_[data-slot=progress-track]]:bg-white/[0.06]";
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14] lg:max-h-[446px]">
       <div className="border-b border-white/10 px-4 py-3">
         <p className="text-sm font-medium text-zinc-200">SVG Health</p>
       </div>
 
-      <div className="space-y-4 border-b border-white/10 px-4 py-4">
+      <div className="space-y-2.5 border-b border-white/10 px-4 py-3">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
@@ -69,25 +69,17 @@ export function AnalysisCard() {
               {health.score}
               <span className="ml-1 text-sm font-normal text-zinc-500">/ 100</span>
             </p>
-            <p className="mt-1 text-xs text-zinc-500">Based on current MVP checks</p>
           </div>
         </div>
 
         <Progress value={health.score} className={progressTone} />
 
-        <div className="flex flex-wrap items-start justify-between gap-3 text-sm">
-          <div>
-            <p className="text-zinc-300">
-              {hasFindings
-                ? `${health.findingCount} ${health.findingCount === 1 ? "Issue" : "Issues"} Found`
-                : "No issues detected."}
-            </p>
-            <p className="mt-1 text-xs text-zinc-500">
-              {health.checkCount} {health.checkCount === 1 ? "Health Check" : "Health Checks"}
-            </p>
-          </div>
-        </div>
-        <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3">
+        <p className="text-sm text-zinc-300">
+          {hasFindings ? `${health.findingCount} ${health.findingCount === 1 ? "Issue" : "Issues"} Found` : "No issues detected."}
+          <span className="mx-1.5 text-zinc-600">/</span>
+          {health.checkCount} {health.checkCount === 1 ? "Health Check" : "Health Checks"}
+        </p>
+        <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
@@ -117,8 +109,8 @@ export function AnalysisCard() {
             only improvements SVG Workspace can currently apply. */}
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col px-4 py-4">
-        <div className="mb-3 flex items-center justify-between gap-3">
+      <div className="flex min-h-0 flex-1 flex-col px-4 py-3">
+        <div className="mb-2.5 flex items-center justify-between gap-3">
           <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
             Issues
           </p>
@@ -128,9 +120,9 @@ export function AnalysisCard() {
         </div>
 
         {hasFindings ? (
-          <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+          <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
             {findings.map((finding) => (
-              <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
+              <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
                 <div className="flex items-start gap-3">
                   <SeverityIcon severity={finding.severity} />
                   <div className="min-w-0 flex-1">
@@ -147,18 +139,18 @@ export function AnalysisCard() {
                     >
                       {finding.title}
                     </p>
-                    <p className="mt-1 text-xs leading-5 text-zinc-500">
+                    <p className="mt-0.5 text-xs leading-5 text-zinc-500">
                       {finding.description}
                     </p>
                     <Badge
                       variant="outline"
-                      className="mt-2 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal capitalize text-zinc-600"
+                      className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal capitalize text-zinc-600"
                     >
                       {finding.category}
                     </Badge>
                     <Badge
                       variant="outline"
-                      className="mt-2 ml-2 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-600"
+                      className="mt-1.5 ml-2 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-600"
                     >
                       {getFixTypeLabel(fixType)}
                     </Badge>

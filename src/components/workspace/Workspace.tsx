@@ -84,7 +84,7 @@ export function Workspace() {
         </div>
       </div>
 
-      <div className="grid gap-4 p-5 lg:grid-cols-[minmax(0,1.65fr)_minmax(280px,0.95fr)] lg:items-stretch">
+      <div className="grid gap-4 p-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)] lg:items-stretch">
         <PreviewCard />
         <AnalysisCard />
       </div>

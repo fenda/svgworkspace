@@ -31,7 +31,7 @@ export function PreviewCard() {
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
+    <div className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
         <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
           {[
@@ -121,26 +121,30 @@ export function PreviewCard() {
       </div>
 
       {activeTab === "preview" ? (
-        <div
-          className="flex aspect-[16/10] items-center justify-center p-8"
-          style={{
-            backgroundImage:
-              "linear-gradient(45deg, #1a1a1e 25%, transparent 25%), linear-gradient(-45deg, #1a1a1e 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1e 75%), linear-gradient(-45deg, transparent 75%, #1a1a1e 75%)",
-            backgroundSize: "16px 16px",
-            backgroundPosition: "0 0, 0 8px, 8px -8px, -8px 0px",
-            backgroundColor: "#141418",
-          }}
-        >
+        <div className="p-4">
           <div
-            className="size-32 [&>svg]:size-full"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
+            className="mx-auto flex w-full max-w-[560px] aspect-[16/10] items-center justify-center p-5"
+            style={{
+              backgroundImage:
+                "linear-gradient(45deg, #1a1a1e 25%, transparent 25%), linear-gradient(-45deg, #1a1a1e 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1e 75%), linear-gradient(-45deg, transparent 75%, #1a1a1e 75%)",
+              backgroundSize: "16px 16px",
+              backgroundPosition: "0 0, 0 8px, 8px -8px, -8px 0px",
+              backgroundColor: "#141418",
+            }}
+          >
+            <div
+              className="flex h-full w-full items-center justify-center [&>svg]:h-auto [&>svg]:max-h-full [&>svg]:max-w-full [&>svg]:w-auto"
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+          </div>
         </div>
       ) : (
-        <div className="aspect-[16/10] overflow-hidden bg-[#111114]">
-          <pre className="h-full overflow-auto p-4 text-xs leading-6 text-zinc-300">
-            <code className="font-metric whitespace-pre-wrap break-all">{content}</code>
-          </pre>
+        <div className="p-4">
+          <div className="mx-auto w-full max-w-[560px] aspect-[16/10] overflow-hidden bg-[#111114]">
+            <pre className="h-full overflow-auto p-4 text-xs leading-5 text-zinc-300">
+              <code className="font-metric whitespace-pre-wrap break-all">{content}</code>
+            </pre>
+          </div>
         </div>
       )}
     </div>
