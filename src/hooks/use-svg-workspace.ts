@@ -10,6 +10,7 @@ export function useSvgWorkspace() {
   const loadFromContent = useSvgWorkspaceStore((state) => state.loadFromContent);
   const loadFromFile = useSvgWorkspaceStore((state) => state.loadFromFile);
   const applyCurrentSafeFixes = useSvgWorkspaceStore((state) => state.applyCurrentSafeFixes);
+  const applySafeFixForFinding = useSvgWorkspaceStore((state) => state.applySafeFixForFinding);
   const loadExample = useSvgWorkspaceStore((state) => state.loadExample);
   const clear = useSvgWorkspaceStore((state) => state.clear);
 
@@ -21,6 +22,7 @@ export function useSvgWorkspace() {
     loadFromContent,
     loadFromFile,
     applyCurrentSafeFixes,
+    applySafeFixForFinding,
     loadExample,
     clear,
   };

@@ -32,7 +32,13 @@ function getFixButtonLabel(fixType: ReturnType<typeof getFixType>): string {
 }
 
 export function AnalysisCard() {
-  const { document, error, isProcessing, applyCurrentSafeFixes } = useSvgWorkspace();
+  const {
+    document,
+    error,
+    isProcessing,
+    applyCurrentSafeFixes,
+    applySafeFixForFinding,
+  } = useSvgWorkspace();
 
   if (!document) {
     return null;
@@ -121,16 +127,15 @@ export function AnalysisCard() {
 
         {hasFindings ? (
           <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
-            {findings.map((finding) => (
+            {findings.map((finding) => {
+              const fixType = getFixType(finding);
+              const isAutoFix = fixType === "auto";
+
+              return (
               <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
                 <div className="flex items-start gap-3">
                   <SeverityIcon severity={finding.severity} />
                   <div className="min-w-0 flex-1">
-                    {(() => {
-                      const fixType = getFixType(finding);
-
-                      return (
-                        <>
                     <p
                       className={cn(
                         "text-sm font-medium",
@@ -154,28 +159,25 @@ export function AnalysisCard() {
                     >
                       {getFixTypeLabel(fixType)}
                     </Badge>
-                        </>
-                      );
-                    })()}
                   </div>
-                  {(() => {
-                    const fixType = getFixType(finding);
-
-                    return (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        disabled
-                        className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-500 opacity-100"
-                      >
-                        {getFixButtonLabel(fixType)}
-                      </Button>
-                    );
-                  })()}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={!isAutoFix || isProcessing}
+                    className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-500 opacity-100"
+                    onClick={() => {
+                      if (isAutoFix) {
+                        applySafeFixForFinding(finding);
+                      }
+                    }}
+                  >
+                    {getFixButtonLabel(fixType)}
+                  </Button>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
