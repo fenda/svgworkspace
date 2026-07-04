@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { AnalysisCard } from "./AnalysisCard";
 import { ContinueWorking } from "./ContinueWorking";
-import { ImprovementList } from "./ImprovementList";
+import { DetailsCard } from "./DetailsCard";
 import { PreviewCard } from "./PreviewCard";
 import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
@@ -84,13 +84,16 @@ export function Workspace() {
         </div>
       </div>
 
-      <div className="grid gap-4 p-5 lg:grid-cols-2">
+      <div className="grid gap-4 p-5 lg:grid-cols-[minmax(0,1.65fr)_minmax(280px,0.95fr)] lg:items-stretch">
         <PreviewCard />
         <AnalysisCard />
       </div>
 
+      <div className="space-y-4 border-t border-white/10 p-5">
+        <DetailsCard />
+      </div>
+
       <div className="space-y-8 border-t border-white/10 p-5">
-        <ImprovementList />
         <ContinueWorking />
       </div>
     </section>

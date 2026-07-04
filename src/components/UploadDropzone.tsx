@@ -54,7 +54,7 @@ export function UploadDropzone() {
       }}
       tabIndex={0}
       className={cn(
-        "flex h-full min-h-[280px] flex-col items-center justify-center rounded-2xl border border-dashed bg-[#111114] p-8 text-center transition-all duration-150 outline-none",
+        "flex h-full min-h-[228px] flex-col items-center justify-center rounded-2xl border border-dashed bg-[#111114] p-6 text-center transition-all duration-150 outline-none",
         "border-[var(--brand)]/40 hover:border-[var(--brand)]/60 hover:shadow-[0_0_28px_var(--brand-glow)] focus-visible:border-[var(--brand)]/60 focus-visible:shadow-[0_0_28px_var(--brand-glow)]",
         isDragging &&
           "upload-drag-over scale-[1.01] border-[var(--brand)]/70 shadow-[0_0_32px_var(--brand-glow)]",
@@ -72,7 +72,7 @@ export function UploadDropzone() {
         }}
       />
 
-      <div className="relative mb-7">
+      <div className="relative mb-5">
         <div
           aria-hidden
           className="absolute inset-0 scale-[1.6] rounded-full bg-[var(--brand)]/25 blur-2xl"
@@ -85,7 +85,7 @@ export function UploadDropzone() {
       <p className="mb-2 text-sm font-medium text-zinc-300">
         Drop your SVG here
       </p>
-      <p className="mb-6 text-xs text-zinc-500">
+      <p className="mb-5 text-xs text-zinc-500">
         or browse, paste or explore an example
       </p>
 
@@ -109,7 +109,7 @@ export function UploadDropzone() {
         </Button>
       </div>
 
-      <p className="mt-8 text-xs text-zinc-500">
+      <p className="mt-6 text-xs text-zinc-500">
         Paste SVG <span className="font-metric text-zinc-400">⌘V</span>
       </p>
 

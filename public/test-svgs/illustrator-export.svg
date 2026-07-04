@@ -1,0 +1,86 @@
+<!-- Fixture: simulates a realistic Adobe Illustrator export for regression testing. -->
+<!-- Intentional characteristics: fixed dimensions, metadata, comments, nested groups, generated IDs, -->
+<!-- inline colors, inline styles, decimal precision, transforms, defs, clipPath, title/desc, and xlink. -->
+<svg
+  version="1.1"
+  id="Layer_1"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  x="0px"
+  y="0px"
+  width="128px"
+  height="128px"
+  viewBox="0 0 128 128"
+  style="enable-background:new 0 0 128 128;"
+  xml:space="preserve"
+>
+  <title>Illustrator Export Fixture</title>
+  <desc>Messy but valid SVG fixture that imitates a typical design-tool export.</desc>
+
+  <metadata>
+    Created by Adobe Illustrator-style export fixture for SVG Workspace.
+  </metadata>
+
+  <!-- Illustrator exports often include defs and clip paths even for simple artwork. -->
+  <defs>
+    <clipPath id="SVGID_1_">
+      <rect x="8" y="8" width="112" height="112"/>
+    </clipPath>
+    <path
+      id="SVGID_2_"
+      d="M64.0000,18.2500c-15.2500,0.0000-27.6250,12.3750-27.6250,27.6250s12.3750,27.6250,27.6250,27.6250
+        s27.6250-12.3750,27.6250-27.6250S79.2500,18.2500,64.0000,18.2500z"
+    />
+  </defs>
+
+  <!-- Intentional nested groups and generated layer IDs to mimic authoring-tool structure. -->
+  <g id="Layer_2">
+    <g id="Layer_3">
+      <g id="Group_1" clip-path="url(#SVGID_1_)">
+        <!-- Intentional transform and style usage instead of leaner presentation attributes. -->
+        <rect
+          x="14.1250"
+          y="14.3750"
+          width="99.5000"
+          height="99.2500"
+          transform="translate(0.0000 0.0000)"
+          style="fill:#F3F4F6;stroke:#CBD5E1;stroke-width:2.0000;"
+        />
+
+        <!-- Inline fill colors and decimal precision are intentional future-rule targets. -->
+        <circle
+          cx="64.0000"
+          cy="45.8750"
+          r="20.3750"
+          style="fill:#60A5FA;stroke:#1D4ED8;stroke-width:2.2500;"
+        />
+
+        <g id="Layer_4" transform="translate(0.0000, 0.0000)">
+          <path
+            d="M43.8750,88.6250c2.2500-10.8750,11.8750-18.6250,20.1250-18.6250c8.7500,0.0000,17.8750,7.5000,20.1250,18.6250"
+            style="fill:none;stroke:#0F172A;stroke-width:3.0000;stroke-linecap:round;stroke-linejoin:round;"
+          />
+          <rect
+            x="52.2500"
+            y="36.1250"
+            width="4.5000"
+            height="4.5000"
+            transform="rotate(0 54.5000 38.3750)"
+            style="fill:#FFFFFF;"
+          />
+          <rect
+            x="71.2500"
+            y="36.1250"
+            width="4.5000"
+            height="4.5000"
+            transform="rotate(0 73.5000 38.3750)"
+            style="fill:#FFFFFF;"
+          />
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- xlink namespace included intentionally because many older exports preserve it. -->
+  <use xlink:href="#SVGID_2_" style="display:none;"/>
+</svg>

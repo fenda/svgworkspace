@@ -4,6 +4,7 @@ import {
   Globe,
   Layers,
   Maximize2,
+  Monitor,
   Palette,
   Sparkles,
   Wrench,
@@ -28,6 +29,43 @@ export const heroBadges = [
   "⚡ Instant",
   "❤️ Private",
 ] as const;
+
+export const sidebarSections: {
+  label: string;
+  items: {
+    label: string;
+    href: string;
+    icon: LucideIcon;
+  }[];
+}[] = [
+  {
+    label: "Improve",
+    items: [
+      { label: "Optimize", href: "/optimize", icon: Sparkles },
+      { label: "Replace Colors", href: "/colors", icon: Palette },
+    ],
+  },
+  {
+    label: "Convert",
+    items: [
+      { label: "React", href: "/convert", icon: Code2 },
+      { label: "Vue", href: "/convert", icon: Code2 },
+      { label: "HTML", href: "/convert", icon: Globe },
+    ],
+  },
+  {
+    label: "Inspect",
+    items: [
+      { label: "Preview", href: "/inspect", icon: Monitor },
+      { label: "Dimensions", href: "/inspect", icon: Maximize2 },
+      { label: "Inspect SVG", href: "/inspect", icon: Eye },
+    ],
+  },
+  {
+    label: "Build",
+    items: [{ label: "Sprite", href: "/sprite", icon: Layers }],
+  },
+];
 
 export const quickActions: {
   label: string;

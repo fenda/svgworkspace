@@ -25,7 +25,7 @@ export function ImprovementList() {
         <h3 className="text-base font-bold text-white">Improve your SVG</h3>
         <p className="mt-1 text-sm text-zinc-500">
           {findingCount === 0
-            ? "No issues were detected in this SVG."
+            ? "No improvements suggested by the current checks."
             : `We found ${findingCount} ${findingCount === 1 ? "issue" : "issues"} to review.`}
         </p>
       </div>

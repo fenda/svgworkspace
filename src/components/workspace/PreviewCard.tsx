@@ -11,7 +11,7 @@ export function PreviewCard() {
     return null;
   }
 
-  const { content, metadata } = document;
+  const { content } = document;
 
   return (
     <div className="rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
@@ -53,7 +53,7 @@ export function PreviewCard() {
       </div>
 
       <div
-        className="flex aspect-square items-center justify-center p-8"
+        className="flex aspect-[16/10] items-center justify-center p-8"
         style={{
           backgroundImage:
             "linear-gradient(45deg, #1a1a1e 25%, transparent 25%), linear-gradient(-45deg, #1a1a1e 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1e 75%), linear-gradient(-45deg, transparent 75%, #1a1a1e 75%)",
@@ -66,25 +66,6 @@ export function PreviewCard() {
           className="size-32 [&>svg]:size-full"
           dangerouslySetInnerHTML={{ __html: content }}
         />
-      </div>
-
-      <div className="grid grid-cols-5 divide-x divide-white/10 border-t border-white/10">
-        {[
-          { label: "ViewBox", value: metadata.viewBox },
-          { label: "Size", value: metadata.size },
-          { label: "Paths", value: metadata.paths },
-          { label: "Colors", value: metadata.colors },
-          { label: "Responsive", value: metadata.responsive },
-        ].map((item) => (
-          <div key={item.label} className="px-3 py-3 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-zinc-500">
-              {item.label}
-            </p>
-            <p className="font-metric mt-0.5 text-xs font-medium text-zinc-300">
-              {item.value}
-            </p>
-          </div>
-        ))}
       </div>
     </div>
   );
