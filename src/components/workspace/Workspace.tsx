@@ -9,7 +9,6 @@ import {
   Trash2,
 } from "lucide-react";
 import { AnalysisCard } from "./AnalysisCard";
-import { ContinueWorking } from "./ContinueWorking";
 import { DetailsCard } from "./DetailsCard";
 import { PreviewCard } from "./PreviewCard";
 import { Button } from "@/components/ui/button";
@@ -92,10 +91,12 @@ export function Workspace() {
       <div className="space-y-4 border-t border-white/10 p-5">
         <DetailsCard />
       </div>
-
+      {/* Preview polish: keep Continue Working ready to restore after the public Preview. */}
+      {/*
       <div className="space-y-8 border-t border-white/10 p-5">
         <ContinueWorking />
       </div>
+      */}
     </section>
   );
 }

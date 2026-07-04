@@ -61,6 +61,14 @@ Export
 
 ---
 
+## Preview Principle
+
+SVG Workspace Preview intentionally exposes only workflows that users can complete today.
+
+Future workflows remain part of the roadmap but are intentionally hidden until implementation begins.
+
+---
+
 ## Current Focus
 
 SVG Workspace currently prioritizes:
@@ -110,6 +118,20 @@ Destination-specific workflows are intentionally postponed until the optimizatio
 - Prefer one clear primary action.
 - Remove placeholder functionality whenever possible.
 - Prefer simplifying the current experience over exposing unfinished workflows.
+
+---
+
+# Milestone Documents
+
+Detailed milestone docs live in:
+
+- docs/milestones/preview.md
+- docs/milestones/optimization-engine.md
+- docs/milestones/icon-workspace.md
+- docs/milestones/sprite-builder.md
+- docs/milestones/continue-working.md
+
+These docs define the execution order after Preview.
 
 ---
 

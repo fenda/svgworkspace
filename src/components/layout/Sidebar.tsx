@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Code2, MessageSquare } from "lucide-react";
-import { navItems, sidebarSections } from "@/lib/mock-data";
+import { navItems } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 function isActiveRoute(pathname: string, href: string) {
@@ -16,6 +16,7 @@ function isActiveRoute(pathname: string, href: string) {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const previewNavItems = navItems.filter((item) => item.href === "/playground");
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 flex w-16 flex-col border-r border-white/10 bg-[#0a0a0c] lg:w-56">
@@ -29,11 +30,9 @@ export function Sidebar() {
       </div>
 
       <nav className="flex flex-1 flex-col gap-4 overflow-y-auto px-2 pb-3 lg:px-3">
-        {navItems.map((item) => {
+        {previewNavItems.map((item) => {
           const Icon = item.icon;
           const active = isActiveRoute(pathname, item.href);
-          const isWorkspace = item.href === "/playground";
-          const isPlanned = !isWorkspace;
 
           return (
             <Link
@@ -43,22 +42,16 @@ export function Sidebar() {
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors duration-150",
                 active
                   ? "bg-indigo-600/20 text-indigo-300"
-                  : isPlanned
-                    ? "text-zinc-500 hover:bg-white/[0.03] hover:text-zinc-300"
-                    : "text-zinc-400 hover:bg-white/5 hover:text-zinc-200",
+                  : "text-zinc-400 hover:bg-white/5 hover:text-zinc-200",
               )}
             >
               <Icon className="size-4 shrink-0" />
               <span className="hidden lg:block">{item.label}</span>
-              {isPlanned ? (
-                <span className="ml-auto hidden rounded-full border border-white/[0.08] bg-white/[0.02] px-1.5 py-0 text-[9px] uppercase tracking-wide text-zinc-600 lg:block">
-                  Soon
-                </span>
-              ) : null}
             </Link>
           );
         })}
 
+        {/* Preview-only nav: keep future sections easy to restore after implementation begins.
         <div className="hidden lg:block">
           <div className="mx-3 border-t border-white/10" />
         </div>
@@ -98,6 +91,7 @@ export function Sidebar() {
             </div>
           </div>
         ))}
+        */}
       </nav>
 
       <div className="border-t border-white/10 p-2 lg:p-3">
