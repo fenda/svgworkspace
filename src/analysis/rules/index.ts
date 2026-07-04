@@ -22,7 +22,7 @@ import { structure004EmptyGroups } from "./structure/structure-004-empty-groups"
 import { structure005EmptyPaths } from "./structure/structure-005-empty-paths";
 import type { AnalysisRule } from "@/analysis/models";
 
-export const analysisRules: AnalysisRule[] = [
+export const svgHealthRules: AnalysisRule[] = [
   structure001MissingViewBox,
   structure002FixedWidthHeight,
   structure003DuplicateIds,
@@ -40,6 +40,9 @@ export const analysisRules: AnalysisRule[] = [
   accessibility004EmptyDesc,
   accessibility005DecorativeSvg,
   maintainability001InlineStyles,
+];
+
+export const reactReadyRules: AnalysisRule[] = [
   react001ClassAttribute,
   react002KebabCaseAttributes,
   react003InlineStyleString,

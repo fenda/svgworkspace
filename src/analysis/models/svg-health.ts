@@ -6,7 +6,6 @@ export const svgHealthCategories = [
   "colors",
   "accessibility",
   "maintainability",
-  "react-ready",
 ] as const satisfies readonly FindingCategory[];
 
 export type SvgHealthCategory = (typeof svgHealthCategories)[number];

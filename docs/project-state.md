@@ -233,14 +233,6 @@ Current rules:
 
 - Inline Styles
 
-### React Ready
-
-- class Attribute
-- Kebab-case Attributes
-- Inline Style String
-- xlink Attribute
-- Inline Event Handlers
-
 ---
 
 ## SVG Health
@@ -368,6 +360,10 @@ Future:
 - HTML
 - Sprite
 
+React Ready checks belong in this workflow area.
+
+They are destination-specific guidance for future React conversion and do not affect the platform-independent SVG Health score.
+
 ---
 
 ## Phase 4 — Professional Features
@@ -387,8 +383,8 @@ Potential additions:
 1. Validate the current v0.1 workflow with real SVGs.
 2. Recalibrate SVG Health scoring after more rules are added.
 3. Expand accessibility health coverage.
-4. Add React readiness checks.
-5. Add React Ready health checks.
+4. Surface React Ready checks inside Continue Working.
+5. Add React conversion guidance from React Ready findings.
 6. Improve SVG source formatting.
 7. Add before/after comparison.
 8. Add undo support.
