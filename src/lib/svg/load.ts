@@ -1,6 +1,7 @@
-import { analyzeSvgElement } from "@/lib/svg/analyze";
+import { analyzeSvg } from "@/analysis";
+import { extractSvgMetadata } from "@/lib/svg/metadata";
 import { parseSvgMarkup } from "@/lib/svg/parse";
-import type { SvgDocument, SvgLoadSource } from "@/lib/svg/types";
+import type { SvgDocument } from "@/lib/svg/types";
 
 export async function readSvgFile(file: File): Promise<{ filename: string; content: string }> {
   const isSvg =
@@ -18,13 +19,12 @@ export async function readSvgFile(file: File): Promise<{ filename: string; conte
 
 export function createSvgDocument(filename: string, content: string): SvgDocument {
   const svg = parseSvgMarkup(content.trim());
-  const { metadata, analysis } = analyzeSvgElement(svg, content, filename);
 
   return {
     filename,
     content,
-    metadata,
-    analysis,
+    metadata: extractSvgMetadata(svg, content, filename),
+    analysis: analyzeSvg(svg),
   };
 }
 
@@ -41,4 +41,4 @@ export function loadSvgFromFile(file: File): Promise<SvgDocument> {
   );
 }
 
-export type { SvgLoadSource };
+export type { SvgLoadSource } from "@/lib/svg/types";

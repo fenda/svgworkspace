@@ -1,4 +1,4 @@
-export type CheckStatus = "good" | "warning";
+import type { AnalysisResult } from "@/analysis";
 
 export type SvgMetadata = {
   filename: string;
@@ -9,24 +9,11 @@ export type SvgMetadata = {
   responsive: string;
 };
 
-export type SvgAnalysis = {
-  grade: string;
-  score: number;
-  maxScore: number;
-  label: string;
-  potentialGains: string[];
-  improvementsFound: number;
-  estimatedReduction: string;
-  estimatedSavings: string;
-  checks: { label: string; status: CheckStatus }[];
-  summary: { label: string; value: string; status: CheckStatus }[];
-};
-
 export type SvgDocument = {
   filename: string;
   content: string;
   metadata: SvgMetadata;
-  analysis: SvgAnalysis;
+  analysis: AnalysisResult;
 };
 
 export type SvgLoadSource = "upload" | "paste" | "example";
