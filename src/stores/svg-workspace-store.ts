@@ -9,14 +9,21 @@ import {
 import { EXAMPLE_SVG } from "@/lib/mock-data";
 import {
   createSvgDocument,
+  createValidationState,
+  getValidationState,
+  hasDrawableContent,
+  parseSvgMarkup,
   type SvgDocument,
   type SvgLoadSource,
+  type SvgValidationState,
 } from "@/lib/svg";
 
 type SvgWorkspaceStore = {
   document: SvgDocument | null;
   source: SvgLoadSource | null;
   error: string | null;
+  uploadValidation: SvgValidationState | null;
+  optimizationValidation: SvgValidationState | null;
   isProcessing: boolean;
   loadFromContent: (
     content: string,
@@ -27,6 +34,8 @@ type SvgWorkspaceStore = {
   applyCurrentSafeFixes: () => void;
   applySafeFixForFinding: (finding: Finding) => void;
   loadExample: () => void;
+  dismissUploadValidation: () => void;
+  dismissOptimizationValidation: () => void;
   clear: () => void;
 };
 
@@ -34,31 +43,52 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
   document: null,
   source: null,
   error: null,
+  uploadValidation: null,
+  optimizationValidation: null,
   isProcessing: false,
 
   loadFromContent: (content, filename, source) => {
     try {
       const document = createSvgDocument(filename, content);
-      set({ document, source, error: null, isProcessing: false });
+      set({
+        document,
+        source,
+        error: null,
+        uploadValidation: null,
+        optimizationValidation: null,
+        isProcessing: false,
+      });
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : "Unable to process SVG.",
+        uploadValidation: getValidationState(error, source),
         isProcessing: false,
       });
     }
   },
 
   loadFromFile: async (file) => {
-    set({ isProcessing: true, error: null });
+    set({
+      isProcessing: true,
+      error: null,
+      uploadValidation: null,
+      optimizationValidation: null,
+    });
 
     try {
       const { readSvgFile } = await import("@/lib/svg/load");
       const { filename, content } = await readSvgFile(file);
       const document = createSvgDocument(filename, content);
-      set({ document, source: "upload", error: null, isProcessing: false });
+      set({
+        document,
+        source: "upload",
+        error: null,
+        uploadValidation: null,
+        optimizationValidation: null,
+        isProcessing: false,
+      });
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : "Unable to read SVG file.",
+        uploadValidation: getValidationState(error, "upload"),
         isProcessing: false,
       });
     }
@@ -69,6 +99,8 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       document: createSvgDocument("logo-example.svg", EXAMPLE_SVG),
       source: "example",
       error: null,
+      uploadValidation: null,
+      optimizationValidation: null,
       isProcessing: false,
     });
   },
@@ -81,10 +113,22 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       return;
     }
 
-    set({ isProcessing: true, error: null });
+    set({ isProcessing: true, error: null, optimizationValidation: null });
 
     try {
       const nextContent = applySafeFixes(document.content);
+      const nextSvg = parseSvgMarkup(nextContent.trim());
+
+      if (!hasDrawableContent(nextSvg)) {
+        set({
+          optimizationValidation: createValidationState(
+            "optimization_cancelled",
+          ),
+          isProcessing: false,
+        });
+        return;
+      }
+
       const nextDocument = createSvgDocument(
         document.filename,
         nextContent,
@@ -94,6 +138,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       set({
         document: nextDocument,
         error: null,
+        optimizationValidation: null,
         isProcessing: false,
       });
     } catch (error) {
@@ -115,10 +160,22 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       return;
     }
 
-    set({ isProcessing: true, error: null });
+    set({ isProcessing: true, error: null, optimizationValidation: null });
 
     try {
       const nextContent = applySafeFixForFinding(document.content, finding);
+      const nextSvg = parseSvgMarkup(nextContent.trim());
+
+      if (!hasDrawableContent(nextSvg)) {
+        set({
+          optimizationValidation: createValidationState(
+            "optimization_cancelled",
+          ),
+          isProcessing: false,
+        });
+        return;
+      }
+
       const nextDocument = createSvgDocument(
         document.filename,
         nextContent,
@@ -128,6 +185,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       set({
         document: nextDocument,
         error: null,
+        optimizationValidation: null,
         isProcessing: false,
       });
     } catch (error) {
@@ -141,7 +199,22 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
     }
   },
 
+  dismissUploadValidation: () => {
+    set({ uploadValidation: null });
+  },
+
+  dismissOptimizationValidation: () => {
+    set({ optimizationValidation: null });
+  },
+
   clear: () => {
-    set({ document: null, source: null, error: null, isProcessing: false });
+    set({
+      document: null,
+      source: null,
+      error: null,
+      uploadValidation: null,
+      optimizationValidation: null,
+      isProcessing: false,
+    });
   },
 }));

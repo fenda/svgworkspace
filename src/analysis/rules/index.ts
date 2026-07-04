@@ -10,6 +10,7 @@ import { performance001MetadataFound } from "./performance/performance-001-metad
 import { performance002CommentsFound } from "./performance/performance-002-comments-found";
 import { performance003HighDecimalPrecision } from "./performance/performance-003-high-decimal-precision";
 import { performance004HiddenElements } from "./performance/performance-004-hidden-elements";
+import { performance005UnusedDefinitions } from "./performance/performance-005-unused-definitions";
 import { react001ClassAttribute } from "./react-ready/react-001-class-attribute";
 import { react002KebabCaseAttributes } from "./react-ready/react-002-kebab-case-attributes";
 import { react003InlineStyleString } from "./react-ready/react-003-inline-style-string";
@@ -32,6 +33,7 @@ export const svgHealthRules: AnalysisRule[] = [
   performance002CommentsFound,
   performance003HighDecimalPrecision,
   performance004HiddenElements,
+  performance005UnusedDefinitions,
   colors001HardcodedFillColors,
   colors002HardcodedStrokeColors,
   accessibility001MissingTitle,

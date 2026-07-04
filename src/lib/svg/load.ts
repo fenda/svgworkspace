@@ -2,13 +2,31 @@ import { analyzeSvg } from "@/analysis";
 import { extractSvgMetadata } from "@/lib/svg/metadata";
 import { parseSvgMarkup } from "@/lib/svg/parse";
 import type { SvgDocument } from "@/lib/svg/types";
+import { createValidationError } from "@/lib/svg/validation";
+
+const DRAWABLE_SELECTORS = [
+  "path",
+  "circle",
+  "rect",
+  "ellipse",
+  "polygon",
+  "polyline",
+  "line",
+  "text",
+  "image",
+  "use",
+].join(",");
+
+export function hasDrawableContent(svg: SVGSVGElement): boolean {
+  return svg.querySelector(DRAWABLE_SELECTORS) !== null;
+}
 
 export async function readSvgFile(file: File): Promise<{ filename: string; content: string }> {
   const isSvg =
     file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg");
 
   if (!isSvg) {
-    throw new Error("Please choose an SVG file.");
+    throw createValidationError("unsupported_file");
   }
 
   return {
@@ -23,6 +41,10 @@ export function createSvgDocument(
   originalContent = content,
 ): SvgDocument {
   const svg = parseSvgMarkup(content.trim());
+
+  if (!hasDrawableContent(svg)) {
+    throw createValidationError("empty_svg");
+  }
 
   return {
     filename,

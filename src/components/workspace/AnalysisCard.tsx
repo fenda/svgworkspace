@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { SeverityIcon } from "./FindingsList";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { InlineNotice } from "@/components/ui/inline-notice";
 import { getFixType, isAutomaticFixFinding } from "@/actions/safe-fixes";
 
 function getFixTypeLabel(fixType: ReturnType<typeof getFixType>): string {
@@ -51,9 +52,11 @@ export function AnalysisCard() {
   const {
     document,
     error,
+    optimizationValidation,
     isProcessing,
     applyCurrentSafeFixes,
     applySafeFixForFinding,
+    dismissOptimizationValidation,
   } = useSvgWorkspace();
 
   if (!document) {
@@ -209,7 +212,14 @@ export function AnalysisCard() {
             <p className="text-sm text-emerald-400">No open issues.</p>
           </div>
         )}
-        {error ? (
+        {optimizationValidation ? (
+          <InlineNotice
+            title={optimizationValidation.title}
+            message={optimizationValidation.message}
+            onDismiss={dismissOptimizationValidation}
+            className="mt-2 shrink-0"
+          />
+        ) : error ? (
           <p className="mt-2 shrink-0 text-xs text-amber-400">{error}</p>
         ) : null}
       </div>

@@ -6,6 +6,7 @@ import { removeEmptyGroups } from "./fixes/remove-empty-groups";
 import { removeEmptyPaths } from "./fixes/remove-empty-paths";
 import { removeHiddenElements } from "./fixes/remove-hidden-elements";
 import { removeMetadata } from "./fixes/remove-metadata";
+import { removeUnusedDefs } from "./fixes/remove-unused-defs";
 
 type SafeFix = (svg: SVGSVGElement) => void;
 
@@ -14,6 +15,7 @@ const SAFE_FIXES_BY_FINDING_ID: Record<string, SafeFix> = {
   PERFORMANCE_002: removeComments,
   PERFORMANCE_003: roundDecimals,
   PERFORMANCE_004: removeHiddenElements,
+  PERFORMANCE_005: removeUnusedDefs,
   STRUCTURE_004: removeEmptyGroups,
   STRUCTURE_005: removeEmptyPaths,
 };
@@ -29,6 +31,7 @@ export function applySafeFixes(content: string): string {
     removeMetadata(svg);
     removeComments(svg);
     removeHiddenElements(svg);
+    removeUnusedDefs(svg);
     removeEmptyPaths(svg);
     removeEmptyGroups(svg);
     roundDecimals(svg);

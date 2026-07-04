@@ -28,6 +28,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `fixed-dimensions.svg` | Tests fixed `width` and `height` with an otherwise clean SVG. | `Fixed Width & Height` |
 | `metadata.svg` | Tests `<metadata>` detection. | `Metadata Found` |
 | `comments.svg` | Tests comment detection inside the SVG tree. | `Comments Found` |
+| `unused-defs.svg` | Tests `PERFORMANCE_005` unused definitions while preserving used ones. | `Unused Definitions` |
 | `hardcoded-fill.svg` | Tests hardcoded fill color detection only. | `Hardcoded Fill Colors` |
 | `hardcoded-stroke.svg` | Tests hardcoded stroke color detection only. | `Hardcoded Stroke Colors` |
 | `hardcoded-colors.svg` | Tests both hardcoded fill and stroke colors together. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |

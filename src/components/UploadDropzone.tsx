@@ -3,19 +3,21 @@
 import { useCallback, useId, useRef, useState } from "react";
 import { CloudUpload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { InlineNotice } from "@/components/ui/inline-notice";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 import { cn } from "@/lib/utils";
-
-function isSvgPaste(text: string): boolean {
-  const trimmed = text.trim();
-  return trimmed.startsWith("<svg") || trimmed.includes("<svg");
-}
 
 export function UploadDropzone() {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const { error, isProcessing, loadFromContent, loadFromFile } =
+  const {
+    uploadValidation,
+    isProcessing,
+    loadFromContent,
+    loadFromFile,
+    dismissUploadValidation,
+  } =
     useSvgWorkspace();
 
   const handleFiles = useCallback(
@@ -29,8 +31,13 @@ export function UploadDropzone() {
 
   const handlePaste = useCallback(
     (text: string) => {
-      if (!isSvgPaste(text)) return;
-      loadFromContent(text.trim(), "pasted.svg", "paste");
+      const trimmed = text.trim();
+
+      if (!trimmed) {
+        return;
+      }
+
+      loadFromContent(trimmed, "pasted.svg", "paste");
     },
     [loadFromContent],
   );
@@ -47,10 +54,9 @@ export function UploadDropzone() {
       }}
       onPaste={(event) => {
         const text = event.clipboardData.getData("text");
-        if (isSvgPaste(text)) {
-          event.preventDefault();
-          handlePaste(text);
-        }
+        if (!text.trim()) return;
+        event.preventDefault();
+        handlePaste(text);
       }}
       tabIndex={0}
       className={cn(
@@ -104,10 +110,13 @@ export function UploadDropzone() {
         Paste SVG <span className="font-metric text-zinc-400">⌘V</span>
       </p>
 
-      {error ? (
-        <p className="mt-4 text-xs text-amber-400" role="alert">
-          {error}
-        </p>
+      {uploadValidation ? (
+        <InlineNotice
+          title={uploadValidation.title}
+          message={uploadValidation.message}
+          onDismiss={dismissUploadValidation}
+          className="mt-4 w-full max-w-md"
+        />
       ) : null}
     </div>
   );

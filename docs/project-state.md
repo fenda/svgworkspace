@@ -118,6 +118,9 @@ Destination-specific workflows are intentionally postponed until the optimizatio
 - Prefer one clear primary action.
 - Remove placeholder functionality whenever possible.
 - Prefer simplifying the current experience over exposing unfinished workflows.
+- Explain what happened.
+- Explain how to fix it.
+- Never silently fail.
 
 ---
 
@@ -224,6 +227,26 @@ Consumers decide how to display those findings.
 
 ---
 
+## Upload Validation
+
+SVG Workspace should explain upload problems clearly and inline.
+
+Supported validation states:
+
+- Unsupported file
+- Invalid SVG
+- Invalid pasted content
+- Empty SVG
+- Unexpected error
+
+Upload validation philosophy:
+
+- Explain what happened.
+- Explain how to fix it.
+- Never silently fail.
+
+---
+
 # Current Workspace
 
 Current layout:
@@ -320,10 +343,11 @@ Current rules:
 
 ### Performance
 
-- Metadata Found
-- Comments Found
-- High Decimal Precision
-- Hidden Elements
+- PERFORMANCE_001 — Metadata Found
+- PERFORMANCE_002 — Comments Found
+- PERFORMANCE_003 — High Decimal Precision
+- PERFORMANCE_004 — Hidden Elements
+- PERFORMANCE_005 — Unused Definitions
 
 ### Colors
 
@@ -367,6 +391,7 @@ Safe automatic fixes are implemented for:
 - Remove empty groups
 - Remove empty paths
 - Remove hidden elements
+- PERFORMANCE_005 — Remove unused definitions
 
 The global Apply Safe Fixes action applies all safe automatic fixes and then re-runs analysis.
 
@@ -430,6 +455,7 @@ Current fixtures include:
 - duplicate-ids.svg
 - metadata.svg
 - comments.svg
+- unused-defs.svg
 - empty-groups.svg
 - empty-paths.svg
 - hidden-elements.svg
