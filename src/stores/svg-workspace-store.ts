@@ -85,7 +85,11 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
 
     try {
       const nextContent = applySafeFixes(document.content);
-      const nextDocument = createSvgDocument(document.filename, nextContent);
+      const nextDocument = createSvgDocument(
+        document.filename,
+        nextContent,
+        document.originalContent,
+      );
 
       set({
         document: nextDocument,
@@ -115,7 +119,11 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
 
     try {
       const nextContent = applySafeFixForFinding(document.content, finding);
-      const nextDocument = createSvgDocument(document.filename, nextContent);
+      const nextDocument = createSvgDocument(
+        document.filename,
+        nextContent,
+        document.originalContent,
+      );
 
       set({
         document: nextDocument,

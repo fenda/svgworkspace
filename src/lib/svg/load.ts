@@ -17,11 +17,16 @@ export async function readSvgFile(file: File): Promise<{ filename: string; conte
   };
 }
 
-export function createSvgDocument(filename: string, content: string): SvgDocument {
+export function createSvgDocument(
+  filename: string,
+  content: string,
+  originalContent = content,
+): SvgDocument {
   const svg = parseSvgMarkup(content.trim());
 
   return {
     filename,
+    originalContent,
     content,
     metadata: extractSvgMetadata(svg, content, filename),
     analysis: analyzeSvg(svg),

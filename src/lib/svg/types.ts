@@ -11,6 +11,7 @@ export type SvgMetadata = {
 
 export type SvgDocument = {
   filename: string;
+  originalContent: string;
   content: string;
   metadata: SvgMetadata;
   analysis: AnalysisResult;

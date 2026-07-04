@@ -172,6 +172,18 @@ Below
 
 ---
 
+## Layout
+
+Status
+
+Frozen
+
+Only usability improvements are allowed.
+
+Structural redesigns should happen only when a new workflow requires them.
+
+---
+
 # Implemented Features
 
 ## Upload

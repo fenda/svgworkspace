@@ -119,24 +119,6 @@ export const continueActions = [
   },
 ];
 
-export const footerLinks = {
-  product: [
-    { label: "Features", href: "#" },
-    { label: "Roadmap", href: "#" },
-    { label: "Changelog", href: "#" },
-  ],
-  resources: [
-    { label: "Docs", href: "#" },
-    { label: "Learn", href: "#" },
-    { label: "Examples", href: "#" },
-  ],
-  legal: [
-    { label: "Privacy", href: "#" },
-    { label: "Terms", href: "#" },
-    { label: "License", href: "#" },
-  ],
-};
-
 export const EXAMPLE_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="12" cy="12" r="6" fill="#8B5CF6"/>
   <ellipse cx="12" cy="12" rx="10" ry="3" stroke="#A78BFA" stroke-width="1.5" fill="none" transform="rotate(-20 12 12)"/>

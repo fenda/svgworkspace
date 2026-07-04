@@ -32,6 +32,8 @@ export function Sidebar() {
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActiveRoute(pathname, item.href);
+          const isWorkspace = item.href === "/playground";
+          const isPlanned = !isWorkspace;
 
           return (
             <Link
@@ -41,11 +43,18 @@ export function Sidebar() {
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors duration-150",
                 active
                   ? "bg-indigo-600/20 text-indigo-300"
-                  : "text-zinc-400 hover:bg-white/5 hover:text-zinc-200",
+                  : isPlanned
+                    ? "text-zinc-500 hover:bg-white/[0.03] hover:text-zinc-300"
+                    : "text-zinc-400 hover:bg-white/5 hover:text-zinc-200",
               )}
             >
               <Icon className="size-4 shrink-0" />
               <span className="hidden lg:block">{item.label}</span>
+              {isPlanned ? (
+                <span className="ml-auto hidden rounded-full border border-white/[0.08] bg-white/[0.02] px-1.5 py-0 text-[9px] uppercase tracking-wide text-zinc-600 lg:block">
+                  Soon
+                </span>
+              ) : null}
             </Link>
           );
         })}
@@ -54,9 +63,15 @@ export function Sidebar() {
           <div className="mx-3 border-t border-white/10" />
         </div>
 
+        <div className="hidden px-3 lg:block">
+          <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-700">
+            Coming Soon
+          </p>
+        </div>
+
         {sidebarSections.map((section) => (
-          <div key={section.label} className="space-y-1">
-            <p className="hidden px-3 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-600 lg:block">
+          <div key={section.label} className="space-y-1 opacity-80">
+            <p className="hidden px-3 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-700 lg:block">
               {section.label}
             </p>
             <div className="space-y-1">
@@ -72,7 +87,7 @@ export function Sidebar() {
                       "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-150",
                       active
                         ? "bg-indigo-600/20 text-indigo-300"
-                        : "text-zinc-500 hover:bg-white/5 hover:text-zinc-200",
+                        : "text-zinc-600 hover:bg-white/[0.03] hover:text-zinc-300",
                     )}
                   >
                     <Icon className="size-4 shrink-0" />
