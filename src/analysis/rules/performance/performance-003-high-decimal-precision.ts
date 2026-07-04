@@ -1,6 +1,7 @@
 import type { AnalysisRule } from "@/analysis/models";
 
-const HIGH_PRECISION_NUMBER = /-?\d+\.(\d{5,})\b/;
+export const MAX_DECIMAL_PLACES = 4;
+const HIGH_PRECISION_NUMBER = new RegExp(`-?\\d+\\.(\\d{${MAX_DECIMAL_PLACES + 1},})\\b`);
 
 function hasHighDecimalPrecision(svg: SVGSVGElement): boolean {
   return HIGH_PRECISION_NUMBER.test(svg.outerHTML);

@@ -7,9 +7,32 @@ import { cn } from "@/lib/utils";
 import { SeverityIcon } from "./FindingsList";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { getFixType, isAutomaticFixFinding } from "@/actions/safe-fixes";
+
+function getFixTypeLabel(fixType: ReturnType<typeof getFixType>): string {
+  switch (fixType) {
+    case "auto":
+      return "Auto";
+    case "choice":
+      return "Choice";
+    case "manual":
+      return "Manual";
+  }
+}
+
+function getFixButtonLabel(fixType: ReturnType<typeof getFixType>): string {
+  switch (fixType) {
+    case "auto":
+      return "Fix";
+    case "choice":
+      return "Configure";
+    case "manual":
+      return "Review";
+  }
+}
 
 export function AnalysisCard() {
-  const { document } = useSvgWorkspace();
+  const { document, error, isProcessing, applyCurrentSafeFixes } = useSvgWorkspace();
 
   if (!document) {
     return null;
@@ -17,6 +40,7 @@ export function AnalysisCard() {
 
   const { findings, health } = document.analysis;
   const hasFindings = health.findingCount > 0;
+  const automaticFixCount = findings.filter(isAutomaticFixFinding).length;
   const gradeTone = hasFindings
     ? "text-amber-300"
     : "text-emerald-300";
@@ -63,6 +87,31 @@ export function AnalysisCard() {
             </p>
           </div>
         </div>
+        <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+                Automatic fixes
+              </p>
+              <p className="mt-1 text-sm text-zinc-300">
+                {automaticFixCount} {automaticFixCount === 1 ? "available" : "available"}
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={automaticFixCount === 0 || isProcessing}
+              className="border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
+              onClick={applyCurrentSafeFixes}
+            >
+              Apply Safe Fixes
+            </Button>
+          </div>
+          {error ? (
+            <p className="mt-2 text-xs text-amber-400">{error}</p>
+          ) : null}
+        </div>
         {/* TODO: Potential score intentionally hidden for MVP.
             Reintroduce once automatic actions exist so the score can reflect
             only improvements SVG Workspace can currently apply. */}
@@ -81,13 +130,15 @@ export function AnalysisCard() {
         {hasFindings ? (
           <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
             {findings.map((finding) => (
-              <div
-                key={finding.id}
-                className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3"
-              >
+              <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
                 <div className="flex items-start gap-3">
                   <SeverityIcon severity={finding.severity} />
                   <div className="min-w-0 flex-1">
+                    {(() => {
+                      const fixType = getFixType(finding);
+
+                      return (
+                        <>
                     <p
                       className={cn(
                         "text-sm font-medium",
@@ -105,16 +156,31 @@ export function AnalysisCard() {
                     >
                       {finding.category}
                     </Badge>
+                    <Badge
+                      variant="outline"
+                      className="mt-2 ml-2 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-600"
+                    >
+                      {getFixTypeLabel(fixType)}
+                    </Badge>
+                        </>
+                      );
+                    })()}
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled
-                    className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-500 opacity-100"
-                  >
-                    Review
-                  </Button>
+                  {(() => {
+                    const fixType = getFixType(finding);
+
+                    return (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled
+                        className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-500 opacity-100"
+                      >
+                        {getFixButtonLabel(fixType)}
+                      </Button>
+                    );
+                  })()}
                 </div>
               </div>
             ))}
