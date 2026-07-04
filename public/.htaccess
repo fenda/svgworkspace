@@ -1,0 +1,18 @@
+# Apache / DreamHost compatibility for Next.js static export
+Options -MultiViews
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Prefer trailing slashes to match Next.js `trailingSlash: true` output
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_URI} !(.*)/$
+  RewriteRule ^(.*)$ $1/ [L,R=301]
+
+  # Fallback unknown routes to the exported 404 page
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /404.html [L]
+</IfModule>
