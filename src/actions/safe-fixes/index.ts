@@ -19,6 +19,10 @@ const CHOICE_FIX_IDS = new Set([
 ]);
 
 export function getFixType(finding: Finding): FixType {
+  if (finding.fixType) {
+    return finding.fixType;
+  }
+
   if (AUTOMATIC_FIX_IDS.has(finding.id)) {
     return "auto";
   }

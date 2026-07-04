@@ -385,6 +385,7 @@ Scoring is currently provisional and should be recalibrated after more rules are
 
 Safe automatic fixes are implemented for:
 
+- Remove fixed width and height when a valid viewBox already exists
 - Remove metadata
 - Remove comments
 - Round high-precision numeric values
@@ -450,6 +451,8 @@ Current fixtures include:
 - decorative-role-presentation.svg
 - decorative-role-none.svg
 - decorative-empty-title.svg
+- fixed-dimensions.svg
+- fixed-dimensions-no-viewbox.svg
 - hardcoded-stroke.svg
 - high-precision.svg
 - duplicate-ids.svg
@@ -471,6 +474,8 @@ Current fixtures include:
 good.svg is the canonical regression fixture and should always return:
 
 ✓ No issues detected.
+
+`Fixed Width & Height` is only treated as an automatic fix when a valid `viewBox` already exists.
 
 ---
 

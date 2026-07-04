@@ -1,4 +1,4 @@
-<!-- Fixture: triggers STRUCTURE_002 only. -->
+<!-- Fixture: fixed dimensions with a valid viewBox should be safe to optimize automatically. -->
 <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
   <title>Fixed Dimensions Fixture</title>
   <desc>Fixture for testing fixed width and height detection only.</desc>

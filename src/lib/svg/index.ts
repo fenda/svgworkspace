@@ -7,6 +7,7 @@ export {
   readSvgFile,
 } from "./load";
 export { parseSvgMarkup, serializeSvg } from "./parse";
+export { hasValidViewBox } from "./viewbox";
 export {
   createValidationError,
   createValidationState,

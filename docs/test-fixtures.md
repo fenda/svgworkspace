@@ -25,7 +25,8 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `react-xlink.svg` | Tests xlink attribute detection for React compatibility. | `xlink Attribute` |
 | `react-event-handlers.svg` | Tests inline event handler attribute detection for React compatibility. | `Inline Event Handlers` |
 | `missing-viewbox.svg` | Tests missing `viewBox` plus fixed dimensions. | `Missing viewBox`, `Fixed Width & Height` |
-| `fixed-dimensions.svg` | Tests fixed `width` and `height` with an otherwise clean SVG. | `Fixed Width & Height` |
+| `fixed-dimensions.svg` | Tests fixed `width` and `height` with a valid `viewBox`, so auto removal is safe. | `Fixed Width & Height` |
+| `fixed-dimensions-no-viewbox.svg` | Tests fixed `width` and `height` without a `viewBox`, so no auto fix should be offered. | `Fixed Width & Height` |
 | `metadata.svg` | Tests `<metadata>` detection. | `Metadata Found` |
 | `comments.svg` | Tests comment detection inside the SVG tree. | `Comments Found` |
 | `unused-defs.svg` | Tests `PERFORMANCE_005` unused definitions while preserving used ones. | `Unused Definitions` |
@@ -41,4 +42,6 @@ These fixtures are used for manual testing, demos, regression checks, and future
 
 - `good.svg` intentionally has no header comment so it continues to return no findings.
 - Accessibility and React-specific fixtures include `<title>` and `<desc>` where needed so they keep targeting their intended category coverage.
+- `fixed-dimensions.svg` is safe for automatic width/height removal because the `viewBox` is already valid.
+- `fixed-dimensions-no-viewbox.svg` intentionally remains manual-only because removing dimensions without a `viewBox` could change rendering behavior.
 - Other fixtures may include header comments for human readability; comment detection is based on comments inside the `<svg>` tree.

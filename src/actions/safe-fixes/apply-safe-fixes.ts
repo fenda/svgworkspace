@@ -1,6 +1,7 @@
 import { parseSvgMarkup, serializeSvg } from "@/lib/svg/parse";
 import type { Finding } from "@/analysis";
 import { removeComments } from "./fixes/remove-comments";
+import { removeFixedDimensions } from "./fixes/remove-fixed-dimensions";
 import { roundDecimals } from "./fixes/round-decimals";
 import { removeEmptyGroups } from "./fixes/remove-empty-groups";
 import { removeEmptyPaths } from "./fixes/remove-empty-paths";
@@ -16,6 +17,7 @@ const SAFE_FIXES_BY_FINDING_ID: Record<string, SafeFix> = {
   PERFORMANCE_003: roundDecimals,
   PERFORMANCE_004: removeHiddenElements,
   PERFORMANCE_005: removeUnusedDefs,
+  STRUCTURE_002: removeFixedDimensions,
   STRUCTURE_004: removeEmptyGroups,
   STRUCTURE_005: removeEmptyPaths,
 };
@@ -32,6 +34,7 @@ export function applySafeFixes(content: string): string {
     removeComments(svg);
     removeHiddenElements(svg);
     removeUnusedDefs(svg);
+    removeFixedDimensions(svg);
     removeEmptyPaths(svg);
     removeEmptyGroups(svg);
     roundDecimals(svg);
