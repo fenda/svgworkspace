@@ -52,9 +52,11 @@ Analyze SVG Health
 ↓
 Understand the findings
 ↓
-Apply treatments
+Optimize SVG
 ↓
-Continue Working
+Compare output
+↓
+Export
 ```
 
 ---
@@ -76,6 +78,8 @@ Export
 ```
 
 The Optimization Engine is now the primary focus of the product.
+
+The core optimization workflow is now complete.
 
 ---
 
@@ -256,19 +260,25 @@ This is an intentional product decision.
 - Drag & Drop
 - File picker
 - Paste SVG
-- Example SVG
+
+Example SVGs remain available internally for development, but are intentionally not part of the primary user workflow.
 
 ---
 
 ## Preview
 
 - SVG rendering
-- Preview / SVG source tabs
+- Preview / SVG / Diff tabs
 - Zoom controls
 - Fullscreen
 - Metadata extraction
-- Copy SVG
-- Download SVG
+- Copy formatted SVG
+- Download formatted SVG
+- Original SVG vs current SVG comparison
+
+The current SVG document is the source of truth.
+
+The original uploaded SVG is preserved for comparison.
 
 ---
 
@@ -344,6 +354,39 @@ Manual and Choice issues remain placeholders for future workflows.
 
 ---
 
+## Output Formatting
+
+SVG Workspace formats the current SVG output for inspection and export.
+
+Formatting currently:
+
+- removes excessive blank lines
+- trims whitespace-only text nodes where safe
+- normalizes indentation
+- preserves valid SVG structure
+- preserves rendering
+- preserves `title`
+- preserves `desc`
+- preserves accessibility-related attributes
+
+Formatting is intentionally readable rather than aggressively minified.
+
+---
+
+## Compare Output
+
+Users can compare:
+
+Original SVG
+
+↓
+
+Current optimized SVG
+
+The Diff view is line-based and is intended to explain what changed before export.
+
+---
+
 ## Test Fixtures
 
 Current fixtures include:
@@ -397,7 +440,7 @@ good.svg is the canonical regression fixture and should always return:
 
 ## Phase 1 — SVG Health
 
-Core detection, scoring, safe fixes and export workflow are implemented.
+Core detection, scoring, safe fixes, compare output, and export workflow are implemented.
 
 Continue expanding health coverage deliberately.
 
