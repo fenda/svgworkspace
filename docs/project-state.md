@@ -325,3 +325,19 @@ It is an SVG Health Checker.
 It helps developers understand the quality of their SVGs, improve them, and continue working with confidence.
 
 Everything else is built on top of that idea.
+
+---
+
+## Milestones
+
+### ✅ MVP Milestone 1
+
+Browser-first SVG Health
+
+Completed
+
+- Upload
+- Analysis Engine
+- Health Score
+- Safe Fixes
+- Re-analysis
