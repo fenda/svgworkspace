@@ -44,6 +44,8 @@ function getCategoryLabel(category: SvgHealthCategory): string {
       return "Accessibility";
     case "maintainability":
       return "Maintainability";
+    case "react-ready":
+      return "React Ready";
   }
 }
 

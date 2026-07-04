@@ -233,6 +233,14 @@ Current rules:
 
 - Inline Styles
 
+### React Ready
+
+- class Attribute
+- Kebab-case Attributes
+- Inline Style String
+- xlink Attribute
+- Inline Event Handlers
+
 ---
 
 ## SVG Health
@@ -279,6 +287,10 @@ Current fixtures include:
 - empty-title.svg
 - missing-desc.svg
 - empty-desc.svg
+- decorative-aria-hidden.svg
+- decorative-role-presentation.svg
+- decorative-role-none.svg
+- decorative-empty-title.svg
 - hardcoded-stroke.svg
 - high-precision.svg
 - duplicate-ids.svg
@@ -289,6 +301,12 @@ Current fixtures include:
 - hidden-elements.svg
 - inline-styles.svg
 - illustrator-export.svg
+- react-good.svg
+- react-class-attribute.svg
+- react-kebab-attributes.svg
+- react-inline-style.svg
+- react-xlink.svg
+- react-event-handlers.svg
 
 good.svg is the canonical regression fixture and should always return:
 

@@ -18,6 +18,12 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `decorative-role-presentation.svg` | Tests decorative SVG detection via `role="presentation"`. | `Decorative SVG` |
 | `decorative-role-none.svg` | Tests decorative SVG detection via `role="none"`. | `Decorative SVG` |
 | `decorative-empty-title.svg` | Tests decorative SVG context while still flagging an empty title. | `Decorative SVG`, `Empty Title` |
+| `react-good.svg` | Clean SVG with no React Ready issues. | None |
+| `react-class-attribute.svg` | Tests class attribute detection for JSX compatibility. | `class Attribute` |
+| `react-kebab-attributes.svg` | Tests kebab-case attribute detection for JSX compatibility. | `Kebab-case Attributes` |
+| `react-inline-style.svg` | Tests inline style string detection for JSX compatibility. | `Inline Style String`, `Inline Styles` |
+| `react-xlink.svg` | Tests xlink attribute detection for React compatibility. | `xlink Attribute` |
+| `react-event-handlers.svg` | Tests inline event handler attribute detection for React compatibility. | `Inline Event Handlers` |
 | `missing-viewbox.svg` | Tests missing `viewBox` plus fixed dimensions. | `Missing viewBox`, `Fixed Width & Height` |
 | `fixed-dimensions.svg` | Tests fixed `width` and `height` with an otherwise clean SVG. | `Fixed Width & Height` |
 | `metadata.svg` | Tests `<metadata>` detection. | `Metadata Found` |
@@ -33,5 +39,5 @@ These fixtures are used for manual testing, demos, regression checks, and future
 ## Notes
 
 - `good.svg` intentionally has no header comment so it continues to return no findings.
-- Legacy non-accessibility fixtures now include `<title>` and `<desc>` where needed so they keep targeting their original rule coverage.
+- Accessibility and React-specific fixtures include `<title>` and `<desc>` where needed so they keep targeting their intended category coverage.
 - Other fixtures may include header comments for human readability; comment detection is based on comments inside the `<svg>` tree.

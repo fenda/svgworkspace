@@ -1,0 +1,7 @@
+<!-- Fixture: tests class attribute detection for JSX compatibility. -->
+<!-- Expected findings: class Attribute -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>React Class Fixture</title>
+  <desc>Fixture for testing class attribute detection only.</desc>
+  <circle cx="12" cy="12" r="8" class="icon-shape" stroke="currentColor"/>
+</svg>

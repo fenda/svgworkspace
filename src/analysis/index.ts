@@ -6,4 +6,6 @@ export type {
   FindingCategory,
   Severity,
   SvgHealth,
+  SvgHealthCategory,
+  SvgHealthCategoryScore,
 } from "./models";

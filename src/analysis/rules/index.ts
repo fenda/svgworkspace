@@ -10,6 +10,11 @@ import { performance001MetadataFound } from "./performance/performance-001-metad
 import { performance002CommentsFound } from "./performance/performance-002-comments-found";
 import { performance003HighDecimalPrecision } from "./performance/performance-003-high-decimal-precision";
 import { performance004HiddenElements } from "./performance/performance-004-hidden-elements";
+import { react001ClassAttribute } from "./react-ready/react-001-class-attribute";
+import { react002KebabCaseAttributes } from "./react-ready/react-002-kebab-case-attributes";
+import { react003InlineStyleString } from "./react-ready/react-003-inline-style-string";
+import { react004XlinkAttribute } from "./react-ready/react-004-xlink-attribute";
+import { react005InlineEventHandlers } from "./react-ready/react-005-inline-event-handlers";
 import { structure001MissingViewBox } from "./structure/structure-001-missing-viewbox";
 import { structure002FixedWidthHeight } from "./structure/structure-002-fixed-width-height";
 import { structure003DuplicateIds } from "./structure/structure-003-duplicate-ids";
@@ -35,4 +40,9 @@ export const analysisRules: AnalysisRule[] = [
   accessibility004EmptyDesc,
   accessibility005DecorativeSvg,
   maintainability001InlineStyles,
+  react001ClassAttribute,
+  react002KebabCaseAttributes,
+  react003InlineStyleString,
+  react004XlinkAttribute,
+  react005InlineEventHandlers,
 ];

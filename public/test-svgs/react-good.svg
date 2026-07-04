@@ -1,0 +1,7 @@
+<!-- Fixture: tests a clean SVG with no React Ready issues. -->
+<!-- Expected findings: None -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>React Good Fixture</title>
+  <desc>Fixture for testing React Ready success cases.</desc>
+  <circle cx="12" cy="12" r="8" stroke="currentColor"/>
+</svg>

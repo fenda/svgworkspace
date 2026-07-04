@@ -6,6 +6,7 @@ export type FindingCategory =
   | "colors"
   | "accessibility"
   | "maintainability"
+  | "react-ready"
   | "compatibility";
 
 export type Finding = {

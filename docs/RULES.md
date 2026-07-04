@@ -94,7 +94,7 @@ Current categories:
 - Colors
 - Maintainability
 - Accessibility
-- React Ready (planned)
+- React Ready
 
 Categories are responsible for:
 

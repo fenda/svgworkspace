@@ -1,0 +1,10 @@
+<!-- Fixture: tests xlink attribute detection for React compatibility. -->
+<!-- Expected findings: xlink Attribute -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none">
+  <title>React xlink Fixture</title>
+  <desc>Fixture for testing xlink attribute detection only.</desc>
+  <defs>
+    <circle id="shape" cx="12" cy="12" r="8" />
+  </defs>
+  <use xlink:href="#shape" stroke="currentColor" />
+</svg>

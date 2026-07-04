@@ -5,7 +5,7 @@ function getStyleValue(style: string, property: string): string | null {
   return match?.[1]?.trim() ?? null;
 }
 
-function isOpacityZero(value: string | null): boolean {
+function isOpacityZero(value: string | null | undefined): boolean {
   if (!value) {
     return false;
   }

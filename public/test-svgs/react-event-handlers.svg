@@ -1,0 +1,7 @@
+<!-- Fixture: tests inline event handler detection for React compatibility. -->
+<!-- Expected findings: Inline Event Handlers -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>React Event Handler Fixture</title>
+  <desc>Fixture for testing inline SVG event handler attributes.</desc>
+  <circle cx="12" cy="12" r="8" stroke="currentColor" onclick="alert('clicked')" />
+</svg>
