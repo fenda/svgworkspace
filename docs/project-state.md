@@ -381,7 +381,7 @@ Scoring is currently provisional and should be recalibrated after more rules are
 
 ---
 
-## Safe Fixes
+## Safe Fix Engine
 
 Safe automatic fixes are implemented for:
 
@@ -397,7 +397,7 @@ Safe automatic fixes are implemented for:
 
 The user-facing `Optimize SVG` action applies all safe automatic fixes and then re-runs analysis.
 
-Internally, this workflow is still powered by safe fixes.
+Internally, this workflow is powered by the Safe Fix Engine.
 
 Individual Fix buttons are implemented for automatic issues.
 
@@ -500,7 +500,7 @@ good.svg is the canonical regression fixture and should always return:
 
 ## Phase 1 — SVG Health
 
-Core detection, scoring, safe fixes, compare output, and export workflow are implemented.
+Core detection, scoring, Safe Fix Engine improvements, compare output, and export workflow are implemented.
 
 Continue expanding health coverage deliberately.
 
@@ -628,7 +628,7 @@ Completed
 - Upload
 - Analysis Engine
 - Health Score
-- Safe Fixes
+- Optimize SVG
 - Re-analysis
 
 ### ✅ MVP Milestone 2

@@ -40,6 +40,6 @@ Status: Ready for Launch
 ## Ready for Preview
 
 - [ ] Replace Coming Soon page
-- [ ] Add Preview badge
-- [ ] Update README
+- [x] Add Preview badge
+- [x] Update README
 - [ ] Publish Preview

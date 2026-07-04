@@ -9,7 +9,7 @@ Status: Next
 
 ## Optimize SVG Improvements
 
-These improvements continue expanding the safe-fix engine behind the user-facing `Optimize SVG` action.
+These improvements continue expanding the Safe Fix Engine behind the user-facing `Optimize SVG` action.
 
 - [ ] Remove unused defs
 - [ ] Normalize whitespace
