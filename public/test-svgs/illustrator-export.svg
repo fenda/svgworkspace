@@ -1,4 +1,5 @@
-<!-- Fixture: simulates a realistic Adobe Illustrator export for regression testing. -->
+<!-- Fixture: simulates a realistic Adobe Illustrator export before optimization. -->
+<!-- Expected findings: Fixed Width & Height, Metadata Found, Comments Found, High Decimal Precision, Hardcoded Fill Colors, Hardcoded Stroke Colors -->
 <!-- Intentional characteristics: fixed dimensions, metadata, comments, nested groups, generated IDs, -->
 <!-- inline colors, inline styles, decimal precision, transforms, defs, clipPath, title/desc, and xlink. -->
 <svg

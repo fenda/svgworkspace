@@ -1,14 +1,12 @@
 "use client";
 
-import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
-import {
-  getSeverityTextClass,
-} from "@/analysis/display";
+import { getSeverityTextClass } from "@/analysis/display";
 import { cn } from "@/lib/utils";
 import { SeverityIcon } from "./FindingsList";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 export function AnalysisCard() {
   const { document } = useSvgWorkspace();
@@ -17,54 +15,57 @@ export function AnalysisCard() {
     return null;
   }
 
-  const { findings } = document.analysis;
-  const findingCount = findings.length;
-  const hasFindings = findingCount > 0;
+  const { findings, health } = document.analysis;
+  const hasFindings = health.findingCount > 0;
+  const gradeTone = hasFindings
+    ? "text-amber-300"
+    : "text-emerald-300";
+  const progressTone = hasFindings
+    ? "[&_[data-slot=progress-indicator]]:bg-amber-400 [&_[data-slot=progress-track]]:bg-white/[0.06]"
+    : "[&_[data-slot=progress-indicator]]:bg-emerald-400 [&_[data-slot=progress-track]]:bg-white/[0.06]";
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
       <div className="border-b border-white/10 px-4 py-3">
-        <p className="text-sm font-medium text-zinc-200">SVG Grade</p>
+        <p className="text-sm font-medium text-zinc-200">SVG Health</p>
       </div>
 
       <div className="space-y-4 border-b border-white/10 px-4 py-4">
-        <div className="flex items-center gap-3">
-          <div
-            className={cn(
-              "flex size-10 items-center justify-center rounded-lg border",
-              hasFindings
-                ? "border-amber-500/20 bg-amber-500/10 text-amber-400"
-                : "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
-            )}
-          >
-            {hasFindings ? (
-              <AlertCircle className="size-5" />
-            ) : (
-              <CheckCircle2 className="size-5" />
-            )}
-          </div>
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <p
-              className={cn(
-                "text-lg font-semibold",
-                hasFindings ? "text-amber-300" : "text-emerald-300",
-              )}
-            >
-              {hasFindings ? "Incomplete" : "Ready"}
+            <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+              Grade
             </p>
-            <p className="text-sm text-zinc-400">
-              {hasFindings
-                ? `${findingCount} ${findingCount === 1 ? "finding" : "findings"} found`
-                : "No issues detected."}
+            <p className={cn("mt-1 text-3xl font-semibold tracking-tight", gradeTone)}>
+              {health.grade}
             </p>
+          </div>
+          <div className="text-right">
+            <p className="font-metric text-2xl font-semibold text-zinc-100">
+              {health.score}
+              <span className="ml-1 text-sm font-normal text-zinc-500">/ 100</span>
+            </p>
+            <p className="mt-1 text-xs text-zinc-500">Based on current MVP checks</p>
           </div>
         </div>
 
-        <p className="text-sm leading-6 text-zinc-500">
-          {hasFindings
-            ? "Complete the recommended improvements to calculate a production-ready grade."
-            : "This SVG passed the current MVP checks."}
-        </p>
+        <Progress value={health.score} className={progressTone} />
+
+        <div className="flex flex-wrap items-start justify-between gap-3 text-sm">
+          <div>
+            <p className="text-zinc-300">
+              {hasFindings
+                ? `${health.findingCount} ${health.findingCount === 1 ? "Issue" : "Issues"} Found`
+                : "No issues detected."}
+            </p>
+            <p className="mt-1 text-xs text-zinc-500">
+              {health.checkCount} {health.checkCount === 1 ? "Health Check" : "Health Checks"}
+            </p>
+          </div>
+        </div>
+        {/* TODO: Potential score intentionally hidden for MVP.
+            Reintroduce once automatic actions exist so the score can reflect
+            only improvements SVG Workspace can currently apply. */}
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col px-4 py-4">

@@ -1,3 +1,4 @@
+import { calculateSvgHealth } from "@/analysis/score";
 import type { AnalysisResult } from "@/analysis/models";
 import { analysisRules } from "@/analysis/rules";
 
@@ -6,5 +7,8 @@ export function runAnalysis(svg: SVGSVGElement): AnalysisResult {
     .map((rule) => rule.analyze(svg))
     .filter((finding) => finding !== null);
 
-  return { findings };
+  return {
+    findings,
+    health: calculateSvgHealth(findings, analysisRules.length),
+  };
 }

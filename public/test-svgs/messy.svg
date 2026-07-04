@@ -1,4 +1,5 @@
-<!-- Regression fixture: intentionally contains common SVG issues. -->
+<!-- Fixture: realistic bad SVG with multiple structural, performance, maintainability, and color issues. -->
+<!-- Expected findings: Missing viewBox, Fixed Width & Height, Empty Groups, Empty Paths, Metadata Found, Comments Found, High Decimal Precision, Hidden Elements, Hardcoded Fill Colors, Hardcoded Stroke Colors, Inline Styles -->
 
 <svg
   width="24"
@@ -15,6 +16,10 @@
     </clipPath>
   </defs>
 
+  <g />
+  <path d="" />
+  <rect x="1" y="1" width="4" height="4" display="none" />
+
   <g id="Layer_1" transform="translate(0.000000,0.000000)">
     <circle
       cx="12.000000"
@@ -23,6 +28,7 @@
       fill="#22c55e"
       stroke="#166534"
       stroke-width="1.500000"
+      style="opacity:0"
       clip-path="url(#clip0)"
     />
   </g>

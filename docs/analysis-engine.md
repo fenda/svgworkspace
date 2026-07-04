@@ -296,6 +296,19 @@ These are not part of the MVP.
 
 ---
 
+## Scoring
+
+- Revisit SVG Health scoring once we have more analysis rules.
+- Current scores are too generous because SVGs rarely fall below B / ~81.
+- Options:
+  - Increase score impact for critical rules.
+  - Add severity weighting.
+  - Add more high-value rules before finalizing grade bands.
+  - Consider category scores before overall score.
+- Do not tune scoring too early. Wait until we have ~15–20 rules.
+
+---
+
 # Product Philosophy
 
 SVG Workspace does not begin with conversion.

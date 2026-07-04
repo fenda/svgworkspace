@@ -1,8 +1,7 @@
 import type { AnalysisRule } from "@/analysis/models";
 
 function hasComments(svg: SVGSVGElement): boolean {
-  const document = svg.ownerDocument;
-  const walker = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT);
+  const walker = svg.ownerDocument.createTreeWalker(svg, NodeFilter.SHOW_COMMENT);
 
   return walker.nextNode() !== null;
 }
