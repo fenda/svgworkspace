@@ -14,6 +14,10 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `empty-title.svg` | Tests empty `<title>` detection only. | `Empty Title` |
 | `missing-desc.svg` | Tests missing `<desc>` detection only. | `Missing Description` |
 | `empty-desc.svg` | Tests empty `<desc>` detection only. | `Empty Description` |
+| `decorative-aria-hidden.svg` | Tests decorative SVG detection via `aria-hidden="true"`. | `Decorative SVG` |
+| `decorative-role-presentation.svg` | Tests decorative SVG detection via `role="presentation"`. | `Decorative SVG` |
+| `decorative-role-none.svg` | Tests decorative SVG detection via `role="none"`. | `Decorative SVG` |
+| `decorative-empty-title.svg` | Tests decorative SVG context while still flagging an empty title. | `Decorative SVG`, `Empty Title` |
 | `missing-viewbox.svg` | Tests missing `viewBox` plus fixed dimensions. | `Missing viewBox`, `Fixed Width & Height` |
 | `fixed-dimensions.svg` | Tests fixed `width` and `height` with an otherwise clean SVG. | `Fixed Width & Height` |
 | `metadata.svg` | Tests `<metadata>` detection. | `Metadata Found` |

@@ -2,7 +2,7 @@
 
 Status
 
-Implemented in v0.2.1
+Implemented in v0.2.2
 
 ---
 
@@ -24,12 +24,12 @@ SVG Workspace should provide guidance rather than absolute pass/fail judgments w
 | ACCESSIBILITY_002 | Empty Title | Warning | Manual |
 | ACCESSIBILITY_003 | Missing Description | Info | Manual |
 | ACCESSIBILITY_004 | Empty Description | Info | Manual |
+| ACCESSIBILITY_005 | Decorative SVG | Info | Manual |
 
 ---
 
 ## Planned Rules
 
-- ACCESSIBILITY_005 Decorative SVG Detection
 - ACCESSIBILITY_006 Missing Role
 - ACCESSIBILITY_007 Missing aria-labelledby
 - ACCESSIBILITY_008 Missing aria-describedby
@@ -54,5 +54,7 @@ For example:
 
 - A decorative icon may intentionally omit `<title>`.
 - A chart almost certainly requires both `<title>` and `<desc>`.
+- Decorative SVGs can intentionally omit `<title>` and `<desc>` when they are explicitly hidden from assistive technologies.
+- Meaningful SVGs should provide an accessible title, and sometimes a description depending on complexity.
 
 SVG Workspace should avoid making absolute recommendations when user intent cannot be determined.

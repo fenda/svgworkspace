@@ -227,6 +227,7 @@ Current rules:
 - Empty Title
 - Missing Description
 - Empty Description
+- Decorative SVG
 
 ### Maintainability
 

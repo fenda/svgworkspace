@@ -1,5 +1,5 @@
 import type { AnalysisRule } from "@/analysis/models";
-import { hasElement } from "./shared";
+import { hasElement, isDecorativeSvg } from "./shared";
 
 export const accessibility003MissingDesc: AnalysisRule = {
   id: "ACCESSIBILITY_003",
@@ -13,7 +13,7 @@ export const accessibility003MissingDesc: AnalysisRule = {
   introducedIn: "0.2.1",
   status: "implemented",
   analyze(svg) {
-    if (hasElement(svg, "desc")) {
+    if (isDecorativeSvg(svg) || hasElement(svg, "desc")) {
       return null;
     }
 

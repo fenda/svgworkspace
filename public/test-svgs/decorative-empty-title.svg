@@ -1,0 +1,6 @@
+<!-- Fixture: tests decorative SVG detection with an empty title. -->
+<!-- Expected findings: Decorative SVG, Empty Title -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
+  <title>   </title>
+  <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/>
+</svg>
