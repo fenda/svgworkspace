@@ -8,7 +8,7 @@ Instead of jumping between multiple websites, upload an SVG once and discover ev
 
 ---
 
-## ✨ Features
+## Features
 
 ### Analyze
 
@@ -42,7 +42,7 @@ Instead of jumping between multiple websites, upload an SVG once and discover ev
 
 ---
 
-## 🚀 Principles
+## Principles
 
 - Browser-first
 - Files never leave your computer
@@ -53,7 +53,7 @@ Instead of jumping between multiple websites, upload an SVG once and discover ev
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - Next.js
 - React 19
@@ -66,7 +66,7 @@ Instead of jumping between multiple websites, upload an SVG once and discover ev
 
 ---
 
-## 🗺 Roadmap
+## Roadmap
 
 ### MVP
 
@@ -86,7 +86,7 @@ Instead of jumping between multiple websites, upload an SVG once and discover ev
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, ideas and feedback are welcome.
 
@@ -94,6 +94,6 @@ If you'd like to help improve SVG Workspace, feel free to open an issue or submi
 
 ---
 
-## 📄 License
+## License
 
 MIT
