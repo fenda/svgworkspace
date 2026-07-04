@@ -59,6 +59,56 @@ Continue Working
 
 ---
 
+## Current Focus
+
+SVG Workspace currently prioritizes:
+
+```
+Upload
+↓
+Analyze
+↓
+Optimize
+↓
+Compare
+↓
+Export
+```
+
+The Optimization Engine is now the primary focus of the product.
+
+---
+
+## Product Priorities
+
+Current priority:
+
+- Optimization Engine
+
+Future priorities:
+
+- Icon Workspace
+- Sprite Builder
+- Continue Working
+- React
+- Vue
+- HTML
+- Batch Processing
+
+Destination-specific workflows are intentionally postponed until the optimization workflow is mature.
+
+---
+
+## UX Principles
+
+- Prioritize the user's own SVG over demo content.
+- Reduce unnecessary UI.
+- Prefer one clear primary action.
+- Remove placeholder functionality whenever possible.
+- Prefer simplifying the current experience over exposing unfinished workflows.
+
+---
+
 # Product Philosophy
 
 ## Browser First
@@ -92,7 +142,8 @@ The application should naturally guide users through:
 1. Upload SVG
 2. Health Assessment
 3. Fix Issues
-4. Continue Working
+4. Compare Output
+5. Export
 
 ---
 
@@ -181,6 +232,20 @@ Frozen
 Only usability improvements are allowed.
 
 Structural redesigns should happen only when a new workflow requires them.
+
+---
+
+## Platform Strategy
+
+SVG Workspace is desktop-first.
+
+The optimization workflow is designed for desktop browsers.
+
+Tablet support is progressive.
+
+On mobile devices (`<768px`), the desktop workspace is replaced with a lightweight landing page explaining the project and encouraging users to continue on desktop.
+
+This is an intentional product decision.
 
 ---
 
@@ -509,3 +574,38 @@ Copy or Download SVG
 ```
 
 This is the first complete usable SVG Workspace workflow.
+
+---
+
+# Product Direction
+
+## Current Focus
+
+SVG Workspace is currently focused on delivering the best possible single-SVG optimization workflow.
+
+Priority:
+
+Upload
+→ Analyze
+→ Optimize
+→ Compare
+→ Export
+
+This workflow takes precedence over destination-specific workflows such as React or Vue.
+
+## Future Workflows
+
+These workflows remain part of the long-term vision but are intentionally postponed until the optimization engine is mature.
+
+- React
+- Vue
+- HTML
+- Sprite Builder
+- Batch Processing
+
+## UX Principles
+
+- Prioritize the user's own SVG over demo content.
+- Reduce unnecessary UI and helper text.
+- Prefer one clear primary action over multiple competing actions.
+- Remove placeholder functionality from the primary workflow whenever possible.

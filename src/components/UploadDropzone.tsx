@@ -15,7 +15,7 @@ export function UploadDropzone() {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const { error, isProcessing, loadFromContent, loadFromFile, loadExample } =
+  const { error, isProcessing, loadFromContent, loadFromFile } =
     useSvgWorkspace();
 
   const handleFiles = useCallback(
@@ -86,7 +86,7 @@ export function UploadDropzone() {
         Drop your SVG here
       </p>
       <p className="mb-4 text-xs text-zinc-500">
-        or browse, paste or explore an example
+        or browse files or paste SVG
       </p>
 
       <div className="flex flex-wrap items-center justify-center gap-3">
@@ -97,15 +97,6 @@ export function UploadDropzone() {
           onClick={() => inputRef.current?.click()}
         >
           Browse Files
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          disabled={isProcessing}
-          className="border-white/10 bg-transparent text-zinc-300 transition-all duration-150 hover:border-white/20 hover:bg-white/5"
-          onClick={loadExample}
-        >
-          ✨ Explore an Example
         </Button>
       </div>
 
