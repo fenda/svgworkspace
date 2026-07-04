@@ -31,6 +31,34 @@ The optimizer, converter and other tools are treatments that follow the health a
 
 ---
 
+# Product Principles
+
+SVG Workspace is:
+
+- Browser-first
+- Privacy-first
+- Health-first
+- Rule-driven
+- Modular
+
+Every new feature should strengthen one or more of these principles.
+
+Core workflow:
+
+```
+Upload SVG
+↓
+Analyze SVG Health
+↓
+Understand the findings
+↓
+Apply treatments
+↓
+Continue Working
+```
+
+---
+
 # Product Philosophy
 
 ## Browser First
@@ -158,9 +186,12 @@ Below
 ## Preview
 
 - SVG rendering
+- Preview / SVG source tabs
 - Zoom controls
 - Fullscreen
 - Metadata extraction
+- Copy SVG
+- Download SVG
 
 ---
 
@@ -175,17 +206,63 @@ Current rules:
 - Missing viewBox
 - Fixed Width & Height
 - Duplicate IDs
+- Empty Groups
+- Empty Paths
 
 ### Performance
 
 - Metadata Found
 - Comments Found
 - High Decimal Precision
+- Hidden Elements
 
 ### Colors
 
 - Hardcoded Fill Colors
 - Hardcoded Stroke Colors
+
+### Accessibility
+
+- Missing Title
+- Empty Title
+- Missing Description
+- Empty Description
+
+### Maintainability
+
+- Inline Styles
+
+---
+
+## SVG Health
+
+- Provisional health score
+- Letter grade
+- Progress bar
+- Issue count
+- Health check count
+- Auto / Manual / Choice issue classification
+
+Scoring is currently provisional and should be recalibrated after more rules are added.
+
+---
+
+## Safe Fixes
+
+Safe automatic fixes are implemented for:
+
+- Remove metadata
+- Remove comments
+- Round high-precision numeric values
+- Remove empty groups
+- Remove empty paths
+- Remove hidden elements
+
+The global Apply Safe Fixes action applies all safe automatic fixes and then re-runs analysis.
+
+Individual Fix buttons are implemented for automatic issues.
+
+Manual and Choice issues remain placeholders for future workflows.
 
 ---
 
@@ -196,9 +273,20 @@ Current fixtures include:
 - good.svg
 - messy.svg
 - hardcoded-fill.svg
+- accessibility-good.svg
+- missing-title.svg
+- empty-title.svg
+- missing-desc.svg
+- empty-desc.svg
 - hardcoded-stroke.svg
 - high-precision.svg
 - duplicate-ids.svg
+- metadata.svg
+- comments.svg
+- empty-groups.svg
+- empty-paths.svg
+- hidden-elements.svg
+- inline-styles.svg
 - illustrator-export.svg
 
 good.svg is the canonical regression fixture and should always return:
@@ -221,17 +309,9 @@ good.svg is the canonical regression fixture and should always return:
 
 ## Phase 1 — SVG Health
 
-Focus on detection.
+Core detection, scoring, safe fixes and export workflow are implemented.
 
-Continue adding analysis rules.
-
-Potential categories:
-
-- Structure
-- Performance
-- Colors
-- Accessibility
-- React Readiness
+Continue expanding health coverage deliberately.
 
 ---
 
@@ -239,24 +319,35 @@ Potential categories:
 
 Actions become available based on findings.
 
-Examples:
+Implemented:
 
-- Optimize SVG
+- Apply Safe Fixes
+- Individual Fix buttons for automatic issues
+
+Future:
+
 - Replace Colors
 - Fix Dimensions
 - Convert to currentColor
+- Manual review flows
+- Configurable Choice flows
 
 ---
 
 ## Phase 3 — Continue Working
 
-Implement production tools:
+Implemented:
+
+- SVG source view
+- Copy SVG
+- Download SVG
+
+Future:
 
 - React
 - Vue
 - HTML
 - Sprite
-- Download
 
 ---
 
@@ -274,12 +365,15 @@ Potential additions:
 
 # Current Priorities
 
-1. Expand analysis coverage.
-2. Implement SVG Health scoring.
-3. Build Optimize SVG action.
-4. Connect actions directly to findings.
-5. Add before/after comparison.
-6. Add undo support.
+1. Validate the current v0.1 workflow with real SVGs.
+2. Recalibrate SVG Health scoring after more rules are added.
+3. Expand accessibility health coverage.
+4. Add React readiness checks.
+5. Add React Ready health checks.
+6. Improve SVG source formatting.
+7. Add before/after comparison.
+8. Add undo support.
+9. Build configurable Choice actions, starting with Replace Colors.
 
 ---
 
@@ -341,3 +435,50 @@ Completed
 - Health Score
 - Safe Fixes
 - Re-analysis
+
+### ✅ MVP Milestone 2
+
+Ready to Export
+
+Completed
+
+- Preview / SVG tabs
+- SVG source viewer
+- Copy SVG
+- Download SVG
+- Export current optimized SVG state
+
+### ✅ MVP Milestone 3
+
+Individual Fixes
+
+Completed
+
+- Auto issue Fix buttons
+- Single-finding safe fix flow
+- Re-analysis after individual fixes
+- Manual and Choice actions remain placeholders
+
+---
+
+# Current v0.1 Workflow
+
+The current working product loop is:
+
+```
+Upload SVG
+↓
+Analyze SVG Health
+↓
+Review Issues
+↓
+Apply Safe Fixes or individual automatic fixes
+↓
+Re-analyze
+↓
+Inspect SVG source
+↓
+Copy or Download SVG
+```
+
+This is the first complete usable SVG Workspace workflow.

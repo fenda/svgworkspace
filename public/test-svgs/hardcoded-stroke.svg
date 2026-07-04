@@ -1,5 +1,7 @@
 <!-- Fixture: tests hardcoded stroke color detection without unrelated findings. -->
 <!-- Expected findings: Hardcoded Stroke Colors -->
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>Hardcoded Stroke Fixture</title>
+  <desc>Fixture for testing hardcoded stroke color detection only.</desc>
   <rect x="5" y="5" width="14" height="14" stroke="#ef4444" stroke-width="2"/>
 </svg>

@@ -1,6 +1,8 @@
 <!-- Fixture: tests empty group detection without unrelated findings. -->
 <!-- Expected findings: Empty Groups -->
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>Empty Group Fixture</title>
+  <desc>Fixture for testing empty group detection only.</desc>
   <g />
   <circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="2"/>
 </svg>

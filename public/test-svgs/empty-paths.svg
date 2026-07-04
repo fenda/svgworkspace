@@ -1,6 +1,8 @@
 <!-- Fixture: tests empty path detection without unrelated findings. -->
 <!-- Expected findings: Empty Paths -->
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>Empty Path Fixture</title>
+  <desc>Fixture for testing empty path detection only.</desc>
   <path d="" />
   <circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="2"/>
 </svg>

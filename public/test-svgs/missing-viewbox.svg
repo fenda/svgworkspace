@@ -1,4 +1,6 @@
 <!-- Fixture: triggers STRUCTURE_001 and STRUCTURE_002. -->
 <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>Missing ViewBox Fixture</title>
+  <desc>Fixture for testing missing viewBox detection.</desc>
   <rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="2"/>
 </svg>

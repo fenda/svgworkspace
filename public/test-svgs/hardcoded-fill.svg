@@ -1,5 +1,7 @@
 <!-- Fixture: tests hardcoded fill color detection without unrelated findings. -->
 <!-- Expected findings: Hardcoded Fill Colors -->
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <title>Hardcoded Fill Fixture</title>
+  <desc>Fixture for testing hardcoded fill color detection only.</desc>
   <circle cx="12" cy="12" r="7" fill="#0ea5e9"/>
 </svg>

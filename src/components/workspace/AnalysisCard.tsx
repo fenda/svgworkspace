@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 import { getSeverityTextClass } from "@/analysis/display";
+import type { SvgHealthCategory } from "@/analysis";
 import { cn } from "@/lib/utils";
 import { SeverityIcon } from "./FindingsList";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,21 @@ function getFixButtonLabel(fixType: ReturnType<typeof getFixType>): string {
       return "Configure";
     case "manual":
       return "Review";
+  }
+}
+
+function getCategoryLabel(category: SvgHealthCategory): string {
+  switch (category) {
+    case "structure":
+      return "Structure";
+    case "performance":
+      return "Performance";
+    case "colors":
+      return "Colors";
+    case "accessibility":
+      return "Accessibility";
+    case "maintainability":
+      return "Maintainability";
   }
 }
 
@@ -85,6 +101,29 @@ export function AnalysisCard() {
           <span className="mx-1.5 text-zinc-600">/</span>
           {health.checkCount} {health.checkCount === 1 ? "Health Check" : "Health Checks"}
         </p>
+
+        <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
+          <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+            Health Areas
+          </p>
+          <div className="mt-2 space-y-2">
+            {health.categoryScores.map(({ category, score }) => (
+              <div key={category} className="grid grid-cols-[minmax(0,1fr)_36px] items-center gap-x-3 gap-y-1">
+                <p className="truncate text-xs text-zinc-300">
+                  {getCategoryLabel(category)}
+                </p>
+                <p className="text-right font-metric text-xs text-zinc-400">
+                  {score}
+                </p>
+                <Progress
+                  value={score}
+                  className="col-span-2 [&_[data-slot=progress-indicator]]:bg-white/60 [&_[data-slot=progress-track]]:bg-white/[0.06]"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -132,50 +171,50 @@ export function AnalysisCard() {
               const isAutoFix = fixType === "auto";
 
               return (
-              <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
-                <div className="flex items-start gap-3">
-                  <SeverityIcon severity={finding.severity} />
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className={cn(
-                        "text-sm font-medium",
-                        getSeverityTextClass(finding.severity),
-                      )}
-                    >
-                      {finding.title}
-                    </p>
-                    <p className="mt-0.5 text-xs leading-5 text-zinc-500">
-                      {finding.description}
-                    </p>
-                    <Badge
+                <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
+                  <div className="flex items-start gap-3">
+                    <SeverityIcon severity={finding.severity} />
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className={cn(
+                          "text-sm font-medium",
+                          getSeverityTextClass(finding.severity),
+                        )}
+                      >
+                        {finding.title}
+                      </p>
+                      <p className="mt-0.5 text-xs leading-5 text-zinc-500">
+                        {finding.description}
+                      </p>
+                      <Badge
+                        variant="outline"
+                        className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal capitalize text-zinc-600"
+                      >
+                        {finding.category}
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className="mt-1.5 ml-2 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-600"
+                      >
+                        {getFixTypeLabel(fixType)}
+                      </Badge>
+                    </div>
+                    <Button
+                      type="button"
                       variant="outline"
-                      className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal capitalize text-zinc-600"
+                      size="sm"
+                      disabled={!isAutoFix || isProcessing}
+                      className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-500 opacity-100"
+                      onClick={() => {
+                        if (isAutoFix) {
+                          applySafeFixForFinding(finding);
+                        }
+                      }}
                     >
-                      {finding.category}
-                    </Badge>
-                    <Badge
-                      variant="outline"
-                      className="mt-1.5 ml-2 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-600"
-                    >
-                      {getFixTypeLabel(fixType)}
-                    </Badge>
+                      {getFixButtonLabel(fixType)}
+                    </Button>
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={!isAutoFix || isProcessing}
-                    className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-500 opacity-100"
-                    onClick={() => {
-                      if (isAutoFix) {
-                        applySafeFixForFinding(finding);
-                      }
-                    }}
-                  >
-                    {getFixButtonLabel(fixType)}
-                  </Button>
                 </div>
-              </div>
               );
             })}
           </div>

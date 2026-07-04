@@ -1,5 +1,6 @@
+<!-- Fixture: tests missing description detection only. -->
+<!-- Expected findings: Missing Description -->
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
-  <title>Good SVG Fixture</title>
-  <desc>Clean production-ready SVG fixture with no health issues.</desc>
+  <title>Missing Description Fixture</title>
   <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/>
 </svg>

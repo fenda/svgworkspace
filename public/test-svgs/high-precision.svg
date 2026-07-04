@@ -1,6 +1,8 @@
 <!-- Fixture: tests excessive decimal precision without unrelated findings. -->
 <!-- Expected findings: High Decimal Precision -->
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>High Precision Fixture</title>
+  <desc>Fixture for testing excessive decimal precision detection only.</desc>
   <path
     d="M3.12345 12.00000C6.543219 6.111119 10.987654 4.222229 20.87654 8.765439"
     stroke="currentColor"

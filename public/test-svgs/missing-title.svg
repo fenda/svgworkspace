@@ -1,0 +1,6 @@
+<!-- Fixture: tests missing title detection only. -->
+<!-- Expected findings: Missing Title -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <desc>Fixture for testing missing title detection only.</desc>
+  <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/>
+</svg>

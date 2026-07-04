@@ -1,6 +1,8 @@
 <!-- Fixture: tests hidden element detection with attribute-based and style-based hiding. -->
 <!-- Expected findings: Hidden Elements, Inline Styles -->
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>Hidden Elements Fixture</title>
+  <desc>Fixture for testing hidden element detection.</desc>
   <rect x="4" y="4" width="6" height="6" display="none" />
   <circle cx="16" cy="8" r="3" style="visibility:hidden" />
   <path d="M5 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>

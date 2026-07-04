@@ -1,0 +1,30 @@
+import type { AnalysisRule } from "@/analysis/models";
+import { hasElement } from "./shared";
+
+export const accessibility003MissingDesc: AnalysisRule = {
+  id: "ACCESSIBILITY_003",
+  category: "accessibility",
+  title: "Missing Description",
+  description:
+    "Consider providing a description for complex or meaningful SVGs.",
+  severity: "info",
+  scoreImpact: 2,
+  fixType: "manual",
+  introducedIn: "0.2.1",
+  status: "implemented",
+  analyze(svg) {
+    if (hasElement(svg, "desc")) {
+      return null;
+    }
+
+    return {
+      id: accessibility003MissingDesc.id,
+      category: accessibility003MissingDesc.category,
+      severity: accessibility003MissingDesc.severity ?? "info",
+      title: accessibility003MissingDesc.title ?? "Missing Description",
+      description: accessibility003MissingDesc.description ?? "",
+      recommendation: "Add a <desc> element when the SVG benefits from extra context.",
+      scoreImpact: accessibility003MissingDesc.scoreImpact ?? 0,
+    };
+  },
+};

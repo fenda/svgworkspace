@@ -1,5 +1,7 @@
 <!-- Fixture: triggers PERFORMANCE_001 only. -->
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <title>Metadata Fixture</title>
+  <desc>Fixture for testing metadata detection only.</desc>
   <metadata>Fixture metadata for analysis testing.</metadata>
   <circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="2"/>
 </svg>

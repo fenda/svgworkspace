@@ -1,3 +1,7 @@
+import { accessibility001MissingTitle } from "./accessibility/accessibility-001-missing-title";
+import { accessibility002EmptyTitle } from "./accessibility/accessibility-002-empty-title";
+import { accessibility003MissingDesc } from "./accessibility/accessibility-003-missing-desc";
+import { accessibility004EmptyDesc } from "./accessibility/accessibility-004-empty-desc";
 import { colors001HardcodedFillColors } from "./colors/colors-001-hardcoded-fill-colors";
 import { colors002HardcodedStrokeColors } from "./colors/colors-002-hardcoded-stroke-colors";
 import { maintainability001InlineStyles } from "./maintainability/maintainability-001-inline-styles";
@@ -24,5 +28,9 @@ export const analysisRules: AnalysisRule[] = [
   performance004HiddenElements,
   colors001HardcodedFillColors,
   colors002HardcodedStrokeColors,
+  accessibility001MissingTitle,
+  accessibility002EmptyTitle,
+  accessibility003MissingDesc,
+  accessibility004EmptyDesc,
   maintainability001InlineStyles,
 ];
