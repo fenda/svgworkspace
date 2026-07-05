@@ -63,7 +63,10 @@ Workspace actions should use this product language:
 - `Review`: findings that require user judgment
 - `Transform`: intent-dependent actions with more than one valid outcome
 
-`Generate ViewBox` is the first Transform action in the Workspace.
+Transform actions currently include:
+
+- `Generate ViewBox`
+- `Use currentColor` for eligible direct hardcoded `fill` or `stroke` attributes
 
 ---
 

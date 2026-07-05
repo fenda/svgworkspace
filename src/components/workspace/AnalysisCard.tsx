@@ -30,7 +30,15 @@ function getFixButtonLabel(
     case "auto":
       return "Fix";
     case "choice":
-      return findingId === "STRUCTURE_001" ? "Generate ViewBox" : "Configure";
+      switch (findingId) {
+        case "STRUCTURE_001":
+          return "Generate ViewBox";
+        case "COLORS_001":
+        case "COLORS_002":
+          return "Use currentColor";
+        default:
+          return "Configure";
+      }
     case "manual":
       return "Review";
   }
@@ -180,7 +188,12 @@ export function AnalysisCard() {
               const fixType = getFixType(finding);
               const isAutoFix = fixType === "auto";
               const isTransformFix =
-                fixType === "choice" && finding.id === "STRUCTURE_001";
+                fixType === "choice" &&
+                (
+                  finding.id === "STRUCTURE_001" ||
+                  finding.id === "COLORS_001" ||
+                  finding.id === "COLORS_002"
+                );
               const isActionable = isAutoFix || isTransformFix;
               const buttonLabel = getFixButtonLabel(fixType, finding.id);
 

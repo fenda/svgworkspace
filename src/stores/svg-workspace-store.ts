@@ -6,6 +6,7 @@ import {
   applySafeFixesWithReport,
   applySafeFixForFinding,
 } from "@/actions/safe-fixes/apply-safe-fixes";
+import { applyCurrentColorTransform } from "@/actions/transforms/current-color";
 import { applyGenerateViewBox } from "@/actions/transforms/generate-viewbox";
 import { EXAMPLE_SVG } from "@/lib/mock-data";
 import {
@@ -237,7 +238,27 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       return;
     }
 
-    if (finding.id !== "STRUCTURE_001") {
+    const transformConfig =
+      finding.id === "STRUCTURE_001"
+        ? {
+            apply: applyGenerateViewBox,
+            label: "Generate ViewBox",
+          }
+        : finding.id === "COLORS_001"
+          ? {
+              apply: (content: string) =>
+                applyCurrentColorTransform(content, "fill"),
+              label: "Convert fills to currentColor",
+            }
+          : finding.id === "COLORS_002"
+            ? {
+                apply: (content: string) =>
+                  applyCurrentColorTransform(content, "stroke"),
+                label: "Convert strokes to currentColor",
+              }
+            : null;
+
+    if (!transformConfig) {
       set({
         error: "This issue does not have a transform action yet.",
         isProcessing: false,
@@ -248,7 +269,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
     set({ isProcessing: true, error: null, optimizationValidation: null });
 
     try {
-      const nextContent = applyGenerateViewBox(document.content);
+      const nextContent = transformConfig.apply(document.content);
       const nextSvg = parseSvgMarkup(nextContent.trim());
 
       if (!hasDrawableContent(nextSvg)) {
@@ -269,9 +290,9 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       );
 
       const priorLabels = state.optimizationReport?.appliedLabels ?? [];
-      const appliedLabels = priorLabels.includes("Generate ViewBox")
+      const appliedLabels = priorLabels.includes(transformConfig.label)
         ? priorLabels
-        : [...priorLabels, "Generate ViewBox"];
+        : [...priorLabels, transformConfig.label];
       const sizeBefore = state.optimizationReport?.sizeBefore ?? document.metadata.byteLength;
       const healthBefore = state.optimizationReport?.healthBefore ?? document.analysis.health.score;
       const sizeAfter = nextDocument.metadata.byteLength;

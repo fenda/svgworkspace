@@ -12,9 +12,7 @@ Color rules identify SVGs that are harder to theme, reuse, or adapt across desig
 
 These rules focus on fixed paint values that reduce flexibility.
 
-They currently surface guidance only.
-
-The future intent is to support configurable color treatments rather than one-click automatic rewrites.
+They currently support explicit Transform actions for direct hardcoded paint attributes while remaining outside `Optimize SVG`.
 
 ---
 
@@ -22,17 +20,18 @@ The future intent is to support configurable color treatments rather than one-cl
 
 | ID | Title | Severity | Score Impact | Fix Type / Treatment |
 | --- | --- | --- | --- | --- |
-| `COLORS_001` | Hardcoded Fill Colors | Warning | 3 | Choice in the UI |
-| `COLORS_002` | Hardcoded Stroke Colors | Warning | 3 | Choice in the UI |
+| `COLORS_001` | Hardcoded Fill Colors | Warning | 3 | Transform when direct fill attributes are eligible, otherwise Manual |
+| `COLORS_002` | Hardcoded Stroke Colors | Warning | 3 | Transform when direct stroke attributes are eligible, otherwise Manual |
 
 ---
 
 ## Treatment Notes
 
-- Both color findings are currently presented as `Choice` in the UI.
-- The rule implementations themselves do not declare `fixType`; the current `Choice` classification is injected by UI fallback logic.
-- No configurable color treatment flow is implemented yet.
-- These findings should continue to explain the issue clearly without implying that SVG Workspace can already apply a safe automatic change.
+- Both color findings use the internal `choice` metadata but are presented as `Transform` in the product.
+- `Use currentColor` is now implemented as an explicit Transform for direct `fill` and `stroke` attributes with safe color values.
+- This Transform is intentionally excluded from `Optimize SVG`.
+- Style attributes, style blocks, CSS variables, paint servers, inherited keywords, and other non-direct or unsafe cases remain review-oriented.
+- Converting to `currentColor` intentionally changes how the SVG derives color, so it should remain a user-triggered action rather than an automatic optimization.
 
 ---
 
@@ -41,7 +40,7 @@ The future intent is to support configurable color treatments rather than one-cl
 - Both implemented color rules are currently `Warning` findings with a score impact of `3`.
 - This is consistent between fill and stroke.
 - The current scoring is provisional and should be revisited once real color replacement workflows exist.
-- The rules inventory notes that `Choice` findings may currently be penalizing the score more than the product can meaningfully act on.
+- The rules inventory notes that Transform-oriented color findings may currently be penalizing the score more than the product can meaningfully act on.
 
 ---
 
@@ -50,6 +49,10 @@ The future intent is to support configurable color treatments rather than one-cl
 - `hardcoded-fill.svg`
 - `hardcoded-stroke.svg`
 - `hardcoded-colors.svg`
+- `hardcoded-currentcolor-fill.svg`
+- `hardcoded-currentcolor-stroke.svg`
+- `hardcoded-currentcolor-mixed.svg`
+- `hardcoded-currentcolor-unsafe.svg`
 - `messy.svg`
 - `illustrator-export.svg`
 
@@ -59,6 +62,6 @@ See [docs/test-fixtures.md](/Users/fernandasampaio/Work/svg-workspace/docs/test-
 
 ## Future Considerations
 
-- Add configurable replacements for `currentColor`, CSS variables, or token-based mapping.
-- Decide whether `Choice` findings should keep their current score impact before configurable actions ship.
+- Extend Transform options beyond `currentColor` to support CSS variables or token-based mapping.
+- Decide whether Transform findings should keep their current score impact before richer configurable actions ship.
 - Consider future rules for gradients, paint servers, and theme-hostile embedded styles once the treatment model is standardized.

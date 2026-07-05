@@ -1,30 +1,9 @@
 import type { AnalysisRule } from "@/analysis/models";
+import {
+  hasHardcodedPaint,
+  hasTransformableCurrentColorAttribute,
+} from "@/lib/svg/current-color";
 import { createRuleFinding } from "../utils";
-
-function isIgnoredPaint(value: string): boolean {
-  return (
-    value === "none" ||
-    value === "currentColor" ||
-    value.startsWith("url(")
-  );
-}
-
-function getStyleValue(style: string, property: string): string | null {
-  const pattern = new RegExp(`${property}\\s*:\\s*([^;]+)`, "i");
-  const match = style.match(pattern);
-
-  return match?.[1]?.trim() ?? null;
-}
-
-function hasHardcodedFill(svg: SVGSVGElement): boolean {
-  return Array.from(svg.querySelectorAll("*")).some((element) => {
-    const fill =
-      element.getAttribute("fill")?.trim() ??
-      getStyleValue(element.getAttribute("style") ?? "", "fill");
-
-    return Boolean(fill && !isIgnoredPaint(fill));
-  });
-}
 
 export const colors001HardcodedFillColors: AnalysisRule = {
   id: "COLORS_001",
@@ -37,12 +16,17 @@ export const colors001HardcodedFillColors: AnalysisRule = {
   introducedIn: "0.2.0",
   status: "implemented",
   analyze(svg) {
-    if (!hasHardcodedFill(svg)) {
+    if (!hasHardcodedPaint(svg, "fill")) {
       return null;
     }
 
+    const canTransform = hasTransformableCurrentColorAttribute(svg, "fill");
+
     return createRuleFinding(colors001HardcodedFillColors, {
-      recommendation: "Use currentColor or CSS variables when appropriate.",
+      fixType: canTransform ? "choice" : "manual",
+      recommendation: canTransform
+        ? "Convert eligible fill attributes to currentColor when appropriate."
+        : "Review fixed fill colors manually. This SVG does not expose a safe direct fill-attribute transform.",
     });
   },
 };
