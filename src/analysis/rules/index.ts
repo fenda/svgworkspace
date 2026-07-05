@@ -11,6 +11,7 @@ import { performance002CommentsFound } from "./performance/performance-002-comme
 import { performance003HighDecimalPrecision } from "./performance/performance-003-high-decimal-precision";
 import { performance004HiddenElements } from "./performance/performance-004-hidden-elements";
 import { performance005UnusedDefinitions } from "./performance/performance-005-unused-definitions";
+import { performance006UnusedNamespaces } from "./performance/performance-006-unused-namespaces";
 import { react001ClassAttribute } from "./react-ready/react-001-class-attribute";
 import { react002KebabCaseAttributes } from "./react-ready/react-002-kebab-case-attributes";
 import { react003InlineStyleString } from "./react-ready/react-003-inline-style-string";
@@ -21,6 +22,8 @@ import { structure002FixedWidthHeight } from "./structure/structure-002-fixed-wi
 import { structure003DuplicateIds } from "./structure/structure-003-duplicate-ids";
 import { structure004EmptyGroups } from "./structure/structure-004-empty-groups";
 import { structure005EmptyPaths } from "./structure/structure-005-empty-paths";
+import { structure006EmptyDefinitions } from "./structure/structure-006-empty-definitions";
+import { structure007EmptySymbols } from "./structure/structure-007-empty-symbols";
 import type { AnalysisRule } from "@/analysis/models";
 
 export const svgHealthRules: AnalysisRule[] = [
@@ -29,11 +32,14 @@ export const svgHealthRules: AnalysisRule[] = [
   structure003DuplicateIds,
   structure004EmptyGroups,
   structure005EmptyPaths,
+  structure006EmptyDefinitions,
+  structure007EmptySymbols,
   performance001MetadataFound,
   performance002CommentsFound,
   performance003HighDecimalPrecision,
   performance004HiddenElements,
   performance005UnusedDefinitions,
+  performance006UnusedNamespaces,
   colors001HardcodedFillColors,
   colors002HardcodedStrokeColors,
   accessibility001MissingTitle,

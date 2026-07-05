@@ -78,7 +78,7 @@ export function AnalysisCard() {
     : "[&_[data-slot=progress-indicator]]:bg-emerald-400 [&_[data-slot=progress-track]]:bg-white/[0.06]";
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14] lg:max-h-[446px]">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14] lg:min-h-[520px] lg:max-h-[520px]">
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
         <p className="text-sm font-medium text-zinc-200">SVG Health</p>
         <Button

@@ -30,6 +30,10 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `metadata.svg` | Tests `<metadata>` detection. | `Metadata Found` |
 | `comments.svg` | Tests comment detection inside the SVG tree. | `Comments Found` |
 | `unused-defs.svg` | Tests `PERFORMANCE_005` unused definitions while preserving used ones. | `Unused Definitions` |
+| `empty-defs.svg` | Tests empty `<defs>` cleanup after structural optimization. | `Empty Definitions` |
+| `empty-symbols.svg` | Tests removal of symbol elements with no meaningful content. | `Empty Symbols` |
+| `unused-namespaces.svg` | Tests `PERFORMANCE_006` unused namespace removal while preserving the default SVG namespace. | `Unused Namespaces` |
+| `namespace-in-use.svg` | Tests that namespace declarations remain when prefixed elements or attributes still use them. | None |
 | `inline-styles-safe.svg` | Tests safe inline style conversion to presentation attributes. | `Inline Styles` |
 | `inline-styles-unsafe.svg` | Tests inline styles that remain manual because they contain unsafe declarations. | `Inline Styles` |
 | `hardcoded-fill.svg` | Tests hardcoded fill color detection only. | `Hardcoded Fill Colors` |
@@ -46,6 +50,10 @@ These fixtures are used for manual testing, demos, regression checks, and future
 - Accessibility and React-specific fixtures include `<title>` and `<desc>` where needed so they keep targeting their intended category coverage.
 - `fixed-dimensions.svg` is safe for automatic width/height removal because the `viewBox` is already valid.
 - `fixed-dimensions-no-viewbox.svg` intentionally remains manual-only because removing dimensions without a `viewBox` could change rendering behavior.
+- `empty-defs.svg` should optimize away the empty `<defs>` block only after other safe cleanup has left it truly empty.
+- `empty-symbols.svg` is automatic because the symbol subtree contains no meaningful drawable or definition content.
 - `inline-styles-safe.svg` is automatic because every declaration maps cleanly to safe SVG presentation attributes.
 - `inline-styles-unsafe.svg` remains manual because at least one declaration is not safe to convert automatically.
+- `unused-namespaces.svg` removes only prefixed namespace declarations that are not referenced by any element or attribute name.
+- `namespace-in-use.svg` keeps prefixed namespace declarations when the namespace is still used in the document.
 - Other fixtures may include header comments for human readability; comment detection is based on comments inside the `<svg>` tree.

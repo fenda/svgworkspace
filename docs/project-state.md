@@ -314,8 +314,8 @@ Example SVGs remain available internally for development, but are intentionally 
 
 - SVG rendering
 - Preview / SVG / Diff tabs
-- Zoom controls
-- Fullscreen
+- Improved zoom controls
+- Background switcher
 - Metadata extraction
 - Copy formatted SVG
 - Download formatted SVG
@@ -324,6 +324,19 @@ Example SVGs remain available internally for development, but are intentionally 
 The current SVG document is the source of truth.
 
 The original uploaded SVG is preserved for comparison.
+
+## Preview Experience
+
+The Preview panel is optimized for desktop inspection.
+
+Implemented:
+
+- Instant background switching for transparent, checkerboard, white, and dark preview canvases
+- Improved zoom controls for zoom in, zoom out, fit, and reset
+- Tooltips across preview controls for faster inspection
+- Background changes affect only the preview canvas and never the uploaded SVG itself
+
+The preview workflow is intended to support rapid inspection before and after `Optimize SVG`.
 
 ---
 
@@ -340,6 +353,8 @@ Current rules:
 - Duplicate IDs
 - Empty Groups
 - Empty Paths
+- Empty Definitions
+- Empty Symbols
 
 ### Performance
 
@@ -348,6 +363,7 @@ Current rules:
 - PERFORMANCE_003 — High Decimal Precision
 - PERFORMANCE_004 — Hidden Elements
 - PERFORMANCE_005 — Unused Definitions
+- PERFORMANCE_006 — Unused Namespaces
 
 ### Colors
 
@@ -391,8 +407,11 @@ Safe automatic fixes are implemented for:
 - Round high-precision numeric values
 - Remove empty groups
 - Remove empty paths
+- Remove empty <defs>
+- Remove empty <symbol>
 - Remove hidden elements
 - PERFORMANCE_005 — Remove unused definitions
+- PERFORMANCE_006 — Remove unused namespace declarations
 - Convert simple inline styles to presentation attributes when every declaration is safely convertible
 
 The user-facing `Optimize SVG` action applies all safe automatic fixes and then re-runs analysis.
@@ -438,17 +457,6 @@ The Diff view is line-based and is intended to explain what changed before expor
 
 ---
 
-## Post-Preview Polish Backlog
-
-After the Preview launch, the compare surface can be refined with:
-
-- Improve zoom controls
-- Improve fit/reset behavior
-- Add a background switcher for transparent, checkerboard, light, and dark backgrounds
-- Improve visibility for dark SVGs
-
----
-
 ## Test Fixtures
 
 Current fixtures include:
@@ -473,6 +481,10 @@ Current fixtures include:
 - metadata.svg
 - comments.svg
 - unused-defs.svg
+- empty-defs.svg
+- empty-symbols.svg
+- unused-namespaces.svg
+- namespace-in-use.svg
 - inline-styles-safe.svg
 - inline-styles-unsafe.svg
 - empty-groups.svg
@@ -494,6 +506,8 @@ good.svg is the canonical regression fixture and should always return:
 `Fixed Width & Height` is only treated as an automatic fix when a valid `viewBox` already exists.
 
 `Inline Styles` is only treated as an automatic fix when every inline declaration is a safe SVG presentation property.
+
+`Unused Namespaces` is only treated as an automatic fix when a prefixed namespace declaration is not referenced by any element or attribute name in the document.
 
 ---
 

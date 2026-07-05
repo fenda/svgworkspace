@@ -11,6 +11,19 @@ const REFERENCEABLE_DEF_TAGS = new Set([
 
 const URL_REFERENCE_PATTERN = /url\((['"]?)#([^)'" ]+)\1\)/g;
 const HASH_REFERENCE_PATTERN = /^#(.+)$/;
+const DRAWABLE_SYMBOL_TAGS = new Set([
+  "circle",
+  "ellipse",
+  "image",
+  "line",
+  "path",
+  "polygon",
+  "polyline",
+  "rect",
+  "text",
+  "use",
+]);
+const CONTAINER_SYMBOL_TAGS = new Set(["a", "defs", "g", "svg", "switch", "symbol"]);
 
 function getDefinitionEntries(svg: SVGSVGElement) {
   return Array.from(svg.querySelectorAll("defs"))
@@ -84,6 +97,36 @@ function collectReferencesFromSubtree(
   return references;
 }
 
+function hasOwnMeaningfulText(element: Element): boolean {
+  return Array.from(element.childNodes).some((node) => {
+    return node.nodeType === Node.TEXT_NODE && Boolean(node.textContent?.trim());
+  });
+}
+
+function isMeaningfulSymbolContent(element: Element): boolean {
+  const tagName = element.tagName.toLowerCase();
+
+  if (hasOwnMeaningfulText(element)) {
+    return true;
+  }
+
+  if (CONTAINER_SYMBOL_TAGS.has(tagName)) {
+    return Array.from(element.children).some((child) =>
+      isMeaningfulSymbolContent(child),
+    );
+  }
+
+  if (DRAWABLE_SYMBOL_TAGS.has(tagName)) {
+    return tagName !== "path" || Boolean(element.getAttribute("d")?.trim());
+  }
+
+  if (REFERENCEABLE_DEF_TAGS.has(tagName) || tagName === "style") {
+    return true;
+  }
+
+  return true;
+}
+
 export function getUnusedDefinitionIds(svg: SVGSVGElement): string[] {
   const definitions = getDefinitionEntries(svg);
 
@@ -151,6 +194,44 @@ export function removeUnusedDefinitions(svg: SVGSVGElement): number {
         removedCount += 1;
       }
     });
+  });
+
+  return removedCount;
+}
+
+export function hasEmptyDefs(svg: SVGSVGElement): boolean {
+  return Array.from(svg.querySelectorAll("defs")).some((defs) => {
+    return defs.children.length === 0 && !defs.textContent?.trim();
+  });
+}
+
+export function removeEmptyDefinitionBlocks(svg: SVGSVGElement): number {
+  let removedCount = 0;
+
+  Array.from(svg.querySelectorAll("defs")).forEach((defs) => {
+    if (defs.children.length === 0 && !defs.textContent?.trim()) {
+      defs.remove();
+      removedCount += 1;
+    }
+  });
+
+  return removedCount;
+}
+
+export function hasEmptySymbols(svg: SVGSVGElement): boolean {
+  return Array.from(svg.querySelectorAll("symbol")).some((symbol) => {
+    return !isMeaningfulSymbolContent(symbol);
+  });
+}
+
+export function removeEmptySymbolsFromSvg(svg: SVGSVGElement): number {
+  let removedCount = 0;
+
+  Array.from(svg.querySelectorAll("symbol")).forEach((symbol) => {
+    if (!isMeaningfulSymbolContent(symbol)) {
+      symbol.remove();
+      removedCount += 1;
+    }
   });
 
   return removedCount;

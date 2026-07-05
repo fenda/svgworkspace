@@ -12,6 +12,9 @@ Status: Next
 These improvements continue expanding the Safe Fix Engine behind the user-facing `Optimize SVG` action.
 
 - [ ] Remove unused defs
+- [x] Remove empty defs
+- [x] Remove empty symbols
+- [x] Remove unused namespaces
 - [ ] Normalize whitespace
 - [ ] Generate missing viewBox in safe cases
 - [ ] Normalize IDs as an optional treatment
@@ -23,3 +26,7 @@ These improvements continue expanding the Safe Fix Engine behind the user-facing
 - [ ] Add more maintainability rules
 - [ ] Improve explanations
 - [ ] Improve issue grouping
+
+## Future Treatments
+
+- [ ] Inline CSS / style extraction: convert safe inline style declarations into SVG presentation attributes directly on SVG elements and paths when safe, while keeping complex CSS and manual styles as Review
