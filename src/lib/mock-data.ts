@@ -16,7 +16,7 @@ export const navItems: {
   href: string;
   icon: LucideIcon;
 }[] = [
-  { label: "Workspace", href: "/playground", icon: Code2 },
+  { label: "Workspace", href: "/", icon: Code2 },
   { label: "Optimize", href: "/optimize", icon: Sparkles },
   { label: "Convert", href: "/convert", icon: Code2 },
   { label: "Colors", href: "/colors", icon: Palette },

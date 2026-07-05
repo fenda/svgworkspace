@@ -118,18 +118,18 @@ export function AnalysisCard() {
 
         <Progress value={health.score} className={progressTone} />
 
-        <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
-              Automatic optimizations
-            </p>
-            <p className="text-xs text-zinc-600">
-              {automaticFixCount > 0
-                ? automaticOptimizationLabel
-                : "No automatic optimizations available"}
-            </p>
+        {automaticFixCount > 0 ? (
+          <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+                Automatic optimizations
+              </p>
+              <p className="text-xs text-zinc-600">
+                {automaticOptimizationLabel}
+              </p>
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
           <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">

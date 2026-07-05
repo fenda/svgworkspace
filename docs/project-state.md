@@ -438,6 +438,17 @@ The Diff view is line-based and is intended to explain what changed before expor
 
 ---
 
+## Post-Preview Polish Backlog
+
+After the Preview launch, the compare surface can be refined with:
+
+- Improve zoom controls
+- Improve fit/reset behavior
+- Add a background switcher for transparent, checkerboard, light, and dark backgrounds
+- Improve visibility for dark SVGs
+
+---
+
 ## Test Fixtures
 
 Current fixtures include:

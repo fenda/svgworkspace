@@ -4,6 +4,8 @@ SVG Workspace is a desktop-first browser tool for understanding, optimizing, and
 
 It is designed for developers who want to inspect an SVG before changing it, apply safe optimizations, compare the result, and export the cleaned output without sending files to a server.
 
+Core workflow: Upload -> Analyze -> Optimize -> Compare -> Export.
+
 ## Preview Status
 
 SVG Workspace is currently in its first public Preview.

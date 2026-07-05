@@ -39,7 +39,14 @@ Status: Ready for Launch
 
 ## Ready for Preview
 
-- [ ] Replace Coming Soon page
+- [x] Replace Coming Soon page
 - [x] Add Preview badge
 - [x] Update README
 - [ ] Publish Preview
+
+## Post-Launch Preview Polish
+
+- [ ] Improve zoom controls
+- [ ] Improve fit/reset behavior
+- [ ] Add background switcher for transparent, checkerboard, light, and dark backgrounds
+- [ ] Improve visibility for dark SVGs

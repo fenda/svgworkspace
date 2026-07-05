@@ -1,22 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import {
-  CheckCircle2,
-  Code2,
-  ExternalLink,
-  RefreshCw,
-  Trash2,
-} from "lucide-react";
+import { CheckCircle2, Code2 } from "lucide-react";
 import { AnalysisCard } from "./AnalysisCard";
 import { DetailsCard } from "./DetailsCard";
 import { PreviewCard } from "./PreviewCard";
-import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 
 export function Workspace() {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { document, loadFromFile, clear } = useSvgWorkspace();
+  const { document } = useSvgWorkspace();
 
   if (!document) {
     return null;
@@ -24,63 +15,22 @@ export function Workspace() {
 
   return (
     <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#111114]">
-      <input
-        ref={inputRef}
-        type="file"
-        accept=".svg,image/svg+xml"
-        className="sr-only"
-        onChange={(event) => {
-          const file = event.target.files?.[0];
-          if (file) {
-            void loadFromFile(file);
-          }
-          event.target.value = "";
-        }}
-      />
-
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="flex size-8 items-center justify-center rounded-lg bg-[var(--brand-muted)]">
             <Code2 className="size-4 text-[#8b84f7]" />
           </div>
-          <div>
-            <p className="text-sm font-medium text-zinc-200">Workspace</p>
-            <p className="flex items-center gap-1.5 text-xs text-zinc-500">
-              {document.filename}
-              <CheckCircle2 className="size-3 text-emerald-500" />
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-zinc-200">Current SVG</p>
+            <p className="mt-0.5 flex items-center gap-1.5 text-xs text-zinc-500">
+              <span className="truncate">{document.filename}</span>
+              <CheckCircle2 className="size-3 shrink-0 text-emerald-500" />
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-8 gap-1.5 text-xs text-zinc-400 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200"
-            onClick={() => inputRef.current?.click()}
-          >
-            <RefreshCw className="size-3.5" />
-            Replace SVG
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-8 gap-1.5 text-xs text-zinc-400 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200"
-            onClick={clear}
-          >
-            <Trash2 className="size-3.5" />
-            Clear
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-8 text-zinc-400 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200"
-          >
-            <ExternalLink className="size-3.5" />
-          </Button>
-        </div>
+        {/* Preview polish: header actions are intentionally hidden to keep
+            the launch surface focused. Restore the Replace / Clear / Open
+            controls here if they become part of the main workflow again. */}
       </div>
 
       <div className="grid gap-4 p-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)] lg:items-stretch">
