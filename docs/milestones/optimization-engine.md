@@ -28,7 +28,8 @@ These improvements continue expanding the Safe Fix Engine behind the user-facing
 
 ## CSS Treatments
 
-- [x] Auto-inline simple single-class embedded CSS when every declaration is a safe presentation property
+- [x] Auto-inline simple single-class embedded CSS when safe rules can be isolated
+- [x] Preserve unsupported embedded CSS rules while removing only the safe rules that were successfully inlined
 - [ ] Keep complex CSS selectors and unsupported declarations as manual review
 
 ## Analysis

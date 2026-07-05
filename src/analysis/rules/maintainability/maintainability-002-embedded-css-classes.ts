@@ -23,7 +23,7 @@ export const maintainability002EmbeddedCssClasses: AnalysisRule = {
       description:
         "The SVG uses internal CSS classes that can sometimes be converted into SVG presentation attributes.",
       recommendation: canInlineSafely
-        ? "Inline simple class-based presentation styles as SVG attributes."
+        ? "Inline safe simple class-based presentation styles as SVG attributes while preserving unsupported CSS."
         : "Review embedded CSS manually. Complex selectors or unsupported declarations are not safe to inline automatically.",
       scoreImpact: 3,
     };

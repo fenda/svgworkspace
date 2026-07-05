@@ -1,15 +1,15 @@
-<!-- Fixture: mixed safe and unsafe embedded CSS should not be partially inlined. -->
+<!-- Fixture: mixed safe and unsafe embedded CSS should inline only the safe rules. -->
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
   <title>Embedded CSS Classes Mixed</title>
-  <desc>Fixture for testing all-or-nothing embedded CSS inlining.</desc>
+  <desc>Fixture for testing partial embedded CSS inlining.</desc>
   <style>
     .safe {
       fill: #193f6f;
       stroke: #fff;
     }
 
-    .unsafe:hover {
-      fill: #0ea5e9;
+    .unsafe {
+      isolation: isolate;
     }
   </style>
   <rect x="2" y="2" width="8" height="8" class="safe" />

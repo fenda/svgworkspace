@@ -37,9 +37,10 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `inline-styles-safe.svg` | Tests safe inline style conversion to presentation attributes. | `Inline Styles` |
 | `inline-styles-unsafe.svg` | Tests inline styles that remain manual because they contain unsafe declarations. | `Inline Styles` |
 | `css-classes-safe.svg` | Tests safe embedded CSS class inlining to presentation attributes. | `Embedded CSS Classes` |
+| `css-classes-partial.svg` | Tests partial embedded CSS inlining where safe class rules are inlined and unsafe rules remain in the same style block. | `Embedded CSS Classes` |
 | `css-classes-unsafe-selector.svg` | Tests embedded CSS that remains manual because the selector is not a simple single class. | `Embedded CSS Classes` |
 | `css-classes-unsafe-declaration.svg` | Tests embedded CSS that remains manual because it contains an unsafe declaration. | `Embedded CSS Classes` |
-| `css-classes-mixed.svg` | Tests that mixed safe and unsafe embedded CSS stays manual and is not partially inlined. | `Embedded CSS Classes` |
+| `css-classes-mixed.svg` | Tests that mixed safe and unsafe embedded CSS partially inlines safe rules while preserving unsafe rules. | `Embedded CSS Classes` |
 | `hardcoded-fill.svg` | Tests hardcoded fill color detection only. | `Hardcoded Fill Colors` |
 | `hardcoded-stroke.svg` | Tests hardcoded stroke color detection only. | `Hardcoded Stroke Colors` |
 | `hardcoded-colors.svg` | Tests both hardcoded fill and stroke colors together. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
@@ -61,5 +62,6 @@ These fixtures are used for manual testing, demos, regression checks, and future
 - `unused-namespaces.svg` removes only prefixed namespace declarations that are not referenced by any element or attribute name.
 - `namespace-in-use.svg` keeps prefixed namespace declarations when the namespace is still used in the document.
 - `css-classes-safe.svg` is automatic because every embedded CSS rule uses a simple single-class selector with only safe presentation properties.
-- `css-classes-unsafe-selector.svg`, `css-classes-unsafe-declaration.svg`, and `css-classes-mixed.svg` remain manual because complex selectors or unsupported declarations are not safe to inline automatically.
+- `css-classes-partial.svg` and `css-classes-mixed.svg` are automatic because at least one embedded CSS rule is safe to inline, while unsupported rules remain in the `<style>` block.
+- `css-classes-unsafe-selector.svg` and `css-classes-unsafe-declaration.svg` remain manual because no rule in the block is safe to inline automatically.
 - Other fixtures may include header comments for human readability; comment detection is based on comments inside the `<svg>` tree.

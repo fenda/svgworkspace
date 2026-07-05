@@ -9,9 +9,20 @@ type SafeClassRule = {
   declarations: ParsedStyleDeclaration[];
 };
 
-type SafeStyleBlock = {
+type CssRuleSegment =
+  | {
+      kind: "safe";
+      raw: string;
+      rule: SafeClassRule;
+    }
+  | {
+      kind: "unsafe";
+      raw: string;
+    };
+
+type ParsedStyleBlock = {
   element: Element;
-  rules: SafeClassRule[];
+  rules: CssRuleSegment[];
 };
 
 const SIMPLE_CLASS_SELECTOR_PATTERN = /^\.[A-Za-z_][A-Za-z0-9_-]*$/;
@@ -22,83 +33,123 @@ function getStyleElements(svg: SVGSVGElement): Element[] {
   );
 }
 
-function parseSafeClassRules(cssText: string): SafeClassRule[] | null {
-  const trimmedCss = cssText.trim();
+function parseRule(selector: string, body: string, raw: string): CssRuleSegment {
+  const trimmedSelector = selector.trim();
+  const trimmedBody = body.trim();
 
-  if (!trimmedCss) {
-    return [];
+  if (!SIMPLE_CLASS_SELECTOR_PATTERN.test(trimmedSelector)) {
+    return {
+      kind: "unsafe",
+      raw,
+    };
   }
 
-  if (trimmedCss.includes("@")) {
-    return null;
+  if (!trimmedBody || trimmedBody.includes("{") || trimmedBody.includes("}")) {
+    return {
+      kind: "unsafe",
+      raw,
+    };
   }
 
-  const rulePattern = /([^{}]+)\{([^{}]*)\}/g;
-  const rules: SafeClassRule[] = [];
-  let lastIndex = 0;
+  const declarations = parseStyleDeclarations(trimmedBody);
 
-  for (const match of trimmedCss.matchAll(rulePattern)) {
-    const matchIndex = match.index ?? 0;
-    const skippedContent = trimmedCss.slice(lastIndex, matchIndex).trim();
+  if (
+    declarations === null ||
+    declarations.length === 0 ||
+    !declarations.every(isSafeStyleDeclaration)
+  ) {
+    return {
+      kind: "unsafe",
+      raw,
+    };
+  }
 
-    if (skippedContent) {
-      return null;
-    }
-
-    const selector = match[1]?.trim() ?? "";
-    const declarations = parseStyleDeclarations(match[2]?.trim() ?? "");
-
-    if (!SIMPLE_CLASS_SELECTOR_PATTERN.test(selector) || declarations === null) {
-      return null;
-    }
-
-    if (
-      declarations.length === 0 ||
-      !declarations.every(isSafeStyleDeclaration)
-    ) {
-      return null;
-    }
-
-    rules.push({
-      className: selector.slice(1),
+  return {
+    kind: "safe",
+    raw,
+    rule: {
+      className: trimmedSelector.slice(1),
       declarations,
-    });
-
-    lastIndex = matchIndex + match[0].length;
-  }
-
-  if (trimmedCss.slice(lastIndex).trim()) {
-    return null;
-  }
-
-  return rules.length > 0 ? rules : null;
+    },
+  };
 }
 
-function getSafeStyleBlocks(svg: SVGSVGElement): SafeStyleBlock[] | null {
-  const styleElements = getStyleElements(svg);
+function parseStyleBlock(cssText: string): CssRuleSegment[] {
+  const rules: CssRuleSegment[] = [];
+  let cursor = 0;
 
-  if (styleElements.length === 0) {
-    return [];
-  }
-
-  const blocks = styleElements.map((element) => {
-    const rules = parseSafeClassRules(element.textContent?.trim() ?? "");
-
-    if (rules === null) {
-      return null;
+  while (cursor < cssText.length) {
+    while (cursor < cssText.length && /\s/.test(cssText[cursor] ?? "")) {
+      cursor += 1;
     }
 
-    return {
-      element,
-      rules,
-    };
-  });
+    if (cursor >= cssText.length) {
+      break;
+    }
 
-  if (blocks.some((block) => block === null)) {
-    return null;
+    const selectorStart = cursor;
+    const openBraceIndex = cssText.indexOf("{", cursor);
+
+    if (openBraceIndex === -1) {
+      const trailing = cssText.slice(cursor).trim();
+
+      if (trailing) {
+        rules.push({
+          kind: "unsafe",
+          raw: cssText.slice(cursor),
+        });
+      }
+
+      break;
+    }
+
+    let depth = 1;
+    let position = openBraceIndex + 1;
+
+    while (position < cssText.length && depth > 0) {
+      const character = cssText[position];
+
+      if (character === "{") {
+        depth += 1;
+      } else if (character === "}") {
+        depth -= 1;
+      }
+
+      position += 1;
+    }
+
+    if (depth !== 0) {
+      rules.push({
+        kind: "unsafe",
+        raw: cssText.slice(selectorStart),
+      });
+      break;
+    }
+
+    const raw = cssText.slice(selectorStart, position);
+    const selector = cssText.slice(selectorStart, openBraceIndex);
+    const body = cssText.slice(openBraceIndex + 1, position - 1);
+
+    rules.push(parseRule(selector, body, raw));
+    cursor = position;
   }
 
-  return blocks as SafeStyleBlock[];
+  return rules;
+}
+
+function getParsedStyleBlocks(svg: SVGSVGElement): ParsedStyleBlock[] {
+  return getStyleElements(svg).map((element) => ({
+    element,
+    rules: parseStyleBlock(element.textContent ?? ""),
+  }));
+}
+
+function getInlineableRuleCount(blocks: ParsedStyleBlock[]): number {
+  return blocks.reduce(
+    (count, block) =>
+      count + block.rules.filter((rule) => rule.kind === "safe").length,
+    0,
+  );
 }
 
 function getElementsWithClass(svg: SVGSVGElement, className: string): Element[] {
@@ -118,20 +169,25 @@ export function hasEmbeddedCssClasses(svg: SVGSVGElement): boolean {
 }
 
 export function canInlineCssClasses(svg: SVGSVGElement): boolean {
-  const blocks = getSafeStyleBlocks(svg);
-
-  return blocks !== null && blocks.length > 0;
+  const blocks = getParsedStyleBlocks(svg);
+  return getInlineableRuleCount(blocks) > 0;
 }
 
 export function inlineCssClasses(svg: SVGSVGElement): void {
-  const blocks = getSafeStyleBlocks(svg);
+  const blocks = getParsedStyleBlocks(svg);
 
-  if (blocks === null || blocks.length === 0) {
+  if (getInlineableRuleCount(blocks) === 0) {
     return;
   }
 
   blocks.forEach(({ rules }) => {
-    rules.forEach(({ className, declarations }) => {
+    rules.forEach((rule) => {
+      if (rule.kind !== "safe") {
+        return;
+      }
+
+      const { className, declarations } = rule.rule;
+
       getElementsWithClass(svg, className).forEach((element) => {
         declarations.forEach(({ property, value }) => {
           element.setAttribute(property, value);
@@ -152,7 +208,17 @@ export function inlineCssClasses(svg: SVGSVGElement): void {
     });
   });
 
-  blocks.forEach(({ element }) => {
-    element.remove();
+  blocks.forEach(({ element, rules }) => {
+    const remainingRules = rules
+      .filter((rule) => rule.kind === "unsafe")
+      .map((rule) => rule.raw.trim())
+      .filter(Boolean);
+
+    if (remainingRules.length === 0) {
+      element.remove();
+      return;
+    }
+
+    element.textContent = `\n${remainingRules.join("\n\n")}\n`;
   });
 }
