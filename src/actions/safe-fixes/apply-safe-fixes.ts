@@ -15,21 +15,46 @@ import { removeUnusedDefs } from "./fixes/remove-unused-defs";
 import { removeUnusedNamespaces } from "./fixes/remove-unused-namespaces";
 
 type SafeFix = (svg: SVGSVGElement) => void;
+type SafeFixDefinition = {
+  label: string;
+  apply: SafeFix;
+};
 
-const SAFE_FIXES_BY_FINDING_ID: Record<string, SafeFix> = {
-  PERFORMANCE_001: removeMetadata,
-  PERFORMANCE_002: removeComments,
-  PERFORMANCE_003: roundDecimals,
-  PERFORMANCE_004: removeHiddenElements,
-  PERFORMANCE_005: removeUnusedDefs,
-  PERFORMANCE_006: removeUnusedNamespaces,
-  STRUCTURE_002: removeFixedDimensions,
-  STRUCTURE_004: removeEmptyGroups,
-  STRUCTURE_005: removeEmptyPaths,
-  STRUCTURE_006: removeEmptyDefs,
-  STRUCTURE_007: removeEmptySymbols,
-  MAINTAINABILITY_001: convertInlineStyles,
-  MAINTAINABILITY_002: inlineCssClasses,
+const SAFE_FIXES_BY_FINDING_ID: Record<string, SafeFixDefinition> = {
+  PERFORMANCE_001: { label: "Remove metadata", apply: removeMetadata },
+  PERFORMANCE_002: { label: "Remove comments", apply: removeComments },
+  PERFORMANCE_003: { label: "Round decimal precision", apply: roundDecimals },
+  PERFORMANCE_004: { label: "Remove hidden elements", apply: removeHiddenElements },
+  PERFORMANCE_005: { label: "Remove unused definitions", apply: removeUnusedDefs },
+  PERFORMANCE_006: { label: "Remove unused namespaces", apply: removeUnusedNamespaces },
+  STRUCTURE_002: { label: "Remove fixed dimensions", apply: removeFixedDimensions },
+  STRUCTURE_004: { label: "Remove empty groups", apply: removeEmptyGroups },
+  STRUCTURE_005: { label: "Remove empty paths", apply: removeEmptyPaths },
+  STRUCTURE_006: { label: "Remove empty definitions", apply: removeEmptyDefs },
+  STRUCTURE_007: { label: "Remove empty symbols", apply: removeEmptySymbols },
+  MAINTAINABILITY_001: { label: "Convert inline styles", apply: convertInlineStyles },
+  MAINTAINABILITY_002: { label: "Inline CSS classes", apply: inlineCssClasses },
+};
+
+const SAFE_FIX_SEQUENCE: SafeFixDefinition[] = [
+  SAFE_FIXES_BY_FINDING_ID.PERFORMANCE_001,
+  SAFE_FIXES_BY_FINDING_ID.PERFORMANCE_002,
+  SAFE_FIXES_BY_FINDING_ID.PERFORMANCE_004,
+  SAFE_FIXES_BY_FINDING_ID.PERFORMANCE_005,
+  SAFE_FIXES_BY_FINDING_ID.STRUCTURE_007,
+  SAFE_FIXES_BY_FINDING_ID.STRUCTURE_006,
+  SAFE_FIXES_BY_FINDING_ID.STRUCTURE_002,
+  SAFE_FIXES_BY_FINDING_ID.MAINTAINABILITY_002,
+  SAFE_FIXES_BY_FINDING_ID.MAINTAINABILITY_001,
+  SAFE_FIXES_BY_FINDING_ID.STRUCTURE_005,
+  SAFE_FIXES_BY_FINDING_ID.STRUCTURE_004,
+  SAFE_FIXES_BY_FINDING_ID.PERFORMANCE_006,
+  SAFE_FIXES_BY_FINDING_ID.PERFORMANCE_003,
+];
+
+export type AppliedSafeFixReport = {
+  content: string;
+  appliedLabels: string[];
 };
 
 function withParsedSvg(content: string, applyFix: (svg: SVGSVGElement) => void): string {
@@ -39,25 +64,31 @@ function withParsedSvg(content: string, applyFix: (svg: SVGSVGElement) => void):
 }
 
 export function applySafeFixes(content: string): string {
-  return withParsedSvg(content, (svg) => {
-    removeMetadata(svg);
-    removeComments(svg);
-    removeHiddenElements(svg);
-    removeUnusedDefs(svg);
-    removeEmptySymbols(svg);
-    removeEmptyDefs(svg);
-    removeFixedDimensions(svg);
-    inlineCssClasses(svg);
-    convertInlineStyles(svg);
-    removeEmptyPaths(svg);
-    removeEmptyGroups(svg);
-    removeUnusedNamespaces(svg);
-    roundDecimals(svg);
-  });
+  return applySafeFixesWithReport(content).content;
+}
+
+export function applySafeFixesWithReport(content: string): AppliedSafeFixReport {
+  const svg = parseSvgMarkup(content.trim());
+  const appliedLabels: string[] = [];
+
+  for (const fix of SAFE_FIX_SEQUENCE) {
+    const before = serializeSvg(svg);
+    fix.apply(svg);
+    const after = serializeSvg(svg);
+
+    if (before !== after) {
+      appliedLabels.push(fix.label);
+    }
+  }
+
+  return {
+    content: serializeSvg(svg),
+    appliedLabels,
+  };
 }
 
 export function applySafeFixForFinding(content: string, finding: Finding): string {
-  const fix = SAFE_FIXES_BY_FINDING_ID[finding.id];
+  const fix = SAFE_FIXES_BY_FINDING_ID[finding.id]?.apply;
 
   if (!fix) {
     throw new Error("This issue does not have an automatic fix.");

@@ -1,4 +1,4 @@
-export { extractSvgMetadata } from "./metadata";
+export { extractSvgMetadata, formatBytes } from "./metadata";
 export {
   createSvgDocument,
   hasDrawableContent,
@@ -14,5 +14,10 @@ export {
   getValidationState,
   SvgWorkspaceValidationError,
 } from "./validation";
-export type { SvgDocument, SvgLoadSource, SvgMetadata } from "./types";
+export type {
+  OptimizationReport,
+  SvgDocument,
+  SvgLoadSource,
+  SvgMetadata,
+} from "./types";
 export type { SvgValidationCode, SvgValidationState } from "./validation";
