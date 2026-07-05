@@ -42,8 +42,8 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 | ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `COLORS_001` | Hardcoded Fill Colors | Colors | Warning | 3 | Transform when direct fill attributes are eligible, otherwise Manual | Implemented | `hardcoded-fill.svg`, `hardcoded-colors.svg`, `hardcoded-currentcolor-fill.svg`, `hardcoded-currentcolor-mixed.svg`, `hardcoded-currentcolor-unsafe.svg`, `messy.svg`, `illustrator-export.svg` | `Use currentColor` is available only for direct fill attributes with safe explicit color values. |
-| `COLORS_002` | Hardcoded Stroke Colors | Colors | Warning | 3 | Transform when direct stroke attributes are eligible, otherwise Manual | Implemented | `hardcoded-stroke.svg`, `hardcoded-colors.svg`, `hardcoded-currentcolor-stroke.svg`, `hardcoded-currentcolor-mixed.svg`, `hardcoded-currentcolor-unsafe.svg`, `messy.svg`, `illustrator-export.svg` | `Use currentColor` is available only for direct stroke attributes with safe explicit color values. |
+| `COLORS_001` | Hardcoded Fill Colors | Colors | Warning | 3 | Transform when direct fill attributes are eligible, otherwise Manual | Implemented | `hardcoded-fill.svg`, `hardcoded-colors.svg`, `currentcolor-fill.svg`, `currentcolor-mixed.svg`, `currentcolor-unsafe.svg`, `messy.svg`, `illustrator-export.svg` | `Convert to currentColor` is available only for direct fill attributes with safe explicit color values. |
+| `COLORS_002` | Hardcoded Stroke Colors | Colors | Warning | 3 | Transform when direct stroke attributes are eligible, otherwise Manual | Implemented | `hardcoded-stroke.svg`, `hardcoded-colors.svg`, `currentcolor-stroke.svg`, `currentcolor-mixed.svg`, `currentcolor-unsafe.svg`, `messy.svg`, `illustrator-export.svg` | `Convert to currentColor` is available only for direct stroke attributes with safe explicit color values. |
 
 ## Accessibility
 
