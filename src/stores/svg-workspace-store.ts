@@ -5,6 +5,7 @@ import type { Finding } from "@/analysis";
 import {
   applySafeFixesWithReport,
   applySafeFixForFinding,
+  getSafeFixLabelForFinding,
 } from "@/actions/safe-fixes/apply-safe-fixes";
 import { applyCurrentColorTransform } from "@/actions/transforms/current-color";
 import { applyGenerateViewBox } from "@/actions/transforms/generate-viewbox";
@@ -15,7 +16,6 @@ import {
 } from "@/lib/analytics";
 import {
   createSvgDocument,
-  createValidationState,
   getValidationState,
   hasDrawableContent,
   parseSvgMarkup,
@@ -24,7 +24,7 @@ import {
   type OptimizationReport,
   type SvgValidationState,
 } from "@/lib/svg";
-import { showSuccessToast } from "@/stores/toast-store";
+import { showSuccessToast, showWarningToast } from "@/stores/toast-store";
 
 type SvgWorkspaceStore = {
   document: SvgDocument | null;
@@ -49,6 +49,37 @@ type SvgWorkspaceStore = {
   dismissOptimizationValidation: () => void;
   clear: () => void;
 };
+
+function buildUpdatedOptimizationReport({
+  existingReport,
+  document,
+  nextDocument,
+  nextAppliedLabels,
+}: {
+  existingReport: OptimizationReport | null;
+  document: SvgDocument;
+  nextDocument: SvgDocument;
+  nextAppliedLabels: string[];
+}): OptimizationReport {
+  const sizeBefore = existingReport?.sizeBefore ?? document.originalMetadata.byteLength;
+  const healthBefore = existingReport?.healthBefore ?? document.analysis.health.score;
+  const sizeAfter = nextDocument.metadata.byteLength;
+  const bytesSaved = Math.max(0, sizeBefore - sizeAfter);
+  const percentSaved = sizeBefore > 0
+    ? Math.round((bytesSaved / sizeBefore) * 100)
+    : 0;
+
+  return {
+    appliedCount: nextAppliedLabels.length,
+    appliedLabels: nextAppliedLabels,
+    healthBefore,
+    healthAfter: nextDocument.analysis.health.score,
+    sizeBefore,
+    sizeAfter,
+    bytesSaved,
+    percentSaved,
+  };
+}
 
 export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
   document: null,
@@ -144,12 +175,13 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
 
       if (!hasDrawableContent(nextSvg)) {
         set({
-          optimizationValidation: createValidationState(
-            "optimization_cancelled",
-          ),
-          optimizationReport: null,
+          optimizationValidation: null,
           isProcessing: false,
         });
+        showWarningToast(
+          "Optimization cancelled",
+          "Optimizing this SVG would remove all drawable elements, so no changes were applied.",
+        );
         return;
       }
 
@@ -159,27 +191,19 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         document.originalContent,
       );
 
-      const sizeBefore = document.metadata.byteLength;
-      const sizeAfter = nextDocument.metadata.byteLength;
-      const bytesSaved = Math.max(0, sizeBefore - sizeAfter);
-      const percentSaved = sizeBefore > 0
-        ? Math.round((bytesSaved / sizeBefore) * 100)
-        : 0;
+      const priorLabels = state.optimizationReport?.appliedLabels ?? [];
+      const nextAppliedLabels = [...priorLabels, ...appliedLabels];
 
       set({
         document: nextDocument,
         error: null,
         optimizationValidation: null,
-        optimizationReport: {
-          appliedCount: appliedLabels.length,
-          appliedLabels,
-          healthBefore: document.analysis.health.score,
-          healthAfter: nextDocument.analysis.health.score,
-          sizeBefore,
-          sizeAfter,
-          bytesSaved,
-          percentSaved,
-        },
+        optimizationReport: buildUpdatedOptimizationReport({
+          existingReport: state.optimizationReport,
+          document,
+          nextDocument,
+          nextAppliedLabels,
+        }),
         isProcessing: false,
       });
       showSuccessToast("Optimized");
@@ -211,12 +235,13 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
 
       if (!hasDrawableContent(nextSvg)) {
         set({
-          optimizationValidation: createValidationState(
-            "optimization_cancelled",
-          ),
-          optimizationReport: null,
+          optimizationValidation: null,
           isProcessing: false,
         });
+        showWarningToast(
+          "Optimization cancelled",
+          "Optimizing this SVG would remove all drawable elements, so no changes were applied.",
+        );
         return;
       }
 
@@ -225,12 +250,25 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         nextContent,
         document.originalContent,
       );
+      const appliedLabel = getSafeFixLabelForFinding(finding.id);
+      const priorLabels = state.optimizationReport?.appliedLabels ?? [];
+      const nextAppliedLabels = appliedLabel
+        ? [...priorLabels, appliedLabel]
+        : priorLabels;
 
       set({
         document: nextDocument,
         error: null,
         optimizationValidation: null,
-        optimizationReport: state.optimizationReport,
+        optimizationReport:
+          nextAppliedLabels.length > 0
+            ? buildUpdatedOptimizationReport({
+                existingReport: state.optimizationReport,
+                document,
+                nextDocument,
+                nextAppliedLabels,
+              })
+            : state.optimizationReport,
         isProcessing: false,
       });
       trackAnalysisCompleted(nextDocument.analysis);
@@ -263,13 +301,13 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
           ? {
               apply: (content: string) =>
                 applyCurrentColorTransform(content, "fill"),
-              label: "Convert fills to currentColor",
+              label: "Use currentColor",
             }
           : finding.id === "COLORS_002"
             ? {
                 apply: (content: string) =>
                   applyCurrentColorTransform(content, "stroke"),
-                label: "Convert strokes to currentColor",
+                label: "Use currentColor",
               }
             : null;
 
@@ -289,12 +327,13 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
 
       if (!hasDrawableContent(nextSvg)) {
         set({
-          optimizationValidation: createValidationState(
-            "optimization_cancelled",
-          ),
-          optimizationReport: null,
+          optimizationValidation: null,
           isProcessing: false,
         });
+        showWarningToast(
+          "Optimization cancelled",
+          "Optimizing this SVG would remove all drawable elements, so no changes were applied.",
+        );
         return;
       }
 
@@ -305,31 +344,18 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       );
 
       const priorLabels = state.optimizationReport?.appliedLabels ?? [];
-      const appliedLabels = priorLabels.includes(transformConfig.label)
-        ? priorLabels
-        : [...priorLabels, transformConfig.label];
-      const sizeBefore = state.optimizationReport?.sizeBefore ?? document.metadata.byteLength;
-      const healthBefore = state.optimizationReport?.healthBefore ?? document.analysis.health.score;
-      const sizeAfter = nextDocument.metadata.byteLength;
-      const bytesSaved = Math.max(0, sizeBefore - sizeAfter);
-      const percentSaved = sizeBefore > 0
-        ? Math.round((bytesSaved / sizeBefore) * 100)
-        : 0;
+      const appliedLabels = [...priorLabels, transformConfig.label];
 
       set({
         document: nextDocument,
         error: null,
         optimizationValidation: null,
-        optimizationReport: {
-          appliedCount: appliedLabels.length,
-          appliedLabels,
-          healthBefore,
-          healthAfter: nextDocument.analysis.health.score,
-          sizeBefore,
-          sizeAfter,
-          bytesSaved,
-          percentSaved,
-        },
+        optimizationReport: buildUpdatedOptimizationReport({
+          existingReport: state.optimizationReport,
+          document,
+          nextDocument,
+          nextAppliedLabels: appliedLabels,
+        }),
         isProcessing: false,
       });
       showSuccessToast(
