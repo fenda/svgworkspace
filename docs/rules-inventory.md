@@ -10,7 +10,7 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 - React Ready rules: 5
 - Auto-capable rules: 13
 - Manual-only rules: 12
-- Choice rules in the UI: 3
+- Transform-capable rules in the UI: 3
 - Rules with explicit metadata in code: 28
 - Safe-fix treatment fallback rules remaining: 0
 
@@ -83,7 +83,7 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 ### Scoring
 
 - Score impacts are broadly proportional, but several treatment-only cleanup rules still subtract score despite being safe and fully automatable.
-- Choice-category color rules currently subtract 3 points each even though the product does not yet offer a user-facing configurable color treatment flow.
+- Transform-category color rules currently subtract 3 points each even though the product does not yet offer a user-facing configurable treatment flow.
 - React Ready rules have scores, but they live outside SVG Health; the separation is good and should remain explicit in docs.
 
 ### Treatment Classification
@@ -116,7 +116,7 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 - Revisit penalties for fully safe Auto cleanup rules such as `PERFORMANCE_001` through `PERFORMANCE_006`, `STRUCTURE_004`, `STRUCTURE_006`, and `STRUCTURE_007` so the score emphasizes user judgment and rendering risk more than removable export noise.
 - Re-evaluate whether `STRUCTURE_005 Empty Paths` should stay at `3`, since it currently scores as more severe than several safe cleanup findings.
-- Review whether `Choice` color findings should subtract the full 3 points each before configurable treatments exist.
+- Review whether Transform-oriented color findings should subtract the full 3 points each before configurable treatments exist.
 
 ### Treatment Changes
 
@@ -174,7 +174,7 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 #### Product decisions needed
 
-- Decide whether `Choice` should be fully replaced in user-facing language by `Transform`.
+- Continue aligning user-facing language around `Transform` while preserving internal `choice` metadata for now.
 - Decide whether hardcoded color findings belong in Health scoring at all, or whether they should be presented as styling opportunities outside the core grade.
 - Decide how much auto-fixable cleanup should reduce score now that `Optimize SVG` is a first-class preview action.
 - Decide whether description-related accessibility findings need more context-sensitive scoring guidance for icons versus illustrative graphics.

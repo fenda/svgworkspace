@@ -8,10 +8,16 @@ Status: Next
 - [ ] Better diff visualization
 - [x] Add Optimization Report after `Optimize SVG`
 - [x] Keep optimization reporting in `SVG Details` while leaving `SVG Health` focused on score, areas, and issues
+- [x] Position `Generate ViewBox` as the first Transform action alongside scalable SVG analysis
 
 ## Optimize SVG Improvements
 
 These improvements continue expanding the Safe Fix Engine behind the user-facing `Optimize SVG` action.
+
+Transform actions are intentionally separate from automatic optimizations:
+
+- `Optimize SVG` remains the safe automatic path
+- `Generate ViewBox` is the first intent-dependent Transform action
 
 - [ ] Remove unused defs
 - [x] Remove empty defs

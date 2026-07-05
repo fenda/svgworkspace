@@ -6,7 +6,10 @@ import { cn } from "@/lib/utils";
 const highlights = [
   "SVG Health",
   "Safe Optimizations",
-  "Privacy First",
+  "Scalable SVG",
+  "Before/After Diff",
+  "Browser-first",
+  "Transform Actions",
 ] as const;
 
 export function MobileLanding() {
@@ -37,7 +40,11 @@ export function MobileLanding() {
             <div className="space-y-3">
               <h1 className="text-4xl font-bold tracking-tight">SVG Workspace</h1>
               <p className="text-base text-zinc-300">
-                Analyze and optimize SVGs directly in your browser.
+                Understand and optimize SVGs before you ship.
+              </p>
+              <p className="text-sm text-zinc-400">
+                Analyze SVG health, optimize safely, compare changes, and export
+                cleaner SVGs directly in your browser.
               </p>
             </div>
 
@@ -52,7 +59,8 @@ export function MobileLanding() {
             <div className="space-y-3 text-sm text-zinc-300">
               <p>SVG Workspace is currently optimized for desktop browsers.</p>
               <p>
-                Continue on your desktop to upload, optimize, compare, and export SVGs.
+                Continue on your desktop to analyze, optimize, compare, and
+                export SVGs, including scalable SVG checks and Transform actions.
               </p>
             </div>
           </div>

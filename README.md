@@ -2,7 +2,7 @@
 
 SVG Workspace is a desktop-first browser tool for understanding, optimizing, and exporting SVGs with confidence.
 
-It is designed for developers who want to inspect an SVG before changing it, run Optimize SVG, compare the result, and export the cleaned output without sending files to a server.
+It is designed for developers who want to inspect an SVG before changing it, analyze its health, run safe optimizations, compare the result, and export the cleaned output without sending files to a server.
 
 Core workflow: Upload -> Analyze -> Optimize -> Compare -> Export.
 
@@ -32,13 +32,17 @@ Instead of treating optimization as a blind file-size pass, SVG Workspace tries 
 
 The goal is to help developers improve SVG quality without surprises.
 
+SVG Workspace now also includes scalable SVG analysis and the first Transform action: `Generate ViewBox`.
+
 ## Features
 
 ### Current Preview
 
 - Upload SVG via file picker, drag and drop, or paste
 - Analyze SVG Health across structure, performance, accessibility, colors, and maintainability
+- Check scalable SVG behavior, including missing or invalid `viewBox` handling
 - Optimize SVG using the Safe Fix Engine
+- Use Transform actions when the next step depends on intent, starting with `Generate ViewBox`
 - Compare original and current SVG output in Preview, SVG, and Diff views
 - Inspect metadata before and after optimization in SVG Details
 - Copy optimized SVG
@@ -51,15 +55,23 @@ The goal is to help developers improve SVG quality without surprises.
 - Hidden element removal
 - Unused definition cleanup
 - Fixed dimension removal when a valid `viewBox` already exists
+- Scalable SVG analysis with safe `Generate ViewBox` transform handling
 - Simple inline style conversion to presentation attributes when fully safe
 - Empty group and empty path cleanup
 - Decimal precision rounding
+
+### Treatment Language
+
+- `Optimize`: safe automatic improvements that preserve rendering
+- `Review`: issues that require user judgment
+- `Transform`: valid intent-dependent actions such as `Generate ViewBox`
 
 ## Product Philosophy
 
 - Explain, don’t surprise.
 - Never silently destroy user content.
 - Only apply automatic optimizations when rendering is preserved.
+- Keep Transform actions explicit when multiple valid outcomes exist.
 - Keep the user’s original SVG as the baseline for comparison.
 - Prefer a smaller focused product over exposing unfinished workflows.
 

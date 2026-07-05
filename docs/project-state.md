@@ -184,6 +184,18 @@ The application should naturally guide users through:
 
 ---
 
+## Treatment language
+
+SVG Workspace now uses this product language:
+
+- `Optimize`: safe automatic improvements
+- `Review`: actions that require user judgment
+- `Transform`: valid intent-dependent actions
+
+The first Transform action is `Generate ViewBox`.
+
+---
+
 ## Keep It Simple
 
 The UI should feel closer to:
@@ -400,7 +412,7 @@ Current rules:
 - Progress bar
 - Issue count
 - Health check count
-- Auto / Manual / Choice issue classification
+- Optimize / Review / Transform issue classification
 
 Scoring is currently provisional and should be recalibrated after more rules are added.
 
@@ -427,6 +439,12 @@ Safe automatic fixes are implemented for:
 The user-facing `Optimize SVG` action applies all safe automatic fixes and then re-runs analysis.
 
 Internally, this workflow is powered by the Safe Fix Engine.
+
+Transform actions are related but distinct:
+
+- `Optimize SVG` applies only safe automatic improvements
+- Transform actions remain explicit user-triggered changes
+- `Generate ViewBox` is the first Transform action
 
 After each `Optimize SVG` run, SVG Workspace keeps `SVG Health` focused on:
 

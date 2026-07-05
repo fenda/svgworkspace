@@ -4,12 +4,14 @@ SVG Workspace is a browser-based application for analyzing, optimizing, comparin
 
 ## Purpose
 
-SVG Workspace helps developers, designers, and front-end engineers improve SVG quality by identifying issues, explaining them, and running safe optimizations without changing the visual output.
+SVG Workspace helps developers, designers, and front-end engineers improve SVG quality by identifying issues, explaining them, running safe optimizations, and offering explicit Transform actions when intent matters.
 
 ## Features
 
 - SVG health analysis
 - Optimize SVG powered by the Safe Fix Engine
+- Scalable SVG analysis
+- Generate ViewBox as a Transform action when it is safe
 - Original vs. optimized comparison
 - SVG source inspection
 - Metadata and scalability checks
@@ -28,6 +30,7 @@ SVG Workspace helps developers, designers, and front-end engineers improve SVG q
 
 - Explain, don't surprise.
 - Safe over aggressive.
+- Keep Transform actions explicit when they depend on user intent.
 - Preserve visual output.
 - Browser-first and privacy-first.
 - Files are processed locally.
