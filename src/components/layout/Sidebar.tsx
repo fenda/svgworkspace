@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Code2, MessageSquare } from "lucide-react";
 import { navItems } from "@/lib/mock-data";
+import { GITHUB_ISSUES_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 function isActiveRoute(pathname: string, href: string) {
@@ -95,13 +96,16 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-white/10 p-2 lg:p-3">
-        <Link
-          href="#"
-          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200"
+        <a
+          href={GITHUB_ISSUES_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Feedback"
+          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100"
         >
           <MessageSquare className="size-4 shrink-0" />
           <span className="hidden lg:block">Feedback</span>
-        </Link>
+        </a>
       </div>
     </aside>
   );

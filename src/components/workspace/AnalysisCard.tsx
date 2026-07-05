@@ -96,7 +96,7 @@ export function AnalysisCard() {
       <div className="shrink-0 space-y-2 border-b border-white/10 px-4 py-3">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-400">
               Grade
             </p>
             <p className={cn("mt-1 text-3xl font-semibold tracking-tight", gradeTone)}>
@@ -106,9 +106,9 @@ export function AnalysisCard() {
           <div className="text-right">
             <p className="font-metric text-2xl font-semibold text-zinc-100">
               {health.score}
-              <span className="ml-1 text-sm font-normal text-zinc-500">/ 100</span>
+              <span className="ml-1 text-sm font-normal text-zinc-400">/ 100</span>
             </p>
-            <p className="mt-1 text-[11px] leading-4 text-zinc-500">
+            <p className="mt-1 text-[11px] leading-4 text-zinc-400">
               {hasFindings ? `${health.findingCount} ${health.findingCount === 1 ? "Issue" : "Issues"} Found` : "No issues detected."}
               <span className="mx-1 text-zinc-700">/</span>
               {health.checkCount} {health.checkCount === 1 ? "Health Check" : "Health Checks"}
@@ -124,7 +124,7 @@ export function AnalysisCard() {
               <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
                 Automatic optimizations
               </p>
-              <p className="text-xs text-zinc-600">
+              <p className="text-xs text-zinc-400">
                 {automaticOptimizationLabel}
               </p>
             </div>
@@ -132,17 +132,17 @@ export function AnalysisCard() {
         ) : null}
 
         <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+          <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-400">
             Health Areas
           </p>
           <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-2">
             {health.categoryScores.map(({ category, score }) => (
               <div key={category} className="min-w-0">
                 <div className="mb-1 flex items-center justify-between gap-2">
-                  <p className="truncate text-[11px] text-zinc-300">
+                  <p className="truncate text-[11px] text-zinc-200">
                     {getCategoryLabel(category)}
                   </p>
-                  <p className="font-metric text-[11px] text-zinc-500">
+                  <p className="font-metric text-[11px] text-zinc-400">
                     {score}
                   </p>
                 </div>
@@ -162,11 +162,11 @@ export function AnalysisCard() {
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-3">
         <div className="mb-2 flex items-center justify-between gap-3">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+          <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-400">
             Issues
           </p>
           {hasFindings ? (
-            <p className="text-xs text-zinc-600">Scrollable list</p>
+            <p className="text-xs text-zinc-400">Scrollable list</p>
           ) : null}
         </div>
 
@@ -189,18 +189,18 @@ export function AnalysisCard() {
                       >
                         {finding.title}
                       </p>
-                      <p className="mt-0.5 text-xs leading-5 text-zinc-500">
+                      <p className="mt-0.5 text-xs leading-5 text-zinc-400">
                         {finding.description}
                       </p>
                       <Badge
                         variant="outline"
-                        className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal capitalize text-zinc-600"
+                        className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal capitalize text-zinc-400"
                       >
                         {finding.category}
                       </Badge>
                       <Badge
                         variant="outline"
-                        className="mt-1.5 ml-2 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-600"
+                        className="mt-1.5 ml-2 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-400"
                       >
                         {getFixTypeLabel(fixType)}
                       </Badge>
@@ -209,8 +209,9 @@ export function AnalysisCard() {
                       type="button"
                       variant="outline"
                       size="sm"
+                      aria-label={`${getFixButtonLabel(fixType)} issue: ${finding.title}`}
                       disabled={!isAutoFix || isProcessing}
-                      className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-500 opacity-100"
+                      className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-300 opacity-100"
                       onClick={() => {
                         if (isAutoFix) {
                           applySafeFixForFinding(finding);

@@ -278,6 +278,7 @@ export function PreviewCard() {
   const formattedOriginal = formatSvg(originalContent);
   const diffLines = createSvgDiff(formattedOriginal, formattedCurrent);
   const hasChanges = formattedOriginal !== formattedCurrent;
+  const activeTabPanelId = `preview-tab-panel-${activeTab}`;
   let tabContent: ReactNode;
 
   async function handleCopy() {
@@ -351,7 +352,7 @@ export function PreviewCard() {
             </pre>
           ) : (
             <div className="flex h-full items-center justify-center p-6 text-center">
-              <p className="max-w-xs text-sm text-zinc-500">
+              <p className="max-w-xs text-sm text-zinc-400">
                 No changes yet. Optimize SVG to compare output.
               </p>
             </div>
@@ -364,11 +365,19 @@ export function PreviewCard() {
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14] lg:min-h-[520px]">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
-        <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
+        <div
+          role="tablist"
+          aria-label="Preview panel views"
+          className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1"
+        >
           {previewTabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
+              role="tab"
+              id={`preview-tab-${tab.id}`}
+              aria-selected={activeTab === tab.id}
+              aria-controls={`preview-tab-panel-${tab.id}`}
               title={tab.tooltip}
               aria-label={tab.tooltip}
               onClick={() => setActiveTab(tab.id)}
@@ -376,7 +385,7 @@ export function PreviewCard() {
                 "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
                 activeTab === tab.id
                   ? "bg-white/[0.08] text-zinc-100"
-                  : "text-zinc-500 hover:text-zinc-300",
+                  : "text-zinc-300 hover:text-zinc-100",
               )}
             >
               {tab.label}
@@ -394,7 +403,7 @@ export function PreviewCard() {
                   title="Zoom out"
                   aria-label="Zoom out"
                   disabled={zoomPercent <= MIN_ZOOM}
-                  className="text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200 disabled:text-zinc-700"
+                  className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
                   onClick={() => {
                     setIsFitMode(false);
                     setZoomPercent((current) => getNextZoom(current, "out"));
@@ -403,7 +412,7 @@ export function PreviewCard() {
                   <Minus className="size-3.5" />
                 </Button>
               </ControlTooltip>
-              <span className="font-metric min-w-[4.5rem] rounded-md px-2 text-center text-xs text-zinc-300">
+              <span className="font-metric min-w-[4.5rem] rounded-md px-2 text-center text-xs text-zinc-200">
                 {zoomPercent}%
               </span>
               <ControlTooltip label="Zoom in">
@@ -414,7 +423,7 @@ export function PreviewCard() {
                   title="Zoom in"
                   aria-label="Zoom in"
                   disabled={zoomPercent >= MAX_ZOOM}
-                  className="text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200 disabled:text-zinc-700"
+                  className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
                   onClick={() => {
                     setIsFitMode(false);
                     setZoomPercent((current) => getNextZoom(current, "in"));
@@ -431,7 +440,7 @@ export function PreviewCard() {
                   title="Fit to canvas"
                   aria-label="Fit to canvas"
                   disabled={zoomPercent === fitZoomPercent && isFitMode}
-                  className="text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200 disabled:text-zinc-700"
+                  className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
                   onClick={() => {
                     setIsFitMode(true);
                     setZoomPercent(fitZoomPercent);
@@ -448,7 +457,7 @@ export function PreviewCard() {
                   title="Reset to 100%"
                   aria-label="Reset zoom to 100 percent"
                   disabled={zoomPercent === 100 && !isFitMode}
-                  className="text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200 disabled:text-zinc-700"
+                  className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
                   onClick={() => {
                     setIsFitMode(false);
                     setZoomPercent(100);
@@ -475,7 +484,7 @@ export function PreviewCard() {
                         "flex size-7 items-center justify-center rounded-md text-[11px] font-medium transition-colors duration-150",
                         isActive
                           ? "bg-white/[0.08] text-zinc-100"
-                          : "text-zinc-500 hover:bg-white/5 hover:text-zinc-200",
+                          : "text-zinc-300 hover:bg-white/5 hover:text-zinc-100",
                       )}
                     >
                       <Icon className="size-3.5" />
@@ -515,7 +524,7 @@ export function PreviewCard() {
             Download SVG
           </Button>
         </div>
-        <p className="min-w-0 truncate text-xs text-zinc-500">
+        <p className="min-w-0 truncate text-xs text-zinc-300">
           {filename}
         </p>
         {copyState === "success" ? (
@@ -525,7 +534,13 @@ export function PreviewCard() {
         ) : null}
       </div>
 
-      {tabContent}
+      <div
+        id={activeTabPanelId}
+        role="tabpanel"
+        aria-labelledby={`preview-tab-${activeTab}`}
+      >
+        {tabContent}
+      </div>
     </div>
   );
 }

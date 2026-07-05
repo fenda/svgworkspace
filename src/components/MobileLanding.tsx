@@ -23,9 +23,10 @@ export function MobileLanding() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
+              title="Open the SVG Workspace GitHub repository"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "icon" }),
-                "size-9 text-zinc-400 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200",
+                "size-9 text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100",
               )}
             >
               <GitHubIcon />
@@ -35,7 +36,7 @@ export function MobileLanding() {
           <div className="space-y-5">
             <div className="space-y-3">
               <h1 className="text-4xl font-bold tracking-tight">SVG Workspace</h1>
-              <p className="text-base text-zinc-400">
+              <p className="text-base text-zinc-300">
                 Analyze and optimize SVGs directly in your browser.
               </p>
             </div>
@@ -48,7 +49,7 @@ export function MobileLanding() {
               ))}
             </div>
 
-            <div className="space-y-3 text-sm text-zinc-500">
+            <div className="space-y-3 text-sm text-zinc-300">
               <p>SVG Workspace is currently optimized for desktop browsers.</p>
               <p>
                 Continue on your desktop to upload, optimize, compare, and export SVGs.
@@ -62,12 +63,13 @@ export function MobileLanding() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="View SVG Workspace on GitHub"
             className={cn(
               buttonVariants({ variant: "outline", size: "sm" }),
               "border-white/10 bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]",
             )}
           >
-            Learn More
+            View on GitHub
           </a>
         </div>
       </div>

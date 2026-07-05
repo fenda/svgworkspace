@@ -1,14 +1,33 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { AnalysisCard } from "./AnalysisCard";
 import { DetailsCard } from "./DetailsCard";
 import { PreviewCard } from "./PreviewCard";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 
 export function Workspace() {
-  const { document } = useSvgWorkspace();
+  const { document: currentDocument } = useSvgWorkspace();
+  const hadDocumentRef = useRef(false);
 
-  if (!document) {
+  useEffect(() => {
+    if (!currentDocument || typeof window === "undefined") {
+      hadDocumentRef.current = false;
+      return;
+    }
+
+    if (!hadDocumentRef.current) {
+      window.requestAnimationFrame(() => {
+        globalThis.document
+          .querySelector<HTMLElement>("[data-workspace-root]")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+
+    hadDocumentRef.current = true;
+  }, [currentDocument]);
+
+  if (!currentDocument) {
     return null;
   }
 

@@ -67,6 +67,8 @@ export function UploadDropzone() {
 
   return (
     <div
+      role="group"
+      aria-label="Upload an SVG by dropping a file, browsing files, or pasting SVG markup"
       onDragEnter={() => setIsDragging(true)}
       onDragLeave={() => setIsDragging(false)}
       onDragOver={(event) => event.preventDefault()}
@@ -81,6 +83,12 @@ export function UploadDropzone() {
         event.preventDefault();
         handlePaste(text);
       }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          inputRef.current?.click();
+        }
+      }}
       tabIndex={0}
       className={cn(
         "flex h-full min-h-[192px] flex-col items-center justify-center rounded-2xl border border-dashed bg-[#111114] p-5 text-center transition-all duration-150 outline-none",
@@ -94,6 +102,7 @@ export function UploadDropzone() {
         id={inputId}
         type="file"
         accept=".svg,image/svg+xml"
+        aria-label="Choose an SVG file to upload"
         className="sr-only"
         onChange={(event) => {
           void handleFiles(event.target.files);
@@ -114,7 +123,7 @@ export function UploadDropzone() {
       <p className="mb-2 text-sm font-medium text-zinc-300">
         Drop your SVG here
       </p>
-      <p className="mb-4 text-xs text-zinc-500">
+      <p className="mb-4 text-xs text-zinc-400">
         or browse files or paste SVG
       </p>
 
@@ -129,7 +138,7 @@ export function UploadDropzone() {
         </Button>
       </div>
 
-      <p className="mt-5 text-xs text-zinc-500">
+      <p className="mt-5 text-xs text-zinc-400">
         Paste SVG <span className="font-metric text-zinc-400">⌘V</span>
       </p>
 
