@@ -109,6 +109,17 @@ npm run lint
 npm run build
 ```
 
+### Deployed version visibility
+
+Production builds expose the deployed release tag through `NEXT_PUBLIC_APP_VERSION`.
+
+The deployment workflow sets:
+
+- `NEXT_PUBLIC_APP_VERSION` from the pushed Git tag
+- `NEXT_PUBLIC_COMMIT_SHA` from `github.sha`
+
+The app footer displays the deployed version subtly so it is easy to confirm what release is live.
+
 ## Screenshots
 
 Screenshots coming soon.

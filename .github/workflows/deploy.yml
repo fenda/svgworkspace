@@ -23,6 +23,9 @@ jobs:
         run: npm ci
 
       - name: Build static site
+        env:
+          NEXT_PUBLIC_APP_VERSION: ${{ github.ref_name }}
+          NEXT_PUBLIC_COMMIT_SHA: ${{ github.sha }}
         run: npm run build
 
       - name: Setup SSH

@@ -1,5 +1,6 @@
 import { Code2 } from "lucide-react";
 import { GitHubIcon } from "@/components/icons/GitHubIcon";
+import { APP_VERSION, SHORT_COMMIT_SHA } from "@/lib/app-version";
 import { GITHUB_URL } from "@/lib/constants";
 
 export function Footer() {
@@ -12,7 +13,15 @@ export function Footer() {
           </div>
           <div className="space-y-0.5">
             <p className="text-sm font-semibold text-white">SVG Workspace</p>
-            <p className="text-xs text-zinc-500">v0.4.0 Preview</p>
+            <p
+              className="text-xs text-zinc-500"
+              title={SHORT_COMMIT_SHA ? `Commit ${SHORT_COMMIT_SHA}` : undefined}
+            >
+              {APP_VERSION}
+              {SHORT_COMMIT_SHA ? (
+                <span className="ml-2 text-zinc-600">{SHORT_COMMIT_SHA}</span>
+              ) : null}
+            </p>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-500">
