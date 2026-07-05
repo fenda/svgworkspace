@@ -414,7 +414,7 @@ Safe automatic fixes are implemented for:
 - PERFORMANCE_005 — Remove unused definitions
 - PERFORMANCE_006 — Remove unused namespace declarations
 - Convert simple inline styles to presentation attributes when every declaration is safely convertible
-- Inline simple embedded CSS class rules when every selector and declaration is safely convertible
+- Inline safe embedded CSS class rules while preserving unsupported rules in the same <style> block
 
 The user-facing `Optimize SVG` action applies all safe automatic fixes and then re-runs analysis.
 
@@ -490,6 +490,7 @@ Current fixtures include:
 - inline-styles-safe.svg
 - inline-styles-unsafe.svg
 - css-classes-safe.svg
+- css-classes-partial.svg
 - css-classes-unsafe-selector.svg
 - css-classes-unsafe-declaration.svg
 - css-classes-mixed.svg
@@ -514,7 +515,9 @@ good.svg is the canonical regression fixture and should always return:
 `Inline Styles` is only treated as an automatic fix when every inline declaration is a safe SVG presentation property.
 
 `Unused Namespaces` is only treated as an automatic fix when a prefixed namespace declaration is not referenced by any element or attribute name in the document.
-`Embedded CSS Classes` is only treated as an automatic fix when every `<style>` block uses simple single-class selectors and only safe SVG presentation properties.
+`Embedded CSS Classes` is treated as an automatic fix when at least one simple single-class rule uses only safe SVG presentation properties.
+
+Unsafe embedded CSS rules are preserved, and a `<style>` block is only removed when no CSS rules remain after safe inlining.
 
 ---
 
