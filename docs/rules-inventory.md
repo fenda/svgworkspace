@@ -8,18 +8,20 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 - SVG Health rules: 22
 - React Ready rules: 5
-- Auto-capable rules: 11
+- Auto-capable rules: 13
 - Manual-only rules: 12
 - Choice rules in the UI: 2
+- Rules with explicit metadata in code: 27
+- Safe-fix treatment fallback rules remaining: 0
 
 ## Structure
 
 | ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `STRUCTURE_001` | Missing viewBox | Structure | Warning | 5 | Manual | Implemented | `missing-viewbox.svg`, `messy.svg` | Strong structural penalty is consistent with responsiveness impact. |
-| `STRUCTURE_002` | Fixed Width & Height | Structure | Info | 2 | Auto when `viewBox` is valid, otherwise Manual | Implemented | `fixed-dimensions.svg`, `fixed-dimensions-no-viewbox.svg`, `missing-viewbox.svg`, `messy.svg`, `illustrator-export.svg` | Dynamic treatment is implemented correctly, but the rule does not declare `fixType` in code. |
+| `STRUCTURE_002` | Fixed Width & Height | Structure | Info | 2 | Auto when `viewBox` is valid, otherwise Manual | Implemented | `fixed-dimensions.svg`, `fixed-dimensions-no-viewbox.svg`, `missing-viewbox.svg`, `messy.svg`, `illustrator-export.svg` | Rule metadata now defaults to Manual and the finding upgrades to Auto only when the existing `viewBox` makes removal safe. |
 | `STRUCTURE_003` | Duplicate IDs | Structure | Warning | 4 | Manual | Implemented | `duplicate-ids.svg` | Clear standalone rule with dedicated fixture. |
-| `STRUCTURE_004` | Empty Groups | Structure | Info | 1 | Auto | Implemented | `empty-groups.svg`, `messy.svg` | Treated as Auto in the UI via fallback list, not explicit rule metadata. |
+| `STRUCTURE_004` | Empty Groups | Structure | Info | 1 | Auto | Implemented | `empty-groups.svg`, `messy.svg` | Explicit Auto metadata now matches optimizer behavior. |
 | `STRUCTURE_005` | Empty Paths | Structure | Warning | 3 | Auto | Implemented | `empty-paths.svg`, `messy.svg` | Warning severity is reasonable because empty paths usually indicate export noise or corruption. |
 | `STRUCTURE_006` | Empty Definitions | Structure | Info | 1 | Auto | Implemented | `empty-defs.svg` | Explicit auto metadata is present. |
 | `STRUCTURE_007` | Empty Symbols | Structure | Info | 1 | Auto | Implemented | `empty-symbols.svg` | Explicit auto metadata is present. |
@@ -28,19 +30,19 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 | ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `PERFORMANCE_001` | Metadata Found | Performance | Info | 2 | Auto | Implemented | `metadata.svg`, `messy.svg`, `illustrator-export.svg` | Auto in the UI via fallback list, not explicit rule metadata. |
+| `PERFORMANCE_001` | Metadata Found | Performance | Info | 2 | Auto | Implemented | `metadata.svg`, `messy.svg`, `illustrator-export.svg` | Explicit Auto metadata now matches optimizer behavior. |
 | `PERFORMANCE_002` | Comments Found | Performance | Info | 1 | Auto | Implemented | `comments.svg`, `messy.svg`, `illustrator-export.svg` | Lowest-impact cleanup rule; score is reasonable. |
-| `PERFORMANCE_003` | High Decimal Precision | Performance | Info | 3 | Auto | Implemented | `high-precision.svg`, `messy.svg`, `illustrator-export.svg` | Auto in the UI via fallback list, not explicit rule metadata. |
+| `PERFORMANCE_003` | High Decimal Precision | Performance | Info | 3 | Auto | Implemented | `high-precision.svg`, `messy.svg`, `illustrator-export.svg` | Explicit Auto metadata now matches optimizer behavior. |
 | `PERFORMANCE_004` | Hidden Elements | Performance | Info | 2 | Auto | Implemented | `hidden-elements.svg`, `messy.svg` | Detects both direct attributes and inline style forms. |
-| `PERFORMANCE_005` | Unused Definitions | Performance | Info | 2 | Auto | Implemented | `unused-defs.svg` | Dedicated fixture exists, but no explicit `fixType` metadata on the rule. |
+| `PERFORMANCE_005` | Unused Definitions | Performance | Info | 2 | Auto | Implemented | `unused-defs.svg` | Explicit Auto metadata now matches optimizer behavior. |
 | `PERFORMANCE_006` | Unused Namespaces | Performance | Info | 1 | Auto | Implemented | `unused-namespaces.svg`, `namespace-in-use.svg` | Includes both positive and negative coverage. |
 
 ## Colors
 
 | ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `COLORS_001` | Hardcoded Fill Colors | Colors | Warning | 3 | Choice in the UI | Implemented | `hardcoded-fill.svg`, `hardcoded-colors.svg`, `messy.svg`, `illustrator-export.svg` | Rule itself does not declare `fixType`; `Choice` is injected by UI fallback logic. |
-| `COLORS_002` | Hardcoded Stroke Colors | Colors | Warning | 3 | Choice in the UI | Implemented | `hardcoded-stroke.svg`, `hardcoded-colors.svg`, `messy.svg`, `illustrator-export.svg` | Same fallback-based `Choice` classification as `COLORS_001`. |
+| `COLORS_001` | Hardcoded Fill Colors | Colors | Warning | 3 | Choice in the UI | Implemented | `hardcoded-fill.svg`, `hardcoded-colors.svg`, `messy.svg`, `illustrator-export.svg` | Explicit Choice metadata now matches the current UI treatment. |
+| `COLORS_002` | Hardcoded Stroke Colors | Colors | Warning | 3 | Choice in the UI | Implemented | `hardcoded-stroke.svg`, `hardcoded-colors.svg`, `messy.svg`, `illustrator-export.svg` | Explicit Choice metadata now matches the current UI treatment. |
 
 ## Accessibility
 
@@ -86,8 +88,8 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 ### Treatment Classification
 
 - Dynamic Auto/Manual treatment is implemented correctly for `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002`.
-- `COLORS_001` and `COLORS_002` are effectively `Choice` in the UI, but that classification is not declared in the rule definitions.
-- Several Auto rules (`PERFORMANCE_001` through `PERFORMANCE_005`, `STRUCTURE_004`, `STRUCTURE_005`) rely on fallback lists in `src/actions/safe-fixes/index.ts` instead of explicit rule metadata, which conflicts with the current rule-spec documentation.
+- `COLORS_001` and `COLORS_002` now declare `choice` directly in their rule definitions.
+- The safe-fix layer no longer infers treatment from fallback rule ID lists. Each finding now carries an explicit fix type produced from rule metadata.
 
 ### Duplication / Overlap
 
@@ -104,8 +106,8 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 ### Documentation Drift
 
 - Category rule docs for Colors, Maintainability, Performance, and Structure have now been aligned with the implemented rule set.
-- The rule spec says every rule should define `severity`, `scoreImpact`, `fixType`, `introducedIn`, and `status`, but many implemented rules only return those values in findings and do not declare them in the rule object.
-- The code currently uses lowercase severity values (`warning`, `info`) while the rule-spec prose uses title-cased labels (`Warning`, `Info`). This is harmless, but worth documenting consistently.
+- `docs/RULES.md` now matches the implemented metadata contract: explicit rule metadata in code, lowercase internal severity/fix-type values, and development-only metadata validation.
+- Dynamic treatment behavior still deserves careful documentation because several rules default to `manual` in metadata and then upgrade the returned finding to `auto` only when the SVG state makes that safe.
 
 ## Recommended Follow-ups
 
@@ -117,14 +119,12 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 ### Treatment Changes
 
-- Declare `fixType` directly on all implemented rules instead of relying on fallback lists in `src/actions/safe-fixes/index.ts`.
-- Decide whether `Choice` should be declared at the rule level for color findings rather than inferred in UI logic.
+- Keep rule metadata as the treatment source of truth and avoid reintroducing rule-ID fallback inference in `src/actions/safe-fixes/index.ts`.
 - Consider whether `ACCESSIBILITY_005 Decorative SVG` should remain labeled as a treatment-bearing finding or be documented as contextual review guidance only.
 
 ### Documentation Fixes
 
-- Rewrite `docs/rules/colors.md`, `docs/rules/maintainability.md`, `docs/rules/performance.md`, and `docs/rules/structure.md` to match the implemented rule set.
-- Bring rule-spec expectations in `docs/RULES.md` in line with the current implementation, or update the code so every rule actually declares the required metadata.
+- Keep category docs aligned when dynamic treatment behavior changes, especially for `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002`.
 - Add a short note in category docs clarifying which rules are SVG Health rules versus React Ready conversion guidance.
 
 ### Fixture Gaps
@@ -158,9 +158,8 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 ### Metadata recommendations
 
-- First priority: add explicit `fixType` metadata to rules that currently depend on fallback treatment inference in `src/actions/safe-fixes/index.ts`.
-- Highest-priority rules for explicit `fixType`: `PERFORMANCE_001`, `PERFORMANCE_002`, `PERFORMANCE_003`, `PERFORMANCE_004`, `PERFORMANCE_005`, `STRUCTURE_004`, `STRUCTURE_005`, `COLORS_001`, and `COLORS_002`.
-- Next priority: add consistent `introducedIn` and `status` metadata across all SVG Health rules so the implementation matches `docs/RULES.md`.
+- All implemented rules now declare `severity`, `scoreImpact`, `fixType`, `introducedIn`, and `status` directly in code.
+- Next priority is documenting the dynamic-treatment pattern more explicitly so future rules do not guess whether a rule-level `fixType` can be overridden per finding.
 - Dynamic-treatment rules should keep their runtime checks, but their metadata contract still needs to be documented more explicitly. `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002` are the best templates for that follow-up.
 - React Ready rules are already conceptually separate from SVG Health; future metadata cleanup should preserve that distinction instead of flattening everything into one scoring model.
 
@@ -168,9 +167,9 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 #### Low-risk cleanup
 
-- Move inferred treatment IDs out of the fallback sets and into explicit rule metadata wherever the treatment is already stable.
-- Update `docs/RULES.md` or the rule objects so the metadata contract is consistent in one direction instead of split between documentation and fallback behavior.
-- Document the remaining fallback logic in `src/actions/safe-fixes/index.ts` as temporary once explicit rule metadata lands.
+- Consider extracting a small helper for dynamic rule metadata if future rules need to declare default treatment plus safe override behavior more often.
+- Keep the development-only metadata validator current as new required fields are added.
+- No fallback treatment inference remains in `src/actions/safe-fixes/index.ts`; preserving that simplification should be a maintenance goal.
 
 #### Product decisions needed
 

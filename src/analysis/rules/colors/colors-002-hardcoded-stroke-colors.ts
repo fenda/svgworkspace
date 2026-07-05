@@ -1,4 +1,5 @@
 import type { AnalysisRule } from "@/analysis/models";
+import { createRuleFinding } from "../utils";
 
 function isIgnoredPaint(value: string): boolean {
   return (
@@ -28,19 +29,20 @@ function hasHardcodedStroke(svg: SVGSVGElement): boolean {
 export const colors002HardcodedStrokeColors: AnalysisRule = {
   id: "COLORS_002",
   category: "colors",
+  title: "Hardcoded Stroke Colors",
+  description: "One or more elements use fixed stroke colors.",
+  severity: "warning",
+  scoreImpact: 3,
+  fixType: "choice",
+  introducedIn: "0.2.0",
+  status: "implemented",
   analyze(svg) {
     if (!hasHardcodedStroke(svg)) {
       return null;
     }
 
-    return {
-      id: "COLORS_002",
-      category: "colors",
-      severity: "warning",
-      title: "Hardcoded Stroke Colors",
-      description: "One or more elements use fixed stroke colors.",
+    return createRuleFinding(colors002HardcodedStrokeColors, {
       recommendation: "Use currentColor or CSS variables when appropriate.",
-      scoreImpact: 3,
-    };
+    });
   },
 };

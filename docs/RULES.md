@@ -135,13 +135,13 @@ Identifiers:
 
 # Rule Status
 
-Every rule should have one status.
+Every implemented rule has one status.
 
 Possible values:
 
-- Planned
-- Implemented
-- Deprecated
+- `planned`
+- `implemented`
+- `deprecated`
 
 Deprecated rule identifiers must never be reused.
 
@@ -149,26 +149,34 @@ Deprecated rule identifiers must never be reused.
 
 # Required Metadata
 
-Every rule should define:
+Every implemented rule definition in `src/analysis/rules/**` now declares:
 
-- ID
-- Category
-- Title
-- Description
-- Severity
-- Score Impact
-- Fix Type
-- Introduced Version
+- `id`
+- `category`
+- `title`
+- `description`
+- `severity`
+- `scoreImpact`
+- `fixType`
+- `introducedIn`
+- `status`
+
+Findings inherit this metadata from the rule.
+
+When treatment is context-dependent, a rule may override `fixType` at finding time while keeping the rule metadata as the default classification.
 
 Example:
 
 ```yaml
 id: PERFORMANCE_001
-category: Performance
-severity: Warning
-scoreImpact: 8
-fixType: Auto
+category: performance
+title: Metadata Found
+description: Metadata elements were detected.
+severity: info
+scoreImpact: 2
+fixType: auto
 introducedIn: 0.2.0
+status: implemented
 ```
 
 ---
@@ -177,10 +185,12 @@ introducedIn: 0.2.0
 
 Allowed values:
 
-- Critical
-- Major
-- Warning
-- Info
+- `error`
+- `warning`
+- `info`
+- `success`
+
+Current analysis rules use `warning` and `info`.
 
 Severity expresses importance independently of scoring.
 
@@ -188,11 +198,19 @@ The current scoring model is provisional.
 
 ---
 
-# Fix Types
+# Fix Types / Treatments
 
 Every rule must define one fix type.
 
-## Auto
+Internal values:
+
+- `auto`
+- `manual`
+- `choice`
+
+Product language may describe these as Optimize, Review, and Transform, but the current implementation uses the internal values above.
+
+## auto
 
 Safe to perform automatically.
 
@@ -202,7 +220,7 @@ Examples:
 - Remove comments
 - Round decimals
 
-## Manual
+## manual
 
 Requires user judgment.
 
@@ -211,7 +229,7 @@ Examples:
 - Missing viewBox
 - Duplicate IDs
 
-## Choice
+## choice
 
 Requires user configuration.
 
@@ -239,6 +257,22 @@ Prefer one fixture per rule whenever practical.
 Avoid large "kitchen sink" SVGs unless they exist specifically to validate combined behavior.
 
 Fixtures should remain stable over time.
+
+---
+
+# Metadata Validation
+
+Rule registration performs lightweight development-only metadata validation.
+
+During development, SVG Workspace warns when a registered rule is missing:
+
+- `severity`
+- `scoreImpact`
+- `fixType`
+- `status`
+- other required rule metadata
+
+These warnings do not block production builds.
 
 ---
 
@@ -320,6 +354,8 @@ Before merging a new rule:
 - Appropriate severity
 - Score impact defined
 - Fix type assigned
+- Introduced version recorded
+- Status recorded
 - Regression fixture added
 - Manual testing completed
 - Documentation planned or added

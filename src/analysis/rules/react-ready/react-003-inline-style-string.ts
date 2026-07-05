@@ -1,5 +1,6 @@
 import type { AnalysisRule } from "@/analysis/models";
 import { hasInlineStyleString } from "./shared";
+import { createRuleFinding } from "../utils";
 
 export const react003InlineStyleString: AnalysisRule = {
   id: "REACT_003",
@@ -16,14 +17,8 @@ export const react003InlineStyleString: AnalysisRule = {
       return null;
     }
 
-    return {
-      id: react003InlineStyleString.id,
-      category: react003InlineStyleString.category,
-      severity: react003InlineStyleString.severity ?? "warning",
-      title: react003InlineStyleString.title ?? "Inline Style String",
-      description: react003InlineStyleString.description ?? "",
+    return createRuleFinding(react003InlineStyleString, {
       recommendation: "Convert inline style strings to JSX style objects before using this SVG in React.",
-      scoreImpact: react003InlineStyleString.scoreImpact ?? 0,
-    };
+    });
   },
 };

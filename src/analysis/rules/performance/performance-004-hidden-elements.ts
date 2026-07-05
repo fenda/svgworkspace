@@ -1,4 +1,5 @@
 import type { AnalysisRule } from "@/analysis/models";
+import { createRuleFinding } from "../utils";
 
 function getStyleValue(style: string, property: string): string | null {
   const pattern = new RegExp(`${property}\\s*:\\s*([^;]+)`, "i");
@@ -39,19 +40,20 @@ function hasHiddenElements(svg: SVGSVGElement): boolean {
 export const performance004HiddenElements: AnalysisRule = {
   id: "PERFORMANCE_004",
   category: "performance",
+  title: "Hidden Elements",
+  description: "The SVG contains elements that are hidden and do not affect rendering.",
+  severity: "info",
+  scoreImpact: 2,
+  fixType: "auto",
+  introducedIn: "0.2.0",
+  status: "implemented",
   analyze(svg) {
     if (!hasHiddenElements(svg)) {
       return null;
     }
 
-    return {
-      id: "PERFORMANCE_004",
-      category: "performance",
-      severity: "info",
-      title: "Hidden Elements",
-      description: "The SVG contains elements that are hidden and do not affect rendering.",
+    return createRuleFinding(performance004HiddenElements, {
       recommendation: "Remove hidden elements that are not needed.",
-      scoreImpact: 2,
-    };
+    });
   },
 };

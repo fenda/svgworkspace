@@ -25,9 +25,10 @@ import { structure004EmptyGroups } from "./structure/structure-004-empty-groups"
 import { structure005EmptyPaths } from "./structure/structure-005-empty-paths";
 import { structure006EmptyDefinitions } from "./structure/structure-006-empty-definitions";
 import { structure007EmptySymbols } from "./structure/structure-007-empty-symbols";
+import { validateRuleMetadata } from "./utils";
 import type { AnalysisRule } from "@/analysis/models";
 
-export const svgHealthRules: AnalysisRule[] = [
+const structureRules: AnalysisRule[] = [
   structure001MissingViewBox,
   structure002FixedWidthHeight,
   structure003DuplicateIds,
@@ -35,27 +36,57 @@ export const svgHealthRules: AnalysisRule[] = [
   structure005EmptyPaths,
   structure006EmptyDefinitions,
   structure007EmptySymbols,
+];
+
+const performanceRules: AnalysisRule[] = [
   performance001MetadataFound,
   performance002CommentsFound,
   performance003HighDecimalPrecision,
   performance004HiddenElements,
   performance005UnusedDefinitions,
   performance006UnusedNamespaces,
+];
+
+const colorRules: AnalysisRule[] = [
   colors001HardcodedFillColors,
   colors002HardcodedStrokeColors,
+];
+
+const accessibilityRules: AnalysisRule[] = [
   accessibility001MissingTitle,
   accessibility002EmptyTitle,
   accessibility003MissingDesc,
   accessibility004EmptyDesc,
   accessibility005DecorativeSvg,
+];
+
+const maintainabilityRules: AnalysisRule[] = [
   maintainability001InlineStyles,
   maintainability002EmbeddedCssClasses,
 ];
 
-export const reactReadyRules: AnalysisRule[] = [
+const svgHealthRuleGroups: AnalysisRule[] = [
+  ...structureRules,
+  ...performanceRules,
+  ...colorRules,
+  ...accessibilityRules,
+  ...maintainabilityRules,
+];
+
+const reactReadyRuleGroup: AnalysisRule[] = [
   react001ClassAttribute,
   react002KebabCaseAttributes,
   react003InlineStyleString,
   react004XlinkAttribute,
   react005InlineEventHandlers,
 ];
+
+export const svgHealthRules = validateRuleMetadata(
+  svgHealthRuleGroups,
+  "svgHealthRules",
+);
+
+export const reactReadyRules = validateRuleMetadata(
+  reactReadyRuleGroup,
+  "reactReadyRules",
+);

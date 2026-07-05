@@ -1,5 +1,6 @@
 import type { AnalysisRule } from "@/analysis/models";
 import { hasXlinkAttributes } from "./shared";
+import { createRuleFinding } from "../utils";
 
 export const react004XlinkAttribute: AnalysisRule = {
   id: "REACT_004",
@@ -17,14 +18,8 @@ export const react004XlinkAttribute: AnalysisRule = {
       return null;
     }
 
-    return {
-      id: react004XlinkAttribute.id,
-      category: react004XlinkAttribute.category,
-      severity: react004XlinkAttribute.severity ?? "info",
-      title: react004XlinkAttribute.title ?? "xlink Attribute",
-      description: react004XlinkAttribute.description ?? "",
+    return createRuleFinding(react004XlinkAttribute, {
       recommendation: "Review xlink attributes and replace them with React-friendly equivalents where appropriate.",
-      scoreImpact: react004XlinkAttribute.scoreImpact ?? 0,
-    };
+    });
   },
 };

@@ -1,5 +1,6 @@
 import type { AnalysisRule } from "@/analysis/models";
 import { isDecorativeSvg } from "./shared";
+import { createRuleFinding } from "../utils";
 
 export const accessibility005DecorativeSvg: AnalysisRule = {
   id: "ACCESSIBILITY_005",
@@ -17,15 +18,9 @@ export const accessibility005DecorativeSvg: AnalysisRule = {
       return null;
     }
 
-    return {
-      id: accessibility005DecorativeSvg.id,
-      category: accessibility005DecorativeSvg.category,
-      severity: accessibility005DecorativeSvg.severity ?? "info",
-      title: accessibility005DecorativeSvg.title ?? "Decorative SVG",
-      description: accessibility005DecorativeSvg.description ?? "",
+    return createRuleFinding(accessibility005DecorativeSvg, {
       recommendation:
         "Confirm that this SVG is intentionally decorative and can remain hidden from assistive technologies.",
-      scoreImpact: accessibility005DecorativeSvg.scoreImpact ?? 0,
-    };
+    });
   },
 };

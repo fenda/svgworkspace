@@ -1,5 +1,6 @@
 import type { AnalysisRule } from "@/analysis/models";
 import { hasEmptyElementText } from "./shared";
+import { createRuleFinding } from "../utils";
 
 export const accessibility004EmptyDesc: AnalysisRule = {
   id: "ACCESSIBILITY_004",
@@ -16,14 +17,8 @@ export const accessibility004EmptyDesc: AnalysisRule = {
       return null;
     }
 
-    return {
-      id: accessibility004EmptyDesc.id,
-      category: accessibility004EmptyDesc.category,
-      severity: accessibility004EmptyDesc.severity ?? "info",
-      title: accessibility004EmptyDesc.title ?? "Empty Description",
-      description: accessibility004EmptyDesc.description ?? "",
+    return createRuleFinding(accessibility004EmptyDesc, {
       recommendation: "Fill the <desc> element with useful supporting context.",
-      scoreImpact: accessibility004EmptyDesc.scoreImpact ?? 0,
-    };
+    });
   },
 };
