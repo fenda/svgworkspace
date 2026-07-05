@@ -55,6 +55,16 @@ It is intended to answer:
 
 The report should remain compact and should not duplicate information that already exists elsewhere in the interface.
 
+## Treatment language
+
+Workspace actions should use this product language:
+
+- `Optimize`: safe automatic improvements that preserve rendering
+- `Review`: findings that require user judgment
+- `Transform`: intent-dependent actions with more than one valid outcome
+
+`Generate ViewBox` is the first Transform action in the Workspace.
+
 ---
 
 ## SVG Health
@@ -72,6 +82,8 @@ It should remain focused on:
 - health areas
 - issues
 - the `Optimize SVG` action
+
+Transform and Review findings should remain visible in the issues list, but they should not be framed as automatic optimizations.
 
 ---
 
