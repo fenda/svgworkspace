@@ -138,7 +138,7 @@ These docs define the execution order after Preview.
 
 ## Rules Audit
 
-A rules and scoring audit is now in progress.
+A rules, treatment, and scoring audit is now in progress.
 
 Current inventory and follow-up notes live in:
 
