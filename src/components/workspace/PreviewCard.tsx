@@ -29,6 +29,7 @@ import {
   getAutomaticPreviewBackground,
   type PreviewBackground,
 } from "@/lib/svg/preview-background";
+import { showSuccessToast } from "@/stores/toast-store";
 import { cn } from "@/lib/utils";
 
 type PreviewTab = "preview" | "svg" | "diff";
@@ -324,6 +325,7 @@ export function PreviewCard() {
     try {
       await copySvg(formattedCurrent);
       setCopyState("success");
+      showSuccessToast("Copied");
       window.setTimeout(() => setCopyState("idle"), 1800);
     } catch {
       setCopyState("error");
@@ -551,7 +553,7 @@ export function PreviewCard() {
             onClick={() => void handleCopy()}
           >
             {copyState === "success" ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-            Copy SVG
+            Copy
           </Button>
           <Button
             type="button"
@@ -560,18 +562,19 @@ export function PreviewCard() {
             title="Download the current formatted SVG"
             aria-label="Download the current formatted SVG"
             className="border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
-            onClick={() => downloadSvg(formattedCurrent, filename)}
+            onClick={() => {
+              downloadSvg(formattedCurrent, filename);
+              showSuccessToast("Downloaded");
+            }}
           >
             <Download className="size-3.5" />
-            Download SVG
+            Download
           </Button>
         </div>
         <p className="min-w-0 truncate text-xs text-zinc-300">
           {filename}
         </p>
-        {copyState === "success" ? (
-          <p className="text-xs text-emerald-400">Copied</p>
-        ) : copyState === "error" ? (
+        {copyState === "error" ? (
           <p className="text-xs text-amber-400">Copy failed</p>
         ) : null}
       </div>

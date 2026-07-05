@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 import { formatBytes } from "@/lib/svg";
 
@@ -34,13 +35,15 @@ function formatSavedValue(bytesSaved: number, percentSaved: number): string {
 }
 
 export function DetailsCard() {
-  const { document, optimizationReport } = useSvgWorkspace();
+  const { document, optimizationReport, resetToOriginal, isProcessing } =
+    useSvgWorkspace();
 
   if (!document) {
     return null;
   }
 
   const { metadata, originalMetadata } = document;
+  const hasChanges = document.content !== document.originalContent;
   const metricItems = [
     {
       label: "ViewBox",
@@ -103,11 +106,25 @@ export function DetailsCard() {
             <p className="text-[10px] uppercase tracking-wider text-zinc-500">
               Applied Optimizations
             </p>
-            {optimizationReport?.appliedCount ? (
-              <p className="text-xs text-zinc-400">
-                {optimizationReport.appliedCount} applied
-              </p>
-            ) : null}
+            <div className="flex items-center gap-2">
+              {optimizationReport?.appliedCount ? (
+                <p className="text-xs text-zinc-400">
+                  {optimizationReport.appliedCount} applied
+                </p>
+              ) : null}
+              {hasChanges ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={isProcessing}
+                  className="h-7 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-300"
+                  onClick={resetToOriginal}
+                >
+                  Reset to original
+                </Button>
+              ) : null}
+            </div>
           </div>
 
           {optimizationReport?.appliedLabels.length ? (

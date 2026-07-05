@@ -1,11 +1,13 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { ToastViewport } from "@/components/ui/toast-viewport";
 import { MobileLanding } from "@/components/MobileLanding";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <ToastViewport />
       <div className="md:hidden">
         <MobileLanding />
       </div>
