@@ -49,10 +49,10 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `hardcoded-fill.svg` | Tests hardcoded fill color detection only. | `Hardcoded Fill Colors` |
 | `hardcoded-stroke.svg` | Tests hardcoded stroke color detection only. | `Hardcoded Stroke Colors` |
 | `hardcoded-colors.svg` | Tests both hardcoded fill and stroke colors together. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
-| `hardcoded-currentcolor-fill.svg` | Tests explicit currentColor conversion for direct fill attributes. | `Hardcoded Fill Colors` |
-| `hardcoded-currentcolor-stroke.svg` | Tests explicit currentColor conversion for direct stroke attributes. | `Hardcoded Stroke Colors` |
-| `hardcoded-currentcolor-mixed.svg` | Tests explicit currentColor conversion for both direct fill and direct stroke attributes. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
-| `hardcoded-currentcolor-unsafe.svg` | Tests hardcoded color findings that remain review-only because the colors live in style attributes. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
+| `currentcolor-fill.svg` | Tests explicit currentColor conversion for direct fill attributes. | `Hardcoded Fill Colors` |
+| `currentcolor-stroke.svg` | Tests explicit currentColor conversion for direct stroke attributes. | `Hardcoded Stroke Colors` |
+| `currentcolor-mixed.svg` | Tests explicit currentColor conversion for both direct fill and direct stroke attributes while preserving `none`, `url(#...)`, and existing `currentColor` values. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
+| `currentcolor-unsafe.svg` | Tests hardcoded color findings that remain review-only because the colors live in style attributes or use ignored keywords. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
 | `high-precision.svg` | Tests excessive decimal precision detection. | `High Decimal Precision` |
 | `duplicate-ids.svg` | Tests duplicate `id` detection. | `Duplicate IDs` |
 | `messy.svg` | Realistic bad SVG fixture with multiple structural, performance, color, and maintainability issues. | `Missing viewBox`, `Fixed Width & Height`, `Empty Groups`, `Empty Paths`, `Metadata Found`, `Comments Found`, `High Decimal Precision`, `Hidden Elements`, `Hardcoded Fill Colors`, `Hardcoded Stroke Colors`, `Inline Styles` |
@@ -76,6 +76,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 - `css-classes-safe.svg` is automatic because every embedded CSS rule uses a simple single-class selector with only safe presentation properties.
 - `css-classes-partial.svg` and `css-classes-mixed.svg` are automatic because at least one embedded CSS rule is safe to inline, while unsupported rules remain in the `<style>` block.
 - `css-classes-unsafe-selector.svg` and `css-classes-unsafe-declaration.svg` remain manual because no rule in the block is safe to inline automatically.
-- `hardcoded-currentcolor-fill.svg`, `hardcoded-currentcolor-stroke.svg`, and `hardcoded-currentcolor-mixed.svg` should expose `Use currentColor` as a Transform because they use direct `fill` or `stroke` attributes with safe explicit color values.
-- `hardcoded-currentcolor-unsafe.svg` should keep the hardcoded color findings visible, but it should remain review-only because the colors are embedded in `style` attributes instead of direct `fill` or `stroke` attributes.
+- `currentcolor-fill.svg`, `currentcolor-stroke.svg`, and `currentcolor-mixed.svg` should expose `Convert to currentColor` as a Transform because they use direct `fill` or `stroke` attributes with safe explicit color values.
+- `currentcolor-mixed.svg` should convert only eligible direct hardcoded paint attributes while preserving `none`, `url(#...)`, and existing `currentColor` values.
+- `currentcolor-unsafe.svg` should keep the hardcoded color findings visible, but it should remain review-only because the colors are embedded in `style` attributes or use ignored keywords instead of safe direct `fill` or `stroke` values.
 - Other fixtures may include header comments for human readability; comment detection is based on comments inside the `<svg>` tree.

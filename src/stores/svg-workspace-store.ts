@@ -301,13 +301,13 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
           ? {
               apply: (content: string) =>
                 applyCurrentColorTransform(content, "fill"),
-              label: "Use currentColor",
+              label: "Converted colors to currentColor",
             }
           : finding.id === "COLORS_002"
             ? {
                 apply: (content: string) =>
                   applyCurrentColorTransform(content, "stroke"),
-                label: "Use currentColor",
+                label: "Converted colors to currentColor",
               }
             : null;
 
@@ -361,7 +361,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       showSuccessToast(
         finding.id === "STRUCTURE_001"
           ? "Generated viewBox"
-          : "Applied currentColor",
+          : "Converted to currentColor",
       );
       trackAnalyticsEvent("transform_applied", {
         transform_id:

@@ -34,7 +34,7 @@ function getFixButtonLabel(
           return "Generate ViewBox";
         case "COLORS_001":
         case "COLORS_002":
-          return "Use currentColor";
+          return "Convert to currentColor";
         default:
           return "Configure";
       }

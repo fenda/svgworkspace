@@ -5,6 +5,8 @@ const NON_TRANSFORMABLE_PAINT_VALUES = new Set([
   "transparent",
   "currentcolor",
   "inherit",
+  "unset",
+  "initial",
   "context-fill",
   "context-stroke",
 ]);

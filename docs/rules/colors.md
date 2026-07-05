@@ -28,10 +28,11 @@ They currently support explicit Transform actions for direct hardcoded paint att
 ## Treatment Notes
 
 - Both color findings use the internal `choice` metadata but are presented as `Transform` in the product.
-- `Use currentColor` is now implemented as an explicit Transform for direct `fill` and `stroke` attributes with safe color values.
+- `Convert to currentColor` is now implemented as an explicit Transform for direct `fill` and `stroke` attributes with safe color values.
 - This Transform is intentionally excluded from `Optimize SVG`.
 - Style attributes, style blocks, CSS variables, paint servers, inherited keywords, and other non-direct or unsafe cases remain review-oriented.
 - Converting to `currentColor` intentionally changes how the SVG derives color, so it should remain a user-triggered action rather than an automatic optimization.
+- This is best suited to UI icons and design-system assets, and may be inappropriate for logos or brand artwork where color is part of the asset identity.
 
 ---
 
@@ -49,10 +50,10 @@ They currently support explicit Transform actions for direct hardcoded paint att
 - `hardcoded-fill.svg`
 - `hardcoded-stroke.svg`
 - `hardcoded-colors.svg`
-- `hardcoded-currentcolor-fill.svg`
-- `hardcoded-currentcolor-stroke.svg`
-- `hardcoded-currentcolor-mixed.svg`
-- `hardcoded-currentcolor-unsafe.svg`
+- `currentcolor-fill.svg`
+- `currentcolor-stroke.svg`
+- `currentcolor-mixed.svg`
+- `currentcolor-unsafe.svg`
 - `messy.svg`
 - `illustrator-export.svg`
 

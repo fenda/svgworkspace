@@ -1,0 +1,16 @@
+<!-- Fixture: tests transforming both direct fill and stroke attributes to currentColor. -->
+<!-- Expected findings: Hardcoded Fill Colors, Hardcoded Stroke Colors -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <title>CurrentColor Mixed Fixture</title>
+  <desc>Direct fill and stroke attributes should both support explicit currentColor conversion.</desc>
+  <circle cx="8" cy="12" r="4" fill="#2563eb"/>
+  <rect x="12" y="8" width="7" height="8" fill="none" stroke="rgb(239 68 68)" stroke-width="2"/>
+  <path d="M4 20h16" stroke="currentColor" stroke-width="2"/>
+  <circle cx="19" cy="5" r="2" fill="url(#accent)"/>
+  <defs>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+</svg>

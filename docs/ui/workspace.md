@@ -66,7 +66,11 @@ Workspace actions should use this product language:
 Transform actions currently include:
 
 - `Generate ViewBox`
-- `Use currentColor` for eligible direct hardcoded `fill` or `stroke` attributes
+- `Convert to currentColor` for eligible direct hardcoded `fill` or `stroke` attributes
+
+`Convert to currentColor` must remain explicit and never run through `Optimize SVG`.
+
+It is intended for SVGs that should inherit color from UI context, such as icons, and should not be treated as universally appropriate for logos or brand assets.
 
 ---
 
