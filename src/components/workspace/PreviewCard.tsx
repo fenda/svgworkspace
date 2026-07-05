@@ -25,10 +25,13 @@ import { copySvg } from "@/output/copy-svg";
 import { downloadSvg } from "@/output/download-svg";
 import { createSvgDiff } from "@/output/diff-svg";
 import { formatSvg } from "@/output/format-svg";
+import {
+  getAutomaticPreviewBackground,
+  type PreviewBackground,
+} from "@/lib/svg/preview-background";
 import { cn } from "@/lib/utils";
 
 type PreviewTab = "preview" | "svg" | "diff";
-type PreviewBackground = "checkerboard" | "white" | "dark";
 
 const PREVIEW_BACKGROUND_STORAGE_KEY = "svg-workspace.preview-background";
 const MIN_ZOOM = 25;
@@ -186,7 +189,7 @@ function ControlTooltip({
 }
 
 export function PreviewCard() {
-  const { document } = useSvgWorkspace();
+  const { document, source } = useSvgWorkspace();
   const [activeTab, setActiveTab] = useState<PreviewTab>("preview");
   const [copyState, setCopyState] = useState<"idle" | "success" | "error">("idle");
   const [background, setBackground] = useState<PreviewBackground>(() => {
@@ -208,21 +211,57 @@ export function PreviewCard() {
 
     return "dark";
   });
+  const [hasManualBackgroundSelection, setHasManualBackgroundSelection] =
+    useState(() => {
+      if (typeof window === "undefined") {
+        return false;
+      }
+
+      const storedBackground = window.localStorage.getItem(
+        PREVIEW_BACKGROUND_STORAGE_KEY,
+      );
+
+      return (
+        storedBackground === "checkerboard" ||
+        storedBackground === "white" ||
+        storedBackground === "dark"
+      );
+    });
   const [zoomPercent, setZoomPercent] = useState(100);
   const [fitZoomPercent, setFitZoomPercent] = useState(100);
   const [isFitMode, setIsFitMode] = useState(true);
   const previewViewportRef = useRef<HTMLDivElement>(null);
   const lastMeasuredContentRef = useRef<string | null>(null);
+  const lastAutomaticBackgroundKeyRef = useRef<string | null>(null);
   const content = document?.content ?? "";
   const intrinsicSize = getIntrinsicSvgSize(content);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === "undefined" || !hasManualBackgroundSelection) {
       return;
     }
 
     window.localStorage.setItem(PREVIEW_BACKGROUND_STORAGE_KEY, background);
-  }, [background]);
+  }, [background, hasManualBackgroundSelection]);
+
+  useEffect(() => {
+    if (!document || hasManualBackgroundSelection) {
+      return;
+    }
+
+    const automaticBackgroundKey = `${source ?? "unknown"}:${document.filename}:${document.originalContent}`;
+
+    if (lastAutomaticBackgroundKeyRef.current === automaticBackgroundKey) {
+      return;
+    }
+
+    lastAutomaticBackgroundKeyRef.current = automaticBackgroundKey;
+    setBackground(getAutomaticPreviewBackground(document.originalContent));
+  }, [
+    document,
+    hasManualBackgroundSelection,
+    source,
+  ]);
 
   useEffect(() => {
     if (activeTab !== "preview") {
@@ -479,7 +518,10 @@ export function PreviewCard() {
                       type="button"
                       title={option.tooltip}
                       aria-label={option.tooltip}
-                      onClick={() => setBackground(option.id)}
+                      onClick={() => {
+                        setHasManualBackgroundSelection(true);
+                        setBackground(option.id);
+                      }}
                       className={cn(
                         "flex size-7 items-center justify-center rounded-md text-[11px] font-medium transition-colors duration-150",
                         isActive

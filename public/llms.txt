@@ -8,13 +8,13 @@ SVG Workspace helps developers, designers, and front-end engineers improve SVG q
 
 ## Features
 
-- Analyze SVG health
+- SVG health analysis
 - Automatic safe optimizations
-- Before/after comparison
+- Original vs. optimized comparison
 - SVG source inspection
-- Optimization report
+- Metadata and responsiveness checks
 - SVG export
-- Responsive and accessibility checks
+- Accessibility checks
 
 ## Core workflow
 
