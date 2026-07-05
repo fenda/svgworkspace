@@ -42,7 +42,7 @@ Status: Ready for Launch
 - [x] Replace Coming Soon page
 - [x] Add Preview badge
 - [x] Update README
-- [ ] Publish Preview
+- [x] Publish Preview
 
 ## Post-Launch Preview Polish
 

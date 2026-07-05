@@ -1,7 +1,24 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { Check, Copy, Download, Grid3X3, Maximize2, Minus, Plus } from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import {
+  Check,
+  Copy,
+  Download,
+  Grid3X3,
+  Maximize2,
+  Minus,
+  Moon,
+  Plus,
+  RotateCcw,
+  Sun,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 import { copySvg } from "@/output/copy-svg";
@@ -9,6 +26,50 @@ import { downloadSvg } from "@/output/download-svg";
 import { createSvgDiff } from "@/output/diff-svg";
 import { formatSvg } from "@/output/format-svg";
 import { cn } from "@/lib/utils";
+
+type PreviewTab = "preview" | "svg" | "diff";
+type PreviewBackground = "checkerboard" | "white" | "dark";
+
+const PREVIEW_BACKGROUND_STORAGE_KEY = "svg-workspace.preview-background";
+const MIN_ZOOM = 25;
+const MAX_ZOOM = 3200;
+const DEFAULT_INTRINSIC_SIZE = { width: 24, height: 24 };
+
+const ZOOM_STEPS = [
+  25, 50, 75, 100, 125, 150, 200, 300, 400, 600, 800, 1200, 1600, 2400, 3200,
+] as const;
+
+const previewTabs: {
+  id: PreviewTab;
+  label: string;
+  tooltip: string;
+}[] = [
+  { id: "preview", label: "Preview", tooltip: "View the current SVG on the preview canvas" },
+  { id: "svg", label: "SVG", tooltip: "Inspect the formatted current SVG markup" },
+  { id: "diff", label: "Diff", tooltip: "Compare the original SVG against the current SVG" },
+];
+
+const backgroundOptions: {
+  id: PreviewBackground;
+  tooltip: string;
+  icon: typeof Grid3X3;
+}[] = [
+  {
+    id: "checkerboard",
+    tooltip: "Checkerboard canvas background",
+    icon: Grid3X3,
+  },
+  {
+    id: "white",
+    tooltip: "White canvas background",
+    icon: Sun,
+  },
+  {
+    id: "dark",
+    tooltip: "Dark canvas background",
+    icon: Moon,
+  },
+] as const;
 
 function getDiffRowClass(kind: "context" | "added" | "removed"): string {
   switch (kind) {
@@ -32,16 +93,187 @@ function getDiffMarker(kind: "context" | "added" | "removed"): string {
   }
 }
 
+function parseSvgLength(value: string | null): number | null {
+  if (!value) {
+    return null;
+  }
+
+  const numericValue = Number.parseFloat(value);
+
+  return Number.isFinite(numericValue) && numericValue > 0
+    ? numericValue
+    : null;
+}
+
+function getIntrinsicSvgSize(markup: string): { width: number; height: number } {
+  if (typeof window === "undefined") {
+    return DEFAULT_INTRINSIC_SIZE;
+  }
+
+  const parser = new window.DOMParser();
+  const svgDocument = parser.parseFromString(markup, "image/svg+xml");
+  const svg = svgDocument.documentElement;
+  const viewBox = svg.getAttribute("viewBox");
+
+  if (viewBox) {
+    const parts = viewBox.trim().split(/[\s,]+/).map(Number);
+
+    if (
+      parts.length === 4 &&
+      Number.isFinite(parts[2]) &&
+      Number.isFinite(parts[3]) &&
+      parts[2] > 0 &&
+      parts[3] > 0
+    ) {
+      return { width: parts[2], height: parts[3] };
+    }
+  }
+
+  const width = parseSvgLength(svg.getAttribute("width"));
+  const height = parseSvgLength(svg.getAttribute("height"));
+
+  if (width && height) {
+    return { width, height };
+  }
+
+  return DEFAULT_INTRINSIC_SIZE;
+}
+
+function getPreviewCanvasStyle(background: PreviewBackground): CSSProperties {
+  switch (background) {
+    case "checkerboard":
+      return {
+        backgroundImage:
+          "linear-gradient(45deg, #1a1a1e 25%, transparent 25%), linear-gradient(-45deg, #1a1a1e 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1e 75%), linear-gradient(-45deg, transparent 75%, #1a1a1e 75%)",
+        backgroundSize: "16px 16px",
+        backgroundPosition: "0 0, 0 8px, 8px -8px, -8px 0px",
+        backgroundColor: "#141418",
+      };
+    case "white":
+      return {
+        backgroundColor: "#f7f7f8",
+      };
+    case "dark":
+      return {
+        backgroundColor: "#09090b",
+      };
+  }
+}
+
+function getNextZoom(value: number, direction: "in" | "out"): number {
+  if (direction === "in") {
+    return ZOOM_STEPS.find((step) => step > value) ?? value;
+  }
+
+  return [...ZOOM_STEPS].reverse().find((step) => step < value) ?? value;
+}
+
+function ControlTooltip({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="group/tooltip relative flex">
+      {children}
+      <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 -translate-x-1/2 rounded-md border border-white/[0.08] bg-[#050507] px-2 py-1 text-[10px] font-medium whitespace-nowrap text-zinc-300 opacity-0 shadow-lg transition-opacity duration-150 group-hover/tooltip:opacity-100 group-focus-within/tooltip:opacity-100">
+        {label}
+      </span>
+    </div>
+  );
+}
+
 export function PreviewCard() {
   const { document } = useSvgWorkspace();
-  const [activeTab, setActiveTab] = useState<"preview" | "svg" | "diff">("preview");
+  const [activeTab, setActiveTab] = useState<PreviewTab>("preview");
   const [copyState, setCopyState] = useState<"idle" | "success" | "error">("idle");
+  const [background, setBackground] = useState<PreviewBackground>(() => {
+    if (typeof window === "undefined") {
+      return "dark";
+    }
+
+    const storedBackground = window.localStorage.getItem(
+      PREVIEW_BACKGROUND_STORAGE_KEY,
+    );
+
+    if (
+      storedBackground === "checkerboard" ||
+      storedBackground === "white" ||
+      storedBackground === "dark"
+    ) {
+      return storedBackground;
+    }
+
+    return "dark";
+  });
+  const [zoomPercent, setZoomPercent] = useState(100);
+  const [fitZoomPercent, setFitZoomPercent] = useState(100);
+  const [isFitMode, setIsFitMode] = useState(true);
+  const previewViewportRef = useRef<HTMLDivElement>(null);
+  const lastMeasuredContentRef = useRef<string | null>(null);
+  const content = document?.content ?? "";
+  const intrinsicSize = getIntrinsicSvgSize(content);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem(PREVIEW_BACKGROUND_STORAGE_KEY, background);
+  }, [background]);
+
+  useEffect(() => {
+    if (activeTab !== "preview") {
+      return;
+    }
+
+    const viewport = previewViewportRef.current;
+
+    if (!viewport) {
+      return;
+    }
+
+    const updateFitZoom = () => {
+      const widthRatio = viewport.clientWidth / intrinsicSize.width;
+      const heightRatio = viewport.clientHeight / intrinsicSize.height;
+      const nextFitZoom = Math.max(
+        MIN_ZOOM,
+        Math.min(MAX_ZOOM, Math.floor(Math.min(widthRatio, heightRatio) * 100)),
+      );
+      const isNewContent = lastMeasuredContentRef.current !== content;
+
+      if (isNewContent) {
+        lastMeasuredContentRef.current = content;
+      }
+
+      setFitZoomPercent(nextFitZoom);
+
+      if (isNewContent) {
+        setIsFitMode(true);
+        setZoomPercent(nextFitZoom);
+        return;
+      }
+
+      if (isFitMode) {
+        setZoomPercent(nextFitZoom);
+      }
+    };
+
+    updateFitZoom();
+
+    const observer = new ResizeObserver(updateFitZoom);
+    observer.observe(viewport);
+
+    return () => observer.disconnect();
+  }, [activeTab, content, intrinsicSize.height, intrinsicSize.width, isFitMode]);
 
   if (!document) {
     return null;
   }
 
-  const { content, filename, originalContent } = document;
+  const { filename, originalContent } = document;
   const formattedCurrent = formatSvg(content);
   const formattedOriginal = formatSvg(originalContent);
   const diffLines = createSvgDiff(formattedOriginal, formattedCurrent);
@@ -63,19 +295,26 @@ export function PreviewCard() {
     tabContent = (
       <div className="p-4">
         <div
-          className="mx-auto flex w-full max-w-[560px] aspect-[16/10] items-center justify-center p-5"
-          style={{
-            backgroundImage:
-              "linear-gradient(45deg, #1a1a1e 25%, transparent 25%), linear-gradient(-45deg, #1a1a1e 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1e 75%), linear-gradient(-45deg, transparent 75%, #1a1a1e 75%)",
-            backgroundSize: "16px 16px",
-            backgroundPosition: "0 0, 0 8px, 8px -8px, -8px 0px",
-            backgroundColor: "#141418",
-          }}
+          className="mx-auto flex aspect-[16/10] w-full max-w-[560px] items-center justify-center rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-3"
         >
           <div
-            className="flex h-full w-full items-center justify-center [&>svg]:h-auto [&>svg]:max-h-full [&>svg]:max-w-full [&>svg]:w-auto"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
+            ref={previewViewportRef}
+            className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-lg border border-white/[0.05] transition-colors duration-150"
+            style={getPreviewCanvasStyle(background)}
+          >
+            <div
+              className="flex items-center justify-center transition-[width,height] duration-200 ease-out"
+              style={{
+                width: `${(intrinsicSize.width * zoomPercent) / 100}px`,
+                height: `${(intrinsicSize.height * zoomPercent) / 100}px`,
+              }}
+            >
+              <div
+                className="flex h-full w-full cursor-default items-center justify-center [&>svg]:h-full [&>svg]:w-full"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -123,18 +362,16 @@ export function PreviewCard() {
   }
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14] lg:min-h-[520px]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
         <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
-          {[
-            { id: "preview", label: "Preview" },
-            { id: "svg", label: "SVG" },
-            { id: "diff", label: "Diff" },
-          ].map((tab) => (
+          {previewTabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
-              onClick={() => setActiveTab(tab.id as "preview" | "svg" | "diff")}
+              title={tab.tooltip}
+              aria-label={tab.tooltip}
+              onClick={() => setActiveTab(tab.id)}
               className={cn(
                 "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
                 activeTab === tab.id
@@ -147,48 +384,118 @@ export function PreviewCard() {
           ))}
         </div>
         {activeTab === "preview" ? (
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-7 text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-300"
-            >
-              <Minus className="size-3.5" />
-            </Button>
-            <span className="font-metric min-w-[3rem] text-center text-xs text-zinc-400">
-              100%
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-7 text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-300"
-            >
-              <Plus className="size-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-7 text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-300"
-            >
-              <Maximize2 className="size-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-7 text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-300"
-            >
-              <Grid3X3 className="size-3.5" />
-            </Button>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
+              <ControlTooltip label="Zoom out">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  title="Zoom out"
+                  aria-label="Zoom out"
+                  disabled={zoomPercent <= MIN_ZOOM}
+                  className="text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200 disabled:text-zinc-700"
+                  onClick={() => {
+                    setIsFitMode(false);
+                    setZoomPercent((current) => getNextZoom(current, "out"));
+                  }}
+                >
+                  <Minus className="size-3.5" />
+                </Button>
+              </ControlTooltip>
+              <span className="font-metric min-w-[4.5rem] rounded-md px-2 text-center text-xs text-zinc-300">
+                {zoomPercent}%
+              </span>
+              <ControlTooltip label="Zoom in">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  title="Zoom in"
+                  aria-label="Zoom in"
+                  disabled={zoomPercent >= MAX_ZOOM}
+                  className="text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200 disabled:text-zinc-700"
+                  onClick={() => {
+                    setIsFitMode(false);
+                    setZoomPercent((current) => getNextZoom(current, "in"));
+                  }}
+                >
+                  <Plus className="size-3.5" />
+                </Button>
+              </ControlTooltip>
+              <ControlTooltip label="Fit to canvas">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  title="Fit to canvas"
+                  aria-label="Fit to canvas"
+                  disabled={zoomPercent === fitZoomPercent && isFitMode}
+                  className="text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200 disabled:text-zinc-700"
+                  onClick={() => {
+                    setIsFitMode(true);
+                    setZoomPercent(fitZoomPercent);
+                  }}
+                >
+                  <Maximize2 className="size-3.5" />
+                </Button>
+              </ControlTooltip>
+              <ControlTooltip label="Reset to 100%">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  title="Reset to 100%"
+                  aria-label="Reset zoom to 100 percent"
+                  disabled={zoomPercent === 100 && !isFitMode}
+                  className="text-zinc-500 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-200 disabled:text-zinc-700"
+                  onClick={() => {
+                    setIsFitMode(false);
+                    setZoomPercent(100);
+                  }}
+                >
+                  <RotateCcw className="size-3.5" />
+                </Button>
+              </ControlTooltip>
+            </div>
+
+            <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
+              {backgroundOptions.map((option) => {
+                const Icon = option.icon;
+                const isActive = background === option.id;
+
+                return (
+                  <ControlTooltip key={option.id} label={option.tooltip}>
+                    <button
+                      type="button"
+                      title={option.tooltip}
+                      aria-label={option.tooltip}
+                      onClick={() => setBackground(option.id)}
+                      className={cn(
+                        "flex size-7 items-center justify-center rounded-md text-[11px] font-medium transition-colors duration-150",
+                        isActive
+                          ? "bg-white/[0.08] text-zinc-100"
+                          : "text-zinc-500 hover:bg-white/5 hover:text-zinc-200",
+                      )}
+                    >
+                      <Icon className="size-3.5" />
+                    </button>
+                  </ControlTooltip>
+                );
+              })}
+            </div>
           </div>
         ) : null}
       </div>
 
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             type="button"
             variant="outline"
             size="sm"
+            title="Copy the current formatted SVG"
+            aria-label="Copy the current formatted SVG"
             className="border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
             onClick={() => void handleCopy()}
           >
@@ -199,6 +506,8 @@ export function PreviewCard() {
             type="button"
             variant="outline"
             size="sm"
+            title="Download the current formatted SVG"
+            aria-label="Download the current formatted SVG"
             className="border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
             onClick={() => downloadSvg(formattedCurrent, filename)}
           >
@@ -206,6 +515,9 @@ export function PreviewCard() {
             Download SVG
           </Button>
         </div>
+        <p className="min-w-0 truncate text-xs text-zinc-500">
+          {filename}
+        </p>
         {copyState === "success" ? (
           <p className="text-xs text-emerald-400">Copied</p>
         ) : copyState === "error" ? (

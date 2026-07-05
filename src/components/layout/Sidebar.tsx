@@ -16,7 +16,7 @@ function isActiveRoute(pathname: string, href: string) {
 
 export function Sidebar() {
   const pathname = usePathname();
-  const previewNavItems = navItems.filter((item) => item.href === "/playground");
+  const previewNavItems = navItems.filter((item) => item.href === "/");
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 flex w-16 flex-col border-r border-white/10 bg-[#0a0a0c] lg:w-56">

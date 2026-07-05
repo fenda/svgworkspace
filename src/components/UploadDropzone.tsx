@@ -5,7 +5,22 @@ import { CloudUpload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InlineNotice } from "@/components/ui/inline-notice";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
+import { useSvgWorkspaceStore } from "@/stores/svg-workspace-store";
 import { cn } from "@/lib/utils";
+
+function scrollToWorkspace() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLElement>("[data-workspace-root]")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+}
 
 export function UploadDropzone() {
   const inputId = useId();
@@ -25,6 +40,10 @@ export function UploadDropzone() {
       const file = files?.[0];
       if (!file) return;
       await loadFromFile(file);
+
+      if (useSvgWorkspaceStore.getState().document) {
+        scrollToWorkspace();
+      }
     },
     [loadFromFile],
   );
@@ -38,6 +57,10 @@ export function UploadDropzone() {
       }
 
       loadFromContent(trimmed, "pasted.svg", "paste");
+
+      if (useSvgWorkspaceStore.getState().document) {
+        scrollToWorkspace();
+      }
     },
     [loadFromContent],
   );
