@@ -7,9 +7,9 @@ export default function Home() {
   return (
     <AppShell>
       <div className="space-y-6 pt-0">
-        <div className="grid items-start gap-6 lg:grid-cols-2">
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-8 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           <Hero />
-          <div className="-mt-4 lg:-mt-5">
+          <div className="-mt-2 lg:-mt-3">
             <UploadDropzone />
           </div>
         </div>

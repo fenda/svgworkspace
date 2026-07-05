@@ -30,33 +30,6 @@ export const heroBadges = [
   "Preview",
 ] as const;
 
-export const heroHighlights = [
-  {
-    title: "SVG Health",
-    description: "Analyze structure, performance, accessibility, colors, and maintainability.",
-  },
-  {
-    title: "Safe Optimizations",
-    description: "Run Optimize SVG to apply conservative automatic improvements.",
-  },
-  {
-    title: "Scalable SVG",
-    description: "Check missing, fixed, and invalid viewBox states before export.",
-  },
-  {
-    title: "Before/After Diff",
-    description: "Compare the original SVG and the current output before you ship.",
-  },
-  {
-    title: "Browser-first",
-    description: "Inspect and improve SVGs locally without uploading them to a server.",
-  },
-  {
-    title: "Transform Actions",
-    description: "Use intent-dependent actions such as Generate ViewBox when safe.",
-  },
-] as const;
-
 export const sidebarSections: {
   label: string;
   items: {

@@ -20,6 +20,7 @@ import {
   type OptimizationReport,
   type SvgValidationState,
 } from "@/lib/svg";
+import { showSuccessToast } from "@/stores/toast-store";
 
 type SvgWorkspaceStore = {
   document: SvgDocument | null;
@@ -38,6 +39,7 @@ type SvgWorkspaceStore = {
   applyCurrentSafeFixes: () => void;
   applySafeFixForFinding: (finding: Finding) => void;
   applyTransformForFinding: (finding: Finding) => void;
+  resetToOriginal: () => void;
   loadExample: () => void;
   dismissUploadValidation: () => void;
   dismissOptimizationValidation: () => void;
@@ -170,6 +172,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         },
         isProcessing: false,
       });
+      showSuccessToast("Optimized");
     } catch (error) {
       set({
         error:
@@ -317,12 +320,53 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         },
         isProcessing: false,
       });
+      showSuccessToast(
+        finding.id === "STRUCTURE_001"
+          ? "Generated viewBox"
+          : "Applied currentColor",
+      );
     } catch (error) {
       set({
         error:
           error instanceof Error
             ? error.message
             : "Unable to apply this transform.",
+        isProcessing: false,
+      });
+    }
+  },
+
+  resetToOriginal: () => {
+    const state = useSvgWorkspaceStore.getState();
+    const document = state.document;
+
+    if (!document || document.content === document.originalContent) {
+      return;
+    }
+
+    set({ isProcessing: true, error: null, optimizationValidation: null });
+
+    try {
+      const nextDocument = createSvgDocument(
+        document.filename,
+        document.originalContent,
+        document.originalContent,
+      );
+
+      set({
+        document: nextDocument,
+        error: null,
+        optimizationValidation: null,
+        optimizationReport: null,
+        isProcessing: false,
+      });
+      showSuccessToast("Reset to original");
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unable to reset to the original SVG.",
         isProcessing: false,
       });
     }

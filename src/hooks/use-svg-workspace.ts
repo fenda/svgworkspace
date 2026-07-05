@@ -15,6 +15,7 @@ export function useSvgWorkspace() {
   const applyCurrentSafeFixes = useSvgWorkspaceStore((state) => state.applyCurrentSafeFixes);
   const applySafeFixForFinding = useSvgWorkspaceStore((state) => state.applySafeFixForFinding);
   const applyTransformForFinding = useSvgWorkspaceStore((state) => state.applyTransformForFinding);
+  const resetToOriginal = useSvgWorkspaceStore((state) => state.resetToOriginal);
   const loadExample = useSvgWorkspaceStore((state) => state.loadExample);
   const dismissUploadValidation = useSvgWorkspaceStore((state) => state.dismissUploadValidation);
   const dismissOptimizationValidation = useSvgWorkspaceStore((state) => state.dismissOptimizationValidation);
@@ -33,6 +34,7 @@ export function useSvgWorkspace() {
     applyCurrentSafeFixes,
     applySafeFixForFinding,
     applyTransformForFinding,
+    resetToOriginal,
     loadExample,
     dismissUploadValidation,
     dismissOptimizationValidation,
