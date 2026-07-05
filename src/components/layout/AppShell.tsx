@@ -1,3 +1,4 @@
+import { AnalyticsConsent } from "@/components/AnalyticsConsent";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -7,6 +8,7 @@ import { MobileLanding } from "@/components/MobileLanding";
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <AnalyticsConsent />
       <ToastViewport />
       <div className="md:hidden">
         <MobileLanding />

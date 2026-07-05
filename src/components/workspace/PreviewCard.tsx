@@ -30,6 +30,7 @@ import {
   type PreviewBackground,
 } from "@/lib/svg/preview-background";
 import { showSuccessToast } from "@/stores/toast-store";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type PreviewTab = "preview" | "svg" | "diff";
@@ -231,6 +232,7 @@ export function PreviewCard() {
   const [zoomPercent, setZoomPercent] = useState(100);
   const [fitZoomPercent, setFitZoomPercent] = useState(100);
   const [isFitMode, setIsFitMode] = useState(true);
+  const hasTrackedDiffViewRef = useRef(false);
   const previewViewportRef = useRef<HTMLDivElement>(null);
   const lastMeasuredContentRef = useRef<string | null>(null);
   const lastAutomaticBackgroundKeyRef = useRef<string | null>(null);
@@ -263,6 +265,18 @@ export function PreviewCard() {
     hasManualBackgroundSelection,
     source,
   ]);
+
+  useEffect(() => {
+    if (activeTab === "diff" && !hasTrackedDiffViewRef.current) {
+      hasTrackedDiffViewRef.current = true;
+      trackAnalyticsEvent("diff_viewed");
+      return;
+    }
+
+    if (activeTab !== "diff") {
+      hasTrackedDiffViewRef.current = false;
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (activeTab !== "preview") {
@@ -326,6 +340,7 @@ export function PreviewCard() {
       await copySvg(formattedCurrent);
       setCopyState("success");
       showSuccessToast("Copied");
+      trackAnalyticsEvent("copy_clicked");
       window.setTimeout(() => setCopyState("idle"), 1800);
     } catch {
       setCopyState("error");
@@ -565,6 +580,7 @@ export function PreviewCard() {
             onClick={() => {
               downloadSvg(formattedCurrent, filename);
               showSuccessToast("Downloaded");
+              trackAnalyticsEvent("download_clicked");
             }}
           >
             <Download className="size-3.5" />
