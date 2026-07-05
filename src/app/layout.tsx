@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import "vanilla-cookieconsent/dist/cookieconsent.css";
 import {
   SITE_DESCRIPTION,
   SITE_TITLE,

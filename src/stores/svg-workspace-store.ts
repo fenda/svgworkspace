@@ -10,6 +10,10 @@ import { applyCurrentColorTransform } from "@/actions/transforms/current-color";
 import { applyGenerateViewBox } from "@/actions/transforms/generate-viewbox";
 import { EXAMPLE_SVG } from "@/lib/mock-data";
 import {
+  trackAnalyticsEvent,
+  trackAnalysisCompleted,
+} from "@/lib/analytics";
+import {
   createSvgDocument,
   createValidationState,
   getValidationState,
@@ -67,6 +71,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         optimizationReport: null,
         isProcessing: false,
       });
+      trackAnalysisCompleted(document.analysis);
     } catch (error) {
       set({
         uploadValidation: getValidationState(error, source),
@@ -96,6 +101,8 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         optimizationReport: null,
         isProcessing: false,
       });
+      trackAnalyticsEvent("svg_uploaded");
+      trackAnalysisCompleted(document.analysis);
     } catch (error) {
       set({
         uploadValidation: getValidationState(error, "upload"),
@@ -105,8 +112,9 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
   },
 
   loadExample: () => {
+    const document = createSvgDocument("logo-example.svg", EXAMPLE_SVG);
     set({
-      document: createSvgDocument("logo-example.svg", EXAMPLE_SVG),
+      document,
       source: "example",
       error: null,
       uploadValidation: null,
@@ -114,6 +122,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       optimizationReport: null,
       isProcessing: false,
     });
+    trackAnalysisCompleted(document.analysis);
   },
 
   applyCurrentSafeFixes: () => {
@@ -124,6 +133,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       return;
     }
 
+    trackAnalyticsEvent("optimize_clicked");
     set({ isProcessing: true, error: null, optimizationValidation: null });
 
     try {
@@ -173,6 +183,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         isProcessing: false,
       });
       showSuccessToast("Optimized");
+      trackAnalysisCompleted(nextDocument.analysis);
     } catch (error) {
       set({
         error:
@@ -222,6 +233,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         optimizationReport: state.optimizationReport,
         isProcessing: false,
       });
+      trackAnalysisCompleted(nextDocument.analysis);
     } catch (error) {
       set({
         error:
@@ -325,6 +337,13 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
           ? "Generated viewBox"
           : "Applied currentColor",
       );
+      trackAnalyticsEvent("transform_applied", {
+        transform_id:
+          finding.id === "STRUCTURE_001"
+            ? "generate_viewbox"
+            : "use_currentcolor",
+      });
+      trackAnalysisCompleted(nextDocument.analysis);
     } catch (error) {
       set({
         error:
@@ -361,6 +380,8 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         isProcessing: false,
       });
       showSuccessToast("Reset to original");
+      trackAnalyticsEvent("reset_to_original");
+      trackAnalysisCompleted(nextDocument.analysis);
     } catch (error) {
       set({
         error:

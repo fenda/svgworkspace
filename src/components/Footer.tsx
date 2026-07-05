@@ -1,6 +1,9 @@
+"use client";
+
 import { Code2 } from "lucide-react";
 import { GitHubIcon } from "@/components/icons/GitHubIcon";
 import { APP_VERSION, SHORT_COMMIT_SHA } from "@/lib/app-version";
+import { openCookieSettings } from "@/lib/cookie-consent";
 import { GITHUB_URL } from "@/lib/constants";
 
 export function Footer() {
@@ -35,6 +38,14 @@ export function Footer() {
             <GitHubIcon className="size-4" />
             GitHub
           </a>
+          <span className="text-zinc-700">•</span>
+          <button
+            type="button"
+            onClick={() => void openCookieSettings()}
+            className="text-zinc-300 transition-colors hover:text-zinc-100"
+          >
+            Cookie settings
+          </button>
           <span className="text-zinc-700">•</span>
           <span className="text-zinc-300">Privacy-first</span>
         </div>

@@ -1,5 +1,8 @@
+"use client";
+
 import { GitHubIcon } from "@/components/icons/GitHubIcon";
 import { buttonVariants } from "@/components/ui/button";
+import { openCookieSettings } from "@/lib/cookie-consent";
 import { GITHUB_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -66,7 +69,7 @@ export function MobileLanding() {
           </div>
         </div>
 
-        <div className="pt-8">
+        <div className="flex items-center gap-3 pt-8">
           <a
             href={GITHUB_URL}
             target="_blank"
@@ -79,6 +82,13 @@ export function MobileLanding() {
           >
             View on GitHub
           </a>
+          <button
+            type="button"
+            onClick={() => void openCookieSettings()}
+            className="text-sm text-zinc-400 transition-colors hover:text-zinc-200"
+          >
+            Cookie settings
+          </button>
         </div>
       </div>
     </div>
