@@ -57,6 +57,10 @@ export type AppliedSafeFixReport = {
   appliedLabels: string[];
 };
 
+export function getSafeFixLabelForFinding(findingId: string): string | null {
+  return SAFE_FIXES_BY_FINDING_ID[findingId]?.label ?? null;
+}
+
 function withParsedSvg(content: string, applyFix: (svg: SVGSVGElement) => void): string {
   const svg = parseSvgMarkup(content.trim());
   applyFix(svg);
