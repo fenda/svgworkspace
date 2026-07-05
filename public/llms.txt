@@ -1,0 +1,48 @@
+# SVG Workspace
+
+SVG Workspace is a browser-based application for analyzing, optimizing, comparing, and exporting SVG files. All processing happens locally in the browser, so uploaded SVGs are never sent to a server.
+
+## Purpose
+
+SVG Workspace helps developers, designers, and front-end engineers improve SVG quality by identifying issues, explaining them, and applying safe optimizations without changing the visual output.
+
+## Features
+
+- SVG health analysis
+- Automatic safe optimizations
+- Original vs. optimized comparison
+- SVG source inspection
+- Metadata and responsiveness checks
+- SVG export
+- Accessibility checks
+
+## Core workflow
+
+1. Upload an SVG.
+2. Analyze its health.
+3. Apply safe optimizations.
+4. Compare the original and optimized SVG.
+5. Export the optimized SVG.
+
+## Product principles
+
+- Explain, don't surprise.
+- Safe over aggressive.
+- Preserve visual output.
+- Browser-first and privacy-first.
+- Files are processed locally.
+
+## Links
+
+- Website: https://svgworkspace.com/
+- GitHub: https://github.com/fenda/svgworkspace
+
+## Audience
+
+SVG Workspace is intended for:
+
+- Front-end developers
+- UI engineers
+- Designers
+- Design system teams
+- Anyone working with SVG assets
