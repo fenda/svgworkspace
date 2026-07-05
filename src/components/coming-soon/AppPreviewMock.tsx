@@ -134,7 +134,7 @@ export function AppPreviewMock() {
                 Production Ready
               </p>
               <div className="mt-4 space-y-1.5">
-                {["Well structured", "Accessible", "Responsive"].map((item) => (
+                {["Well structured", "Accessible", "Scalable"].map((item) => (
                   <div
                     key={item}
                     className="flex items-center gap-1.5 text-[10px] text-zinc-500"

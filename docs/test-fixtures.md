@@ -25,6 +25,11 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `react-xlink.svg` | Tests xlink attribute detection for React compatibility. | `xlink Attribute` |
 | `react-event-handlers.svg` | Tests inline event handler attribute detection for React compatibility. | `Inline Event Handlers` |
 | `missing-viewbox.svg` | Tests missing `viewBox` plus fixed dimensions. | `Missing viewBox`, `Fixed Width & Height` |
+| `scalable-viewbox-only.svg` | Tests a scalable SVG with only a valid `viewBox`. | None |
+| `scalable-width-height-only.svg` | Tests missing `viewBox` with safe width/height values that allow `Generate ViewBox`. | `Missing viewBox`, `Fixed Width & Height` |
+| `scalable-both.svg` | Tests a valid `viewBox` plus fixed dimensions, which should report as mostly scalable. | `Fixed Width & Height` |
+| `invalid-viewbox.svg` | Tests invalid `viewBox` detection. | `Invalid viewBox`, `Fixed Width & Height` |
+| `scalable-missing-dimensions.svg` | Tests missing `viewBox` without fixed dimensions, so no safe transform is available. | `Missing viewBox` |
 | `fixed-dimensions.svg` | Tests fixed `width` and `height` with a valid `viewBox`, so auto removal is safe. | `Fixed Width & Height` |
 | `fixed-dimensions-no-viewbox.svg` | Tests fixed `width` and `height` without a `viewBox`, so no auto fix should be offered. | `Fixed Width & Height` |
 | `metadata.svg` | Tests `<metadata>` detection. | `Metadata Found` |
@@ -55,6 +60,9 @@ These fixtures are used for manual testing, demos, regression checks, and future
 - Accessibility and React-specific fixtures include `<title>` and `<desc>` where needed so they keep targeting their intended category coverage.
 - `fixed-dimensions.svg` is safe for automatic width/height removal because the `viewBox` is already valid.
 - `fixed-dimensions-no-viewbox.svg` intentionally remains manual-only because removing dimensions without a `viewBox` could change rendering behavior.
+- `scalable-width-height-only.svg` should expose `Generate ViewBox` as a Transform because the existing fixed dimensions are safe to reuse.
+- `scalable-both.svg` should report as scalable but still highlight fixed dimensions as a separate structural cleanup issue.
+- `invalid-viewbox.svg` should stay manual because SVG Workspace does not guess how to repair an invalid `viewBox`.
 - `empty-defs.svg` should optimize away the empty `<defs>` block only after other safe cleanup has left it truly empty.
 - `empty-symbols.svg` is automatic because the symbol subtree contains no meaningful drawable or definition content.
 - `inline-styles-safe.svg` is automatic because every declaration maps cleanly to safe SVG presentation attributes.

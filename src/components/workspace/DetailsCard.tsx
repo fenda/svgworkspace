@@ -72,8 +72,8 @@ export function DetailsCard() {
       content: formatStaticValue(metadata.colors),
     },
     {
-      label: "Responsive",
-      content: formatStaticValue(metadata.responsive),
+      label: "Scalable",
+      content: formatStaticValue(metadata.scalable),
     },
   ];
 

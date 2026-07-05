@@ -1,4 +1,5 @@
 import type { AnalysisRule } from "@/analysis/models";
+import { analyzeScalability } from "@/lib/svg/viewbox";
 import { createRuleFinding } from "../utils";
 
 export const structure001MissingViewBox: AnalysisRule = {
@@ -12,14 +13,17 @@ export const structure001MissingViewBox: AnalysisRule = {
   introducedIn: "0.2.0",
   status: "implemented",
   analyze(svg) {
-    const viewBox = svg.getAttribute("viewBox")?.trim();
+    const scalability = analyzeScalability(svg);
 
-    if (viewBox) {
+    if (scalability.state !== "not_scalable") {
       return null;
     }
 
     return createRuleFinding(structure001MissingViewBox, {
-      recommendation: "Add a viewBox that matches the artwork dimensions.",
+      fixType: scalability.canGenerateViewBox ? "choice" : "manual",
+      recommendation: scalability.canGenerateViewBox
+        ? "Generate a viewBox from the existing width and height attributes."
+        : "Add a viewBox that matches the artwork dimensions.",
     });
   },
 };

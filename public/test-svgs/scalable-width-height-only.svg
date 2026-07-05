@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="64">
+  <title>Width and height only</title>
+  <desc>Missing viewBox but fixed dimensions are present.</desc>
+  <rect width="128" height="64" rx="8" fill="#193f6f" />
+</svg>

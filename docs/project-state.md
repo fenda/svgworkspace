@@ -444,22 +444,32 @@ Optimization reporting lives in `SVG Details`.
 
 After optimization, `SVG Details` shows the full post-optimization report:
 
-- Health before → after
 - file size before → after
 - bytes saved
 - percentage saved
-- structural metadata such as paths, viewBox, and responsive status
+- structural metadata such as paths, viewBox, colors, and scalable status
 - applied optimization labels
 
 Before optimization, the same layout remains visible with a calm empty applied-optimizations state.
 
 Uploading or pasting a new SVG clears the report.
 
-Individual Fix buttons are implemented for automatic issues.
+Individual actions are implemented for automatic issues, and specific Transform issues can expose dedicated actions such as `Generate ViewBox`.
 
 Individual Fix buttons currently leave the Optimization Report unchanged.
 
-Manual and Choice issues remain placeholders for future workflows.
+Transform issues are reserved for safe but intentional changes that should never run automatically, such as `Generate ViewBox`.
+
+Manual issues remain review-oriented and continue to require user judgment.
+
+The current scalability model is:
+
+- `Scalable`: valid `viewBox`, no fixed dimensions
+- `Mostly scalable`: valid `viewBox` with fixed dimensions still present
+- `Not scalable`: missing `viewBox`
+- `Invalid`: malformed `viewBox`
+
+`Scalable` replaces the older `Responsive` metric throughout the Workspace because the analysis is about SVG scaling behavior, not CSS responsiveness.
 
 ---
 
@@ -514,6 +524,11 @@ Current fixtures include:
 - decorative-empty-title.svg
 - fixed-dimensions.svg
 - fixed-dimensions-no-viewbox.svg
+- scalable-viewbox-only.svg
+- scalable-width-height-only.svg
+- scalable-both.svg
+- scalable-missing-dimensions.svg
+- invalid-viewbox.svg
 - hardcoded-stroke.svg
 - high-precision.svg
 - duplicate-ids.svg
@@ -593,7 +608,7 @@ Future:
 - Fix Dimensions
 - Convert to currentColor
 - Manual review flows
-- Configurable Choice flows
+- Configurable Transform flows
 
 ---
 
@@ -640,7 +655,7 @@ Potential additions:
 6. Improve SVG source formatting.
 7. Add before/after comparison.
 8. Add undo support.
-9. Build configurable Choice actions, starting with Replace Colors.
+9. Build configurable Transform actions, starting with Replace Colors.
 
 ---
 
@@ -724,7 +739,8 @@ Completed
 - Auto issue Fix buttons
 - Single-finding safe fix flow
 - Re-analysis after individual fixes
-- Manual and Choice actions remain placeholders
+- First Transform action for `Generate ViewBox`
+- Remaining Manual and future Transform actions remain placeholders
 
 ---
 
