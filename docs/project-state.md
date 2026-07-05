@@ -136,6 +136,14 @@ Detailed milestone docs live in:
 
 These docs define the execution order after Preview.
 
+## Rules Audit
+
+A rules and scoring audit is now in progress.
+
+Current inventory and follow-up notes live in:
+
+- docs/rules-inventory.md
+
 ---
 
 # Product Philosophy
