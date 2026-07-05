@@ -42,8 +42,8 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 | ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `COLORS_001` | Hardcoded Fill Colors | Colors | Warning | 3 | Choice in the UI | Implemented | `hardcoded-fill.svg`, `hardcoded-colors.svg`, `messy.svg`, `illustrator-export.svg` | Explicit Choice metadata now matches the current UI treatment. |
-| `COLORS_002` | Hardcoded Stroke Colors | Colors | Warning | 3 | Choice in the UI | Implemented | `hardcoded-stroke.svg`, `hardcoded-colors.svg`, `messy.svg`, `illustrator-export.svg` | Explicit Choice metadata now matches the current UI treatment. |
+| `COLORS_001` | Hardcoded Fill Colors | Colors | Warning | 3 | Transform when direct fill attributes are eligible, otherwise Manual | Implemented | `hardcoded-fill.svg`, `hardcoded-colors.svg`, `hardcoded-currentcolor-fill.svg`, `hardcoded-currentcolor-mixed.svg`, `hardcoded-currentcolor-unsafe.svg`, `messy.svg`, `illustrator-export.svg` | `Use currentColor` is available only for direct fill attributes with safe explicit color values. |
+| `COLORS_002` | Hardcoded Stroke Colors | Colors | Warning | 3 | Transform when direct stroke attributes are eligible, otherwise Manual | Implemented | `hardcoded-stroke.svg`, `hardcoded-colors.svg`, `hardcoded-currentcolor-stroke.svg`, `hardcoded-currentcolor-mixed.svg`, `hardcoded-currentcolor-unsafe.svg`, `messy.svg`, `illustrator-export.svg` | `Use currentColor` is available only for direct stroke attributes with safe explicit color values. |
 
 ## Accessibility
 
@@ -89,7 +89,7 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 ### Treatment Classification
 
 - Dynamic treatment is implemented correctly for `STRUCTURE_001`, `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002`.
-- `COLORS_001` and `COLORS_002` now declare `choice` directly in their rule definitions.
+- `COLORS_001` and `COLORS_002` now declare `choice` directly in their rule definitions and downgrade to `manual` when no safe direct-attribute currentColor transform is available.
 - The safe-fix layer no longer infers treatment from fallback rule ID lists. Each finding now carries an explicit fix type produced from rule metadata.
 
 ### Duplication / Overlap

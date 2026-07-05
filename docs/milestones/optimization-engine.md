@@ -18,6 +18,7 @@ Transform actions are intentionally separate from automatic optimizations:
 
 - `Optimize SVG` remains the safe automatic path
 - `Generate ViewBox` is the first intent-dependent Transform action
+- `Use currentColor` is an explicit Transform for direct hardcoded paint attributes only
 
 - [ ] Remove unused defs
 - [x] Remove empty defs
@@ -51,3 +52,4 @@ Transform actions are intentionally separate from automatic optimizations:
 ## Future Treatments
 
 - [ ] Inline CSS / style extraction: convert safe inline style declarations into SVG presentation attributes directly on SVG elements and paths when safe, while keeping complex CSS and manual styles as Review
+- [x] Convert eligible direct `fill` and `stroke` attributes to `currentColor` as an explicit Transform

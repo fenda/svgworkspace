@@ -476,9 +476,14 @@ Individual actions are implemented for automatic issues, and specific Transform 
 
 Individual Fix buttons currently leave the Optimization Report unchanged.
 
-Transform issues are reserved for safe but intentional changes that should never run automatically, such as `Generate ViewBox`.
+Transform issues are reserved for safe but intentional changes that should never run automatically, such as `Generate ViewBox` and `Use currentColor`.
 
 Manual issues remain review-oriented and continue to require user judgment.
+
+Current Transform actions include:
+
+- `Generate ViewBox` for scalable SVG fixes when width and height make that safe
+- `Use currentColor` for eligible direct hardcoded `fill` and `stroke` attributes
 
 The current scalability model is:
 
@@ -624,7 +629,6 @@ Future:
 
 - Replace Colors
 - Fix Dimensions
-- Convert to currentColor
 - Manual review flows
 - Configurable Transform flows
 
