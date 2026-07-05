@@ -136,3 +136,51 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 - Add more maintainability rules only after the metadata/treatment pattern is standardized, so new rules do not inherit today’s fix-type inconsistency.
 - Prioritize future structure/performance rules that preserve rendering and are safe to explain clearly before adding more destination-specific guidance.
+
+## Treatment and Scoring Review
+
+### Proposed treatment model
+
+- `Optimize`: safe, objective improvements that preserve rendering and can run automatically with no user judgment required. This is the product-language equivalent of the current internal `Auto` treatment.
+- `Review`: findings that need user context, editorial judgment, or destination-specific intent before any change should be made. This maps to the current internal `Manual` treatment.
+- `Transform`: findings where multiple valid outcomes exist and the right action depends on user intent, design-system goals, or framework targets. This is the clearest product-language replacement for the current internal `Choice` treatment.
+- The current code terms `auto`, `manual`, and `choice` should stay in place for now. The product should converge on `Optimize`, `Review`, and `Transform` first in documentation and later in UI copy when the treatment model is fully explicit in rule metadata.
+
+### Scoring recommendations
+
+- Health should emphasize objective SVG quality issues over future workflow opportunities.
+- Structural and rendering-adjacent findings such as `STRUCTURE_001 Missing viewBox`, `STRUCTURE_003 Duplicate IDs`, and missing accessible titles should remain meaningful score contributors because they represent real quality or usability defects.
+- Safe cleanup findings that `Optimize SVG` can resolve immediately should generally carry lighter penalties than they do today. This especially applies to metadata, comments, empty wrappers, empty definitions, empty symbols, and unused namespaces.
+- `STRUCTURE_005 Empty Paths` should be reviewed for a smaller penalty. It is often export residue, and its current impact is heavier than several comparable safe cleanup findings.
+- `COLORS_001` and `COLORS_002` should not heavily penalize SVG Health while they remain intent-dependent transforms. They describe styling strategy, not necessarily a broken SVG.
+- `ACCESSIBILITY_003 Missing Description` and `ACCESSIBILITY_004 Empty Description` should likely stay low-impact unless the product later gains enough context to distinguish simple icons from richer illustrative SVGs.
+- `ACCESSIBILITY_005 Decorative SVG` should continue to contribute `0` to Health because it is contextual guidance, not a defect.
+
+### Metadata recommendations
+
+- First priority: add explicit `fixType` metadata to rules that currently depend on fallback treatment inference in `src/actions/safe-fixes/index.ts`.
+- Highest-priority rules for explicit `fixType`: `PERFORMANCE_001`, `PERFORMANCE_002`, `PERFORMANCE_003`, `PERFORMANCE_004`, `PERFORMANCE_005`, `STRUCTURE_004`, `STRUCTURE_005`, `COLORS_001`, and `COLORS_002`.
+- Next priority: add consistent `introducedIn` and `status` metadata across all SVG Health rules so the implementation matches `docs/RULES.md`.
+- Dynamic-treatment rules should keep their runtime checks, but their metadata contract still needs to be documented more explicitly. `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002` are the best templates for that follow-up.
+- React Ready rules are already conceptually separate from SVG Health; future metadata cleanup should preserve that distinction instead of flattening everything into one scoring model.
+
+### Implementation follow-ups
+
+#### Low-risk cleanup
+
+- Move inferred treatment IDs out of the fallback sets and into explicit rule metadata wherever the treatment is already stable.
+- Update `docs/RULES.md` or the rule objects so the metadata contract is consistent in one direction instead of split between documentation and fallback behavior.
+- Document the remaining fallback logic in `src/actions/safe-fixes/index.ts` as temporary once explicit rule metadata lands.
+
+#### Product decisions needed
+
+- Decide whether `Choice` should be fully replaced in user-facing language by `Transform`.
+- Decide whether hardcoded color findings belong in Health scoring at all, or whether they should be presented as styling opportunities outside the core grade.
+- Decide how much auto-fixable cleanup should reduce score now that `Optimize SVG` is a first-class preview action.
+- Decide whether description-related accessibility findings need more context-sensitive scoring guidance for icons versus illustrative graphics.
+
+#### Future UI work
+
+- Align user-facing treatment labels with the proposed `Optimize`, `Review`, and `Transform` model once the metadata is explicit enough to support it consistently.
+- Separate objective Health issues from optional transformation opportunities more clearly in the interface if scoring remains coupled to both.
+- Keep remaining unsafe CSS, color strategy findings, and future destination-specific workflows visible as follow-up opportunities rather than framing them as broken output.
