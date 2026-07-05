@@ -1,0 +1,32 @@
+<!-- Fixture: geography-like artwork that should not force a dedicated map type. -->
+<svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+  <title>Geography Illustration Type Fixture</title>
+  <desc>Region-heavy geography artwork that should classify by structure rather than as a special map type.</desc>
+  <g fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.2">
+    <path d="M20 30l28-10 18 18-8 24-26 6-16-18z"/>
+    <path d="M52 20l30-8 18 14-6 24-30 8-14-20z"/>
+    <path d="M88 14l34 8 10 20-12 22-30-2-6-26z"/>
+    <path d="M122 22l28 2 16 20-6 20-26 6-18-14z"/>
+    <path d="M154 26l30 4 18 18-6 24-30 4-10-24z"/>
+    <path d="M188 30l34 6 12 18-6 24-30 6-14-18z"/>
+    <path d="M224 38l30-4 20 16-8 26-26 4-18-18z"/>
+    <path d="M258 34l28 10 14 20-10 22-24-4-10-24z"/>
+    <path d="M26 72l28-6 20 16-10 24-28 6-16-18z"/>
+    <path d="M62 60l30-8 16 18-6 24-30 8-14-18z"/>
+    <path d="M96 64l28 4 14 20-12 24-26-6-8-22z"/>
+    <path d="M128 70l30 2 18 18-8 24-30 6-16-18z"/>
+    <path d="M162 76l28 0 18 18-8 24-28 8-16-20z"/>
+    <path d="M194 82l30-2 18 18-8 24-30 8-14-18z"/>
+    <path d="M228 82l30-4 18 18-8 24-28 6-18-16z"/>
+    <path d="M262 86l26 4 14 18-10 24-22-4-14-18z"/>
+    <path d="M36 114l26-6 18 18-10 26-26 6-16-22z"/>
+    <path d="M74 110l30-8 16 20-8 24-30 8-16-18z"/>
+    <path d="M110 114l30-2 18 20-10 24-30 4-14-18z"/>
+    <path d="M146 120l30 4 18 18-8 24-30 6-18-18z"/>
+  </g>
+  <g fill="#111827" font-family="Arial, sans-serif" font-size="10">
+    <text x="42" y="96">North</text>
+    <text x="128" y="96">Central</text>
+    <text x="224" y="110">East</text>
+  </g>
+</svg>

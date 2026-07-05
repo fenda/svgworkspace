@@ -49,6 +49,24 @@ function formatValuePair(label: string, value: ReactNode) {
   );
 }
 
+function formatTypeValue(
+  value: string,
+  confidence: string,
+  explanation: string,
+) {
+  return (
+    <div title={explanation}>
+      <p className="font-metric text-sm font-medium text-zinc-300">
+        {value}
+      </p>
+      <p className="mt-0.5 text-xs text-zinc-500">
+        <span className="capitalize">{confidence}</span>
+        {" confidence"}
+      </p>
+    </div>
+  );
+}
+
 export function DetailsCard() {
   const { document, optimizationReport, resetToOriginal, isProcessing } =
     useSvgWorkspace();
@@ -65,6 +83,14 @@ export function DetailsCard() {
   const showFallbackSummary = hasChanges && !showKnownActionsSummary;
   const summaryLabelClass = "text-[10px] uppercase tracking-wider text-zinc-400";
   const informationItems = [
+    formatValuePair(
+      "Type",
+      formatTypeValue(
+        metadata.type,
+        metadata.typeConfidence,
+        metadata.typeExplanation,
+      ),
+    ),
     formatValuePair("ViewBox", formatStaticValue(metadata.viewBox)),
     formatValuePair("Paths", formatStaticValue(metadata.paths)),
     formatValuePair("Colors", formatStaticValue(metadata.colors)),

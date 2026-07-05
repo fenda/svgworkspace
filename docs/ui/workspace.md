@@ -102,6 +102,22 @@ SVG Details should describe the SVG itself, not derived overall quality.
 
 The Health score belongs only in `SVG Health`.
 
+SVG Information includes static metadata about the current SVG, including:
+
+- Type
+- ViewBox
+- Paths
+- Colors
+- Scalable
+
+SVG Type Detection is heuristic. `Unknown` is a valid result and should be preferred over an overconfident wrong classification.
+
+Type detection should reflect asset structure and usage, not subject matter.
+
+`Sprite Sheet` is a supported type for symbol collections, while geography-like art should remain `Illustration`, `Diagram`, or `Unknown` unless future workflows need something more specialized.
+
+The UI may show type confidence compactly, while the fuller explanation remains metadata for future recommendations.
+
 Its structure should remain consistent before and after optimization:
 
 - left column: metrics

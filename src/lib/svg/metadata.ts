@@ -1,5 +1,6 @@
 import { assertBrowser } from "@/lib/browser/assert-browser";
 import type { SvgMetadata } from "@/lib/svg/types";
+import { detectSvgType } from "@/lib/svg/type-detection";
 import {
   analyzeScalability,
   parseDimensionAttribute,
@@ -72,6 +73,7 @@ export function extractSvgMetadata(
   const paths = svg.querySelectorAll(SHAPE_SELECTORS).length;
   const colors = collectColors(svg);
   const scalability = analyzeScalability(svg);
+  const detectedType = detectSvgType(svg, colors.size);
 
   const dimensions =
     parsedViewBox ??
@@ -88,5 +90,8 @@ export function extractSvgMetadata(
     colors: colors.size,
     scalable: scalability.label,
     scalableExplanation: scalability.explanation,
+    type: detectedType.label,
+    typeConfidence: detectedType.confidence,
+    typeExplanation: detectedType.explanation,
   };
 }

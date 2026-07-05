@@ -1,0 +1,7 @@
+<!-- Fixture: simple icon-like SVG for type detection. -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <title>Icon Type Fixture</title>
+  <desc>Small square icon with simple geometry and a single color.</desc>
+  <path d="M12 3l7 4v10l-7 4-7-4V7l7-4z" fill="#2563eb"/>
+  <path d="M12 8l3 2v4l-3 2-3-2v-4l3-2z" fill="#ffffff"/>
+</svg>

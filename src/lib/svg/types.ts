@@ -1,5 +1,15 @@
 import type { AnalysisResult } from "@/analysis";
 
+export type SvgDetectedType =
+  | "icon"
+  | "logo"
+  | "illustration"
+  | "diagram"
+  | "sprite_sheet"
+  | "unknown";
+
+export type SvgTypeConfidence = "high" | "medium" | "low";
+
 export type SvgMetadata = {
   filename: string;
   viewBox: string;
@@ -9,6 +19,9 @@ export type SvgMetadata = {
   colors: number;
   scalable: string;
   scalableExplanation: string;
+  type: string;
+  typeConfidence: SvgTypeConfidence;
+  typeExplanation: string;
 };
 
 export type OptimizationReport = {
