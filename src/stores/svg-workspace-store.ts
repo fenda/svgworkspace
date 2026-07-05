@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import type { Finding } from "@/analysis";
 import {
-  applySafeFixes,
+  applySafeFixesWithReport,
   applySafeFixForFinding,
 } from "@/actions/safe-fixes/apply-safe-fixes";
 import { EXAMPLE_SVG } from "@/lib/mock-data";
@@ -15,6 +15,7 @@ import {
   parseSvgMarkup,
   type SvgDocument,
   type SvgLoadSource,
+  type OptimizationReport,
   type SvgValidationState,
 } from "@/lib/svg";
 
@@ -24,6 +25,7 @@ type SvgWorkspaceStore = {
   error: string | null;
   uploadValidation: SvgValidationState | null;
   optimizationValidation: SvgValidationState | null;
+  optimizationReport: OptimizationReport | null;
   isProcessing: boolean;
   loadFromContent: (
     content: string,
@@ -45,6 +47,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
   error: null,
   uploadValidation: null,
   optimizationValidation: null,
+  optimizationReport: null,
   isProcessing: false,
 
   loadFromContent: (content, filename, source) => {
@@ -56,6 +59,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         error: null,
         uploadValidation: null,
         optimizationValidation: null,
+        optimizationReport: null,
         isProcessing: false,
       });
     } catch (error) {
@@ -80,12 +84,13 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       const document = createSvgDocument(filename, content);
       set({
         document,
-        source: "upload",
-        error: null,
-        uploadValidation: null,
-        optimizationValidation: null,
-        isProcessing: false,
-      });
+      source: "upload",
+      error: null,
+      uploadValidation: null,
+      optimizationValidation: null,
+      optimizationReport: null,
+      isProcessing: false,
+    });
     } catch (error) {
       set({
         uploadValidation: getValidationState(error, "upload"),
@@ -101,6 +106,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       error: null,
       uploadValidation: null,
       optimizationValidation: null,
+      optimizationReport: null,
       isProcessing: false,
     });
   },
@@ -116,7 +122,9 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
     set({ isProcessing: true, error: null, optimizationValidation: null });
 
     try {
-      const nextContent = applySafeFixes(document.content);
+      const { content: nextContent, appliedLabels } = applySafeFixesWithReport(
+        document.content,
+      );
       const nextSvg = parseSvgMarkup(nextContent.trim());
 
       if (!hasDrawableContent(nextSvg)) {
@@ -124,6 +132,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
           optimizationValidation: createValidationState(
             "optimization_cancelled",
           ),
+          optimizationReport: null,
           isProcessing: false,
         });
         return;
@@ -135,10 +144,27 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         document.originalContent,
       );
 
+      const sizeBefore = document.metadata.byteLength;
+      const sizeAfter = nextDocument.metadata.byteLength;
+      const bytesSaved = Math.max(0, sizeBefore - sizeAfter);
+      const percentSaved = sizeBefore > 0
+        ? Math.round((bytesSaved / sizeBefore) * 100)
+        : 0;
+
       set({
         document: nextDocument,
         error: null,
         optimizationValidation: null,
+        optimizationReport: {
+          appliedCount: appliedLabels.length,
+          appliedLabels,
+          healthBefore: document.analysis.health.score,
+          healthAfter: nextDocument.analysis.health.score,
+          sizeBefore,
+          sizeAfter,
+          bytesSaved,
+          percentSaved,
+        },
         isProcessing: false,
       });
     } catch (error) {
@@ -171,6 +197,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
           optimizationValidation: createValidationState(
             "optimization_cancelled",
           ),
+          optimizationReport: null,
           isProcessing: false,
         });
         return;
@@ -186,6 +213,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         document: nextDocument,
         error: null,
         optimizationValidation: null,
+        optimizationReport: state.optimizationReport,
         isProcessing: false,
       });
     } catch (error) {
@@ -214,6 +242,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       error: null,
       uploadValidation: null,
       optimizationValidation: null,
+      optimizationReport: null,
       isProcessing: false,
     });
   },

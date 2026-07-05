@@ -4,9 +4,21 @@ export type SvgMetadata = {
   filename: string;
   viewBox: string;
   size: string;
+  byteLength: number;
   paths: number;
   colors: number;
   responsive: string;
+};
+
+export type OptimizationReport = {
+  appliedCount: number;
+  appliedLabels: string[];
+  healthBefore: number;
+  healthAfter: number;
+  sizeBefore: number;
+  sizeAfter: number;
+  bytesSaved: number;
+  percentSaved: number;
 };
 
 export type SvgDocument = {

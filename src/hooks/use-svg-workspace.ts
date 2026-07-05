@@ -8,6 +8,7 @@ export function useSvgWorkspace() {
   const error = useSvgWorkspaceStore((state) => state.error);
   const uploadValidation = useSvgWorkspaceStore((state) => state.uploadValidation);
   const optimizationValidation = useSvgWorkspaceStore((state) => state.optimizationValidation);
+  const optimizationReport = useSvgWorkspaceStore((state) => state.optimizationReport);
   const isProcessing = useSvgWorkspaceStore((state) => state.isProcessing);
   const loadFromContent = useSvgWorkspaceStore((state) => state.loadFromContent);
   const loadFromFile = useSvgWorkspaceStore((state) => state.loadFromFile);
@@ -24,6 +25,7 @@ export function useSvgWorkspace() {
     error,
     uploadValidation,
     optimizationValidation,
+    optimizationReport,
     isProcessing,
     loadFromContent,
     loadFromFile,

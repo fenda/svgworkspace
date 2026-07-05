@@ -428,7 +428,36 @@ The user-facing `Optimize SVG` action applies all safe automatic fixes and then 
 
 Internally, this workflow is powered by the Safe Fix Engine.
 
+After each `Optimize SVG` run, SVG Workspace keeps `SVG Health` focused on:
+
+- current grade
+- current score
+- health areas
+- issues
+
+Optimization reporting lives in `SVG Details`.
+
+`SVG Details` keeps the same two-column structure before and after optimization:
+
+- left column: stable metric cards
+- right column: applied optimizations
+
+After optimization, `SVG Details` shows the full post-optimization report:
+
+- Health before → after
+- file size before → after
+- bytes saved
+- percentage saved
+- structural metadata such as paths, viewBox, and responsive status
+- applied optimization labels
+
+Before optimization, the same layout remains visible with a calm empty applied-optimizations state.
+
+Uploading or pasting a new SVG clears the report.
+
 Individual Fix buttons are implemented for automatic issues.
+
+Individual Fix buttons currently leave the Optimization Report unchanged.
 
 Manual and Choice issues remain placeholders for future workflows.
 
@@ -755,3 +784,15 @@ These workflows remain part of the long-term vision but are intentionally postpo
 - Reduce unnecessary UI and helper text.
 - Prefer one clear primary action over multiple competing actions.
 - Remove placeholder functionality from the primary workflow whenever possible.
+
+### Workspace behavior
+
+After a successful:
+
+- Upload
+- Paste
+- Example selection
+
+the application automatically scrolls the user to the SVG Workspace.
+
+This is an intentional UX decision to immediately expose analysis results and reduce unnecessary scrolling.

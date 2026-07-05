@@ -6,6 +6,8 @@ Status: Next
 
 - [ ] Improve formatted SVG output
 - [ ] Better diff visualization
+- [x] Add Optimization Report after `Optimize SVG`
+- [x] Keep optimization reporting in `SVG Details` while leaving `SVG Health` focused on score, areas, and issues
 
 ## Optimize SVG Improvements
 

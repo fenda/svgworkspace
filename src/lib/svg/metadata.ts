@@ -13,7 +13,7 @@ const SHAPE_SELECTORS = [
 
 const COLOR_ATTRS = ["fill", "stroke"] as const;
 
-function formatBytes(bytes: number): string {
+export function formatBytes(bytes: number): string {
   if (bytes < 1024) {
     return `${bytes} B`;
   }
@@ -21,7 +21,7 @@ function formatBytes(bytes: number): string {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
-function getByteLength(content: string): number {
+export function getByteLength(content: string): number {
   assertBrowser();
   return new TextEncoder().encode(content).length;
 }
@@ -94,6 +94,7 @@ export function extractSvgMetadata(
     filename,
     viewBox: formatDimensions(dimensions.width, dimensions.height),
     size: formatBytes(byteLength),
+    byteLength,
     paths,
     colors: colors.size,
     responsive: responsive ? "Yes" : "No",
