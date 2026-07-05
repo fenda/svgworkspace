@@ -95,13 +95,22 @@ The metrics grid always contains exactly six cards in this order:
 3. Saved
 4. Paths
 5. Colors
-6. Responsive
+6. Scalable
+
+The `Scalable` card represents the current SVG state only:
+
+- `Yes`
+- `Mostly`
+- `No`
+- `Invalid`
+
+It does not show before → after arrows.
 
 Before optimization, the applied optimizations panel shows a calm empty state.
 
 After optimization, the same layout shows:
 
-- before → after metric changes only where meaningful
+- before → after metric changes only where meaningful for size
 - saved bytes and percentage
 - applied optimization labels
 

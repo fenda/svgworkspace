@@ -7,7 +7,8 @@ export type SvgMetadata = {
   byteLength: number;
   paths: number;
   colors: number;
-  responsive: string;
+  scalable: string;
+  scalableExplanation: string;
 };
 
 export type OptimizationReport = {

@@ -16,18 +16,21 @@ function getFixTypeLabel(fixType: ReturnType<typeof getFixType>): string {
     case "auto":
       return "Auto";
     case "choice":
-      return "Choice";
+      return "Transform";
     case "manual":
       return "Manual";
   }
 }
 
-function getFixButtonLabel(fixType: ReturnType<typeof getFixType>): string {
+function getFixButtonLabel(
+  fixType: ReturnType<typeof getFixType>,
+  findingId?: string,
+): string {
   switch (fixType) {
     case "auto":
       return "Fix";
     case "choice":
-      return "Configure";
+      return findingId === "STRUCTURE_001" ? "Generate ViewBox" : "Configure";
     case "manual":
       return "Review";
   }
@@ -56,6 +59,7 @@ export function AnalysisCard() {
     isProcessing,
     applyCurrentSafeFixes,
     applySafeFixForFinding,
+    applyTransformForFinding,
     dismissOptimizationValidation,
   } = useSvgWorkspace();
 
@@ -175,6 +179,10 @@ export function AnalysisCard() {
             {findings.map((finding) => {
               const fixType = getFixType(finding);
               const isAutoFix = fixType === "auto";
+              const isTransformFix =
+                fixType === "choice" && finding.id === "STRUCTURE_001";
+              const isActionable = isAutoFix || isTransformFix;
+              const buttonLabel = getFixButtonLabel(fixType, finding.id);
 
               return (
                 <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
@@ -209,16 +217,18 @@ export function AnalysisCard() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      aria-label={`${getFixButtonLabel(fixType)} issue: ${finding.title}`}
-                      disabled={!isAutoFix || isProcessing}
+                      aria-label={`${buttonLabel} issue: ${finding.title}`}
+                      disabled={!isActionable || isProcessing}
                       className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-300 opacity-100"
                       onClick={() => {
                         if (isAutoFix) {
                           applySafeFixForFinding(finding);
+                        } else if (isTransformFix) {
+                          applyTransformForFinding(finding);
                         }
                       }}
                     >
-                      {getFixButtonLabel(fixType)}
+                      {buttonLabel}
                     </Button>
                   </div>
                 </div>

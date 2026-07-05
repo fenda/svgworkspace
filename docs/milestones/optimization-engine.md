@@ -18,13 +18,14 @@ These improvements continue expanding the Safe Fix Engine behind the user-facing
 - [x] Remove empty symbols
 - [x] Remove unused namespaces
 - [ ] Normalize whitespace
-- [ ] Generate missing viewBox in safe cases
+- [x] Generate missing viewBox in safe cases as a Transform
 - [ ] Normalize IDs as an optional treatment
 - [ ] Add additional performance optimizations
 
 ## Structure Cleanup
 
 - [x] Remove fixed width and height when a valid `viewBox` already exists
+- [x] Add scalable SVG analysis states and safe `Generate ViewBox` transform handling
 - [x] Convert safe inline style attributes to presentation attributes
 - [x] Inline simple embedded CSS classes to presentation attributes
 

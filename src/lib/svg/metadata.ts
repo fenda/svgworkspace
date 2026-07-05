@@ -1,5 +1,10 @@
 import { assertBrowser } from "@/lib/browser/assert-browser";
 import type { SvgMetadata } from "@/lib/svg/types";
+import {
+  analyzeScalability,
+  parseDimensionAttribute,
+  parseViewBox,
+} from "@/lib/svg/viewbox";
 
 const SHAPE_SELECTORS = [
   "path",
@@ -24,20 +29,6 @@ export function formatBytes(bytes: number): string {
 export function getByteLength(content: string): number {
   assertBrowser();
   return new TextEncoder().encode(content).length;
-}
-
-function parseViewBox(viewBox: string | null): { width: number; height: number } | null {
-  if (!viewBox) {
-    return null;
-  }
-
-  const parts = viewBox.trim().split(/[\s,]+/).map(Number);
-
-  if (parts.length !== 4 || parts.some(Number.isNaN)) {
-    return null;
-  }
-
-  return { width: parts[2], height: parts[3] };
 }
 
 function formatDimensions(width: number, height: number): string {
@@ -76,17 +67,15 @@ export function extractSvgMetadata(
   const byteLength = getByteLength(content);
   const viewBox = svg.getAttribute("viewBox");
   const parsedViewBox = parseViewBox(viewBox);
-  const widthAttr = Number(svg.getAttribute("width"));
-  const heightAttr = Number(svg.getAttribute("height"));
+  const widthAttr = parseDimensionAttribute(svg.getAttribute("width"));
+  const heightAttr = parseDimensionAttribute(svg.getAttribute("height"));
   const paths = svg.querySelectorAll(SHAPE_SELECTORS).length;
   const colors = collectColors(svg);
-  const hasViewBox = Boolean(parsedViewBox);
-  const responsive =
-    hasViewBox || (!Number.isNaN(widthAttr) && svg.getAttribute("width")?.includes("%"));
+  const scalability = analyzeScalability(svg);
 
   const dimensions =
     parsedViewBox ??
-    (!Number.isNaN(widthAttr) && !Number.isNaN(heightAttr)
+    (widthAttr !== null && heightAttr !== null
       ? { width: widthAttr, height: heightAttr }
       : { width: 24, height: 24 });
 
@@ -97,6 +86,7 @@ export function extractSvgMetadata(
     byteLength,
     paths,
     colors: colors.size,
-    responsive: responsive ? "Yes" : "No",
+    scalable: scalability.label,
+    scalableExplanation: scalability.explanation,
   };
 }

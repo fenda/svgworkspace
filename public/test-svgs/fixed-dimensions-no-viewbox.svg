@@ -1,6 +1,6 @@
 <!-- Fixture: fixed dimensions without a viewBox should stay manual-only. -->
 <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none">
   <title>Fixed Dimensions Without ViewBox</title>
-  <desc>Width and height are present, but there is no viewBox to preserve responsiveness safely.</desc>
+  <desc>Width and height are present, but there is no viewBox to preserve scaling safely.</desc>
   <path d="M6 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 </svg>

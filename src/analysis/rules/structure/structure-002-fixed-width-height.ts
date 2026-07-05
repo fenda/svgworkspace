@@ -24,7 +24,7 @@ export const structure002FixedWidthHeight: AnalysisRule = {
     return createRuleFinding(structure002FixedWidthHeight, {
       fixType: canRemoveSafely ? "auto" : "manual",
       recommendation: canRemoveSafely
-        ? "Remove width and height to rely on the existing viewBox for responsiveness."
+        ? "Remove width and height to rely on the existing viewBox for correct scaling."
         : "Keep width and height until a valid viewBox exists. Removing them now would be unsafe.",
     });
   },

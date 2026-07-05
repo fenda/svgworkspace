@@ -107,7 +107,7 @@ Checks
 - viewBox
 - Width
 - Height
-- Responsive
+- Scalable
 - Empty groups
 - Nested SVGs
 - Duplicate IDs

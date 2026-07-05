@@ -85,7 +85,7 @@ The SVG defines explicit width and height attributes.
 
 ## Why it matters
 
-Responsive SVGs generally rely on the viewBox and CSS instead of fixed dimensions.
+Scalable SVGs generally rely on the viewBox and CSS instead of fixed dimensions.
 
 ## Recommendation
 

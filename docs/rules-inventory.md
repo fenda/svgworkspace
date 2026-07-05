@@ -6,25 +6,26 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 ## Summary
 
-- SVG Health rules: 22
+- SVG Health rules: 23
 - React Ready rules: 5
 - Auto-capable rules: 13
 - Manual-only rules: 12
-- Choice rules in the UI: 2
-- Rules with explicit metadata in code: 27
+- Choice rules in the UI: 3
+- Rules with explicit metadata in code: 28
 - Safe-fix treatment fallback rules remaining: 0
 
 ## Structure
 
 | ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `STRUCTURE_001` | Missing viewBox | Structure | Warning | 5 | Manual | Implemented | `missing-viewbox.svg`, `messy.svg` | Strong structural penalty is consistent with responsiveness impact. |
+| `STRUCTURE_001` | Missing viewBox | Structure | Warning | 5 | Transform when width/height make generation safe, otherwise Manual | Implemented | `missing-viewbox.svg`, `scalable-width-height-only.svg`, `scalable-missing-dimensions.svg`, `messy.svg` | Strong structural penalty is consistent with missing scalability support. |
 | `STRUCTURE_002` | Fixed Width & Height | Structure | Info | 2 | Auto when `viewBox` is valid, otherwise Manual | Implemented | `fixed-dimensions.svg`, `fixed-dimensions-no-viewbox.svg`, `missing-viewbox.svg`, `messy.svg`, `illustrator-export.svg` | Rule metadata now defaults to Manual and the finding upgrades to Auto only when the existing `viewBox` makes removal safe. |
 | `STRUCTURE_003` | Duplicate IDs | Structure | Warning | 4 | Manual | Implemented | `duplicate-ids.svg` | Clear standalone rule with dedicated fixture. |
 | `STRUCTURE_004` | Empty Groups | Structure | Info | 1 | Auto | Implemented | `empty-groups.svg`, `messy.svg` | Explicit Auto metadata now matches optimizer behavior. |
 | `STRUCTURE_005` | Empty Paths | Structure | Warning | 3 | Auto | Implemented | `empty-paths.svg`, `messy.svg` | Warning severity is reasonable because empty paths usually indicate export noise or corruption. |
 | `STRUCTURE_006` | Empty Definitions | Structure | Info | 1 | Auto | Implemented | `empty-defs.svg` | Explicit auto metadata is present. |
 | `STRUCTURE_007` | Empty Symbols | Structure | Info | 1 | Auto | Implemented | `empty-symbols.svg` | Explicit auto metadata is present. |
+| `STRUCTURE_008` | Invalid viewBox | Structure | Warning | 5 | Manual | Implemented | `invalid-viewbox.svg` | Keeps malformed scaling metadata visible without guessing a repair. |
 
 ## Performance
 
@@ -87,7 +88,7 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 ### Treatment Classification
 
-- Dynamic Auto/Manual treatment is implemented correctly for `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002`.
+- Dynamic treatment is implemented correctly for `STRUCTURE_001`, `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002`.
 - `COLORS_001` and `COLORS_002` now declare `choice` directly in their rule definitions.
 - The safe-fix layer no longer infers treatment from fallback rule ID lists. Each finding now carries an explicit fix type produced from rule metadata.
 
@@ -107,7 +108,7 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 - Category rule docs for Colors, Maintainability, Performance, and Structure have now been aligned with the implemented rule set.
 - `docs/RULES.md` now matches the implemented metadata contract: explicit rule metadata in code, lowercase internal severity/fix-type values, and development-only metadata validation.
-- Dynamic treatment behavior still deserves careful documentation because several rules default to `manual` in metadata and then upgrade the returned finding to `auto` only when the SVG state makes that safe.
+- Dynamic treatment behavior still deserves careful documentation because several rules default to `manual` in metadata and then upgrade the returned finding to `auto` or `choice` only when the SVG state makes that safe.
 
 ## Recommended Follow-ups
 
