@@ -20,13 +20,14 @@ export function Footer() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 transition-colors hover:text-zinc-200"
+            aria-label="Open the SVG Workspace GitHub repository"
+            className="inline-flex items-center gap-1.5 text-zinc-300 transition-colors hover:text-zinc-100"
           >
             <GitHubIcon className="size-4" />
             GitHub
           </a>
           <span className="text-zinc-700">•</span>
-          <span>Privacy</span>
+          <span className="text-zinc-300">Privacy-first</span>
         </div>
       </div>
     </footer>

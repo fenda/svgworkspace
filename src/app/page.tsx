@@ -1,7 +1,7 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { Hero } from "@/components/Hero";
 import { UploadDropzone } from "@/components/UploadDropzone";
-import { Workspace } from "@/components/workspace/Workspace";
+import { WorkspaceSection } from "@/components/workspace/WorkspaceSection";
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
             <UploadDropzone />
           </div>
         </div>
-        <Workspace />
+        <WorkspaceSection />
       </div>
     </AppShell>
   );
