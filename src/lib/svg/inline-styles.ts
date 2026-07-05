@@ -1,4 +1,4 @@
-const SAFE_STYLE_PROPERTIES = new Set([
+export const SAFE_STYLE_PROPERTIES = new Set([
   "clip-rule",
   "fill",
   "fill-opacity",
@@ -14,12 +14,14 @@ const SAFE_STYLE_PROPERTIES = new Set([
   "stroke-width",
 ]);
 
-type ParsedStyleDeclaration = {
+export type ParsedStyleDeclaration = {
   property: string;
   value: string;
 };
 
-function parseStyleDeclarations(style: string): ParsedStyleDeclaration[] | null {
+export function parseStyleDeclarations(
+  style: string,
+): ParsedStyleDeclaration[] | null {
   const declarations = style
     .split(";")
     .map((declaration) => declaration.trim())
@@ -53,7 +55,10 @@ function parseStyleDeclarations(style: string): ParsedStyleDeclaration[] | null 
   return parsed as ParsedStyleDeclaration[];
 }
 
-function isSafeStyleDeclaration({ property, value }: ParsedStyleDeclaration): boolean {
+export function isSafeStyleDeclaration({
+  property,
+  value,
+}: ParsedStyleDeclaration): boolean {
   if (!SAFE_STYLE_PROPERTIES.has(property)) {
     return false;
   }

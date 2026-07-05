@@ -6,6 +6,7 @@ import { accessibility005DecorativeSvg } from "./accessibility/accessibility-005
 import { colors001HardcodedFillColors } from "./colors/colors-001-hardcoded-fill-colors";
 import { colors002HardcodedStrokeColors } from "./colors/colors-002-hardcoded-stroke-colors";
 import { maintainability001InlineStyles } from "./maintainability/maintainability-001-inline-styles";
+import { maintainability002EmbeddedCssClasses } from "./maintainability/maintainability-002-embedded-css-classes";
 import { performance001MetadataFound } from "./performance/performance-001-metadata-found";
 import { performance002CommentsFound } from "./performance/performance-002-comments-found";
 import { performance003HighDecimalPrecision } from "./performance/performance-003-high-decimal-precision";
@@ -48,6 +49,7 @@ export const svgHealthRules: AnalysisRule[] = [
   accessibility004EmptyDesc,
   accessibility005DecorativeSvg,
   maintainability001InlineStyles,
+  maintainability002EmbeddedCssClasses,
 ];
 
 export const reactReadyRules: AnalysisRule[] = [
