@@ -259,6 +259,35 @@ Supported validation states:
 - Empty SVG
 - Unexpected error
 
+---
+
+## SVG Type Detection
+
+SVG Workspace now derives a lightweight heuristic SVG type during metadata extraction.
+
+Supported types:
+
+- Icon
+- Logo
+- Illustration
+- Diagram
+- Sprite Sheet
+- Unknown
+
+Type detection is:
+
+- heuristic only
+- structural and usage-oriented
+- intentionally conservative
+- acceptable to return `Unknown`
+- not part of Health scoring
+
+This metadata is groundwork for future contextual recommendations around transforms, hardcoded colors, accessibility guidance, and design-system adaptation.
+
+Maps are not a primary SVG type for now. Geography-like SVGs should classify by structure, such as `Illustration` or `Diagram`, rather than by subject matter alone.
+
+`Sprite Sheet` identifies SVG symbol collections intended for reuse via `<symbol>` elements.
+
 Upload validation philosophy:
 
 - Explain what happened.

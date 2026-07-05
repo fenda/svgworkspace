@@ -53,6 +53,14 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `currentcolor-stroke.svg` | Tests explicit currentColor conversion for direct stroke attributes. | `Hardcoded Stroke Colors` |
 | `currentcolor-mixed.svg` | Tests explicit currentColor conversion for both direct fill and direct stroke attributes while preserving `none`, `url(#...)`, and existing `currentColor` values. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
 | `currentcolor-unsafe.svg` | Tests hardcoded color findings that remain review-only because the colors live in style attributes or use ignored keywords. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
+| `svg-type-icon.svg` | Tests icon-like SVG type detection with simple square geometry. | None |
+| `svg-type-logo.svg` | Tests logo-like SVG type detection with a wide wordmark structure. | None |
+| `svg-type-horizontal-logo.svg` | Tests a wide horizontal logo-like SVG that should not be mistaken for a map. | None |
+| `svg-type-illustration.svg` | Tests illustration-like SVG type detection with many shapes and gradients. | None |
+| `svg-type-diagram.svg` | Tests diagram-like SVG type detection with text labels and connectors. | None |
+| `svg-type-geography-illustration.svg` | Tests geography-like artwork that should still classify by structure rather than as a dedicated map type. | None |
+| `svg-type-sprite-sheet.svg` | Tests symbol-based sprite sheet detection with multiple reusable symbols. | None |
+| `svg-type-unknown.svg` | Tests ambiguous SVG type detection that should remain Unknown. | None |
 | `high-precision.svg` | Tests excessive decimal precision detection. | `High Decimal Precision` |
 | `duplicate-ids.svg` | Tests duplicate `id` detection. | `Duplicate IDs` |
 | `messy.svg` | Realistic bad SVG fixture with multiple structural, performance, color, and maintainability issues. | `Missing viewBox`, `Fixed Width & Height`, `Empty Groups`, `Empty Paths`, `Metadata Found`, `Comments Found`, `High Decimal Precision`, `Hidden Elements`, `Hardcoded Fill Colors`, `Hardcoded Stroke Colors`, `Inline Styles` |
@@ -79,4 +87,8 @@ These fixtures are used for manual testing, demos, regression checks, and future
 - `currentcolor-fill.svg`, `currentcolor-stroke.svg`, and `currentcolor-mixed.svg` should expose `Convert to currentColor` as a Transform because they use direct `fill` or `stroke` attributes with safe explicit color values.
 - `currentcolor-mixed.svg` should convert only eligible direct hardcoded paint attributes while preserving `none`, `url(#...)`, and existing `currentColor` values.
 - `currentcolor-unsafe.svg` should keep the hardcoded color findings visible, but it should remain review-only because the colors are embedded in `style` attributes or use ignored keywords instead of safe direct `fill` or `stroke` values.
+- `svg-type-icon.svg`, `svg-type-logo.svg`, `svg-type-horizontal-logo.svg`, `svg-type-illustration.svg`, `svg-type-diagram.svg`, `svg-type-geography-illustration.svg`, and `svg-type-sprite-sheet.svg` should produce reasonable heuristic type labels, but they should not affect Health scoring.
+- `svg-type-horizontal-logo.svg` should lean `Logo` or `Unknown`, never `Sprite Sheet`.
+- `svg-type-sprite-sheet.svg` should classify as `Sprite Sheet` with high confidence because it contains multiple identified symbols with their own `viewBox` values inside a hidden root SVG.
+- `svg-type-unknown.svg` should remain `Unknown` because its signals are intentionally mixed and ambiguous.
 - Other fixtures may include header comments for human readability; comment detection is based on comments inside the `<svg>` tree.
