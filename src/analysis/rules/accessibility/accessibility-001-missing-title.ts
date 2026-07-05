@@ -1,5 +1,6 @@
 import type { AnalysisRule } from "@/analysis/models";
 import { hasElement, isDecorativeSvg } from "./shared";
+import { createRuleFinding } from "../utils";
 
 export const accessibility001MissingTitle: AnalysisRule = {
   id: "ACCESSIBILITY_001",
@@ -17,14 +18,8 @@ export const accessibility001MissingTitle: AnalysisRule = {
       return null;
     }
 
-    return {
-      id: accessibility001MissingTitle.id,
-      category: accessibility001MissingTitle.category,
-      severity: accessibility001MissingTitle.severity ?? "warning",
-      title: accessibility001MissingTitle.title ?? "Missing Title",
-      description: accessibility001MissingTitle.description ?? "",
+    return createRuleFinding(accessibility001MissingTitle, {
       recommendation: "Add a meaningful <title> element for assistive technologies.",
-      scoreImpact: accessibility001MissingTitle.scoreImpact ?? 0,
-    };
+    });
   },
 };

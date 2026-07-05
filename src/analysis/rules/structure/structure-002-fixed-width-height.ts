@@ -1,9 +1,17 @@
 import type { AnalysisRule } from "@/analysis/models";
 import { hasValidViewBox } from "@/lib/svg/viewbox";
+import { createRuleFinding } from "../utils";
 
 export const structure002FixedWidthHeight: AnalysisRule = {
   id: "STRUCTURE_002",
   category: "structure",
+  title: "Fixed Width & Height",
+  description: "The SVG defines explicit width and height attributes.",
+  severity: "info",
+  scoreImpact: 2,
+  fixType: "manual",
+  introducedIn: "0.2.0",
+  status: "implemented",
   analyze(svg) {
     const width = svg.getAttribute("width")?.trim();
     const height = svg.getAttribute("height")?.trim();
@@ -13,17 +21,11 @@ export const structure002FixedWidthHeight: AnalysisRule = {
       return null;
     }
 
-    return {
-      id: "STRUCTURE_002",
-      category: "structure",
-      severity: "info",
+    return createRuleFinding(structure002FixedWidthHeight, {
       fixType: canRemoveSafely ? "auto" : "manual",
-      title: "Fixed Width & Height",
-      description: "The SVG defines explicit width and height attributes.",
       recommendation: canRemoveSafely
         ? "Remove width and height to rely on the existing viewBox for responsiveness."
         : "Keep width and height until a valid viewBox exists. Removing them now would be unsafe.",
-      scoreImpact: 2,
-    };
+    });
   },
 };

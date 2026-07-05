@@ -1,5 +1,6 @@
 import type { AnalysisRule } from "@/analysis/models";
 import { hasElement, isDecorativeSvg } from "./shared";
+import { createRuleFinding } from "../utils";
 
 export const accessibility003MissingDesc: AnalysisRule = {
   id: "ACCESSIBILITY_003",
@@ -17,14 +18,8 @@ export const accessibility003MissingDesc: AnalysisRule = {
       return null;
     }
 
-    return {
-      id: accessibility003MissingDesc.id,
-      category: accessibility003MissingDesc.category,
-      severity: accessibility003MissingDesc.severity ?? "info",
-      title: accessibility003MissingDesc.title ?? "Missing Description",
-      description: accessibility003MissingDesc.description ?? "",
+    return createRuleFinding(accessibility003MissingDesc, {
       recommendation: "Add a <desc> element when the SVG benefits from extra context.",
-      scoreImpact: accessibility003MissingDesc.scoreImpact ?? 0,
-    };
+    });
   },
 };

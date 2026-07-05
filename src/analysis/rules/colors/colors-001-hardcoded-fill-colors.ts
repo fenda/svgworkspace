@@ -1,4 +1,5 @@
 import type { AnalysisRule } from "@/analysis/models";
+import { createRuleFinding } from "../utils";
 
 function isIgnoredPaint(value: string): boolean {
   return (
@@ -28,19 +29,20 @@ function hasHardcodedFill(svg: SVGSVGElement): boolean {
 export const colors001HardcodedFillColors: AnalysisRule = {
   id: "COLORS_001",
   category: "colors",
+  title: "Hardcoded Fill Colors",
+  description: "One or more elements use fixed fill colors.",
+  severity: "warning",
+  scoreImpact: 3,
+  fixType: "choice",
+  introducedIn: "0.2.0",
+  status: "implemented",
   analyze(svg) {
     if (!hasHardcodedFill(svg)) {
       return null;
     }
 
-    return {
-      id: "COLORS_001",
-      category: "colors",
-      severity: "warning",
-      title: "Hardcoded Fill Colors",
-      description: "One or more elements use fixed fill colors.",
+    return createRuleFinding(colors001HardcodedFillColors, {
       recommendation: "Use currentColor or CSS variables when appropriate.",
-      scoreImpact: 3,
-    };
+    });
   },
 };

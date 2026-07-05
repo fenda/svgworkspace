@@ -1,5 +1,6 @@
 import type { AnalysisRule } from "@/analysis/models";
 import { hasClassAttribute } from "./shared";
+import { createRuleFinding } from "../utils";
 
 export const react001ClassAttribute: AnalysisRule = {
   id: "REACT_001",
@@ -16,14 +17,8 @@ export const react001ClassAttribute: AnalysisRule = {
       return null;
     }
 
-    return {
-      id: react001ClassAttribute.id,
-      category: react001ClassAttribute.category,
-      severity: react001ClassAttribute.severity ?? "warning",
-      title: react001ClassAttribute.title ?? "class Attribute",
-      description: react001ClassAttribute.description ?? "",
+    return createRuleFinding(react001ClassAttribute, {
       recommendation: "Rename class attributes to className before using this SVG in JSX.",
-      scoreImpact: react001ClassAttribute.scoreImpact ?? 0,
-    };
+    });
   },
 };

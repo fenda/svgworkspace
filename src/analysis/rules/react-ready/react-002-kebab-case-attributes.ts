@@ -1,5 +1,6 @@
 import type { AnalysisRule } from "@/analysis/models";
 import { hasReactKebabCaseAttributes } from "./shared";
+import { createRuleFinding } from "../utils";
 
 export const react002KebabCaseAttributes: AnalysisRule = {
   id: "REACT_002",
@@ -16,14 +17,8 @@ export const react002KebabCaseAttributes: AnalysisRule = {
       return null;
     }
 
-    return {
-      id: react002KebabCaseAttributes.id,
-      category: react002KebabCaseAttributes.category,
-      severity: react002KebabCaseAttributes.severity ?? "warning",
-      title: react002KebabCaseAttributes.title ?? "Kebab-case Attributes",
-      description: react002KebabCaseAttributes.description ?? "",
+    return createRuleFinding(react002KebabCaseAttributes, {
       recommendation: "Convert JSX-sensitive SVG attributes to camelCase before using this SVG in React.",
-      scoreImpact: react002KebabCaseAttributes.scoreImpact ?? 0,
-    };
+    });
   },
 };
