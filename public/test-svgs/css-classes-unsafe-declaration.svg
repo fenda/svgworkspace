@@ -1,0 +1,12 @@
+<!-- Fixture: unsupported embedded CSS declarations should remain manual-only and unchanged. -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <title>Embedded CSS Classes Unsafe Declaration</title>
+  <desc>Fixture for testing unsupported embedded CSS declarations.</desc>
+  <style>
+    .st0 {
+      fill: #193f6f;
+      transform: rotate(10deg);
+    }
+  </style>
+  <rect x="4" y="4" width="12" height="12" class="st0" />
+</svg>

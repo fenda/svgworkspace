@@ -1,0 +1,12 @@
+<!-- Fixture: unsupported embedded CSS selectors should remain manual-only and unchanged. -->
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <title>Embedded CSS Classes Unsafe Selector</title>
+  <desc>Fixture for testing complex embedded CSS selectors.</desc>
+  <style>
+    .st0, .st1 {
+      fill: #193f6f;
+    }
+  </style>
+  <rect x="2" y="2" width="8" height="8" class="st0" />
+  <circle cx="17" cy="12" r="4" class="st1" />
+</svg>

@@ -20,6 +20,17 @@ These improvements continue expanding the Safe Fix Engine behind the user-facing
 - [ ] Normalize IDs as an optional treatment
 - [ ] Add additional performance optimizations
 
+## Structure Cleanup
+
+- [x] Remove fixed width and height when a valid `viewBox` already exists
+- [x] Convert safe inline style attributes to presentation attributes
+- [x] Inline simple embedded CSS classes to presentation attributes
+
+## CSS Treatments
+
+- [x] Auto-inline simple single-class embedded CSS when every declaration is a safe presentation property
+- [ ] Keep complex CSS selectors and unsupported declarations as manual review
+
 ## Analysis
 
 - [ ] Add more performance rules
