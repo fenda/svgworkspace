@@ -103,7 +103,7 @@ This inventory reflects the currently implemented rule set in `src/analysis/rule
 
 ### Documentation Drift
 
-- `docs/rules/colors.md`, `docs/rules/maintainability.md`, `docs/rules/performance.md`, and `docs/rules/structure.md` are currently placeholder Accessibility content and do not describe the implemented rules at all.
+- Category rule docs for Colors, Maintainability, Performance, and Structure have now been aligned with the implemented rule set.
 - The rule spec says every rule should define `severity`, `scoreImpact`, `fixType`, `introducedIn`, and `status`, but many implemented rules only return those values in findings and do not declare them in the rule object.
 - The code currently uses lowercase severity values (`warning`, `info`) while the rule-spec prose uses title-cased labels (`Warning`, `Info`). This is harmless, but worth documenting consistently.
 
