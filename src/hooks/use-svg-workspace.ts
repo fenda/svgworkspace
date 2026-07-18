@@ -1,5 +1,6 @@
 "use client";
 
+import { getInsights } from "@/insights";
 import { useSvgWorkspaceStore } from "@/stores/svg-workspace-store";
 
 export function useSvgWorkspace() {
@@ -9,6 +10,7 @@ export function useSvgWorkspace() {
   const uploadValidation = useSvgWorkspaceStore((state) => state.uploadValidation);
   const optimizationValidation = useSvgWorkspaceStore((state) => state.optimizationValidation);
   const optimizationReport = useSvgWorkspaceStore((state) => state.optimizationReport);
+  const svgType = useSvgWorkspaceStore((state) => state.svgType);
   const isProcessing = useSvgWorkspaceStore((state) => state.isProcessing);
   const loadFromContent = useSvgWorkspaceStore((state) => state.loadFromContent);
   const loadFromFile = useSvgWorkspaceStore((state) => state.loadFromFile);
@@ -16,10 +18,19 @@ export function useSvgWorkspace() {
   const applySafeFixForFinding = useSvgWorkspaceStore((state) => state.applySafeFixForFinding);
   const applyTransformForFinding = useSvgWorkspaceStore((state) => state.applyTransformForFinding);
   const resetToOriginal = useSvgWorkspaceStore((state) => state.resetToOriginal);
+  const setSvgType = useSvgWorkspaceStore((state) => state.setSvgType);
   const loadExample = useSvgWorkspaceStore((state) => state.loadExample);
   const dismissUploadValidation = useSvgWorkspaceStore((state) => state.dismissUploadValidation);
   const dismissOptimizationValidation = useSvgWorkspaceStore((state) => state.dismissOptimizationValidation);
   const clear = useSvgWorkspaceStore((state) => state.clear);
+  const insights =
+    document
+      ? getInsights({
+          analysis: document.analysis,
+          metadata: document.metadata,
+          svgType,
+        })
+      : [];
 
   return {
     document,
@@ -28,6 +39,8 @@ export function useSvgWorkspace() {
     uploadValidation,
     optimizationValidation,
     optimizationReport,
+    svgType,
+    insights,
     isProcessing,
     loadFromContent,
     loadFromFile,
@@ -35,6 +48,7 @@ export function useSvgWorkspace() {
     applySafeFixForFinding,
     applyTransformForFinding,
     resetToOriginal,
+    setSvgType,
     loadExample,
     dismissUploadValidation,
     dismissOptimizationValidation,

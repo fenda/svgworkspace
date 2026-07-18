@@ -4,6 +4,25 @@ import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 import { formatBytes } from "@/lib/svg";
+import type { SvgType } from "@/lib/svg/types";
+
+const TYPE_OPTIONS: Array<{ value: null | SvgType; label: string }> = [
+  { value: null, label: "Not specified" },
+  { value: "icon", label: "Icon" },
+  { value: "logo", label: "Logo" },
+  { value: "sprite_sheet", label: "Sprite Sheet" },
+];
+
+function getTypeLabel(type: SvgType): string {
+  switch (type) {
+    case "icon":
+      return "Icon";
+    case "logo":
+      return "Logo";
+    case "sprite_sheet":
+      return "Sprite Sheet";
+  }
+}
 
 function formatStaticValue(value: string | number) {
   return (
@@ -51,24 +70,59 @@ function formatValuePair(label: string, value: ReactNode) {
 
 function formatTypeValue(
   value: string,
-  confidence: string,
-  explanation: string,
+  isSpecified: boolean,
+  onSelectType: (type: SvgType | null) => void,
 ) {
   return (
-    <div title={explanation}>
-      <p className="font-metric text-sm font-medium text-zinc-300">
-        {value}
-      </p>
-      <p className="mt-0.5 text-xs text-zinc-500">
-        <span className="capitalize">{confidence}</span>
-        {" confidence"}
-      </p>
+    <div>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-metric text-sm font-medium text-zinc-300">
+            {value}
+          </p>
+          <p className="mt-0.5 text-xs text-zinc-500">
+            {isSpecified ? "Optional user context" : "Not specified"}
+          </p>
+        </div>
+        <details className="group relative shrink-0">
+          <summary className="list-none rounded-md border border-white/[0.08] bg-white/[0.02] px-2 py-1 text-[11px] text-zinc-300 transition hover:bg-white/[0.05] [&::-webkit-details-marker]:hidden">
+            {isSpecified ? "Change" : "Set type"}
+          </summary>
+          <div className="absolute right-0 z-10 mt-2 min-w-40 rounded-lg border border-white/[0.08] bg-[#121216] p-1.5 shadow-[0_16px_36px_rgba(0,0,0,0.35)]">
+            {TYPE_OPTIONS.map((option) => (
+              <button
+                key={option.label}
+                type="button"
+                className="flex w-full rounded-md px-2 py-1.5 text-left text-xs text-zinc-300 transition hover:bg-white/[0.05]"
+                onClick={(event) => {
+                  onSelectType(option.value);
+                  const details = event.currentTarget.closest("details");
+
+                  if (details instanceof HTMLDetailsElement) {
+                    details.open = false;
+                  }
+                }}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </details>
+      </div>
     </div>
   );
 }
 
 export function DetailsCard() {
-  const { document, optimizationReport, resetToOriginal, isProcessing } =
+  const {
+    document,
+    optimizationReport,
+    resetToOriginal,
+    isProcessing,
+    svgType,
+    setSvgType,
+    insights,
+  } =
     useSvgWorkspace();
 
   if (!document) {
@@ -86,9 +140,9 @@ export function DetailsCard() {
     formatValuePair(
       "Type",
       formatTypeValue(
-        metadata.type,
-        metadata.typeConfidence,
-        metadata.typeExplanation,
+        svgType ? getTypeLabel(svgType) : "Not specified",
+        Boolean(svgType),
+        setSvgType,
       ),
     ),
     formatValuePair("ViewBox", formatStaticValue(metadata.viewBox)),
@@ -110,6 +164,29 @@ export function DetailsCard() {
           </p>
           <div className="mt-3">
             {informationItems}
+          </div>
+          <div className="mt-4 border-t border-white/[0.06] pt-3">
+            <p className={summaryLabelClass}>Insights</p>
+            <div className="mt-3 space-y-2">
+              {insights.map((insight) => (
+                <div
+                  key={insight.id}
+                  className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5"
+                >
+                  <p className="text-sm font-medium text-zinc-200">
+                    {insight.title}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-zinc-400">
+                    {insight.explanation}
+                  </p>
+                  {insight.suggestedAction ? (
+                    <p className="mt-1.5 text-[11px] text-zinc-500">
+                      Suggested: {insight.suggestedAction}
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
