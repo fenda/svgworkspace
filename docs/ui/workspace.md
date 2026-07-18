@@ -110,13 +110,29 @@ SVG Information includes static metadata about the current SVG, including:
 - Colors
 - Scalable
 
-SVG Type Detection is heuristic. `Unknown` is a valid result and should be preferred over an overconfident wrong classification.
+Type is optional user-provided context, not detected metadata.
 
-Type detection should reflect asset structure and usage, not subject matter.
+Supported values are:
 
-`Sprite Sheet` is a supported type for symbol collections, while geography-like art should remain `Illustration`, `Diagram`, or `Unknown` unless future workflows need something more specialized.
+- `Icon`
+- `Logo`
+- `Sprite Sheet`
 
-The UI may show type confidence compactly, while the fuller explanation remains metadata for future recommendations.
+The Type row supports lightweight session-only context.
+
+- `Not specified` is the default
+- users can set or change type context at any time
+- type resets on upload, paste, example load, and clear
+
+Below SVG Information, the Inspector shows `Insights`.
+
+Insights are:
+
+- informational only
+- driven by analysis, metadata, and optional type context
+- never findings
+- never health-affecting
+- never SVG-modifying
 
 Its structure should remain consistent before and after optimization:
 

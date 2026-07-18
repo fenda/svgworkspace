@@ -44,7 +44,7 @@ Transform actions are intentionally separate from automatic optimizations:
 
 ## Analysis
 
-- [x] Add heuristic SVG Type Detection metadata for future contextual recommendations
+- [x] Add optional SVG type context and contextual Insights in the Inspector
 - [ ] Add more performance rules
 - [ ] Add more maintainability rules
 - [ ] Improve explanations

@@ -4,7 +4,7 @@ Last reviewed: July 2026
 
 This inventory reflects the currently implemented rule set in `src/analysis/rules/*`, the current fixture catalog in [docs/test-fixtures.md](/Users/fernandasampaio/Work/svg-workspace/docs/test-fixtures.md), and the current treatment wiring in `src/actions/safe-fixes/*`.
 
-SVG Type Detection is not part of this rules inventory. It is heuristic metadata only and does not currently affect SVG Health scoring or treatment classification.
+Optional SVG type context and Inspector Insights are not part of this rules inventory. They are informational only and do not affect SVG Health scoring or treatment classification.
 
 ## Summary
 

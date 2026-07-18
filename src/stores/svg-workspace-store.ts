@@ -22,6 +22,7 @@ import {
   type SvgDocument,
   type SvgLoadSource,
   type OptimizationReport,
+  type SvgType,
   type SvgValidationState,
 } from "@/lib/svg";
 import { showSuccessToast, showWarningToast } from "@/stores/toast-store";
@@ -33,6 +34,7 @@ type SvgWorkspaceStore = {
   uploadValidation: SvgValidationState | null;
   optimizationValidation: SvgValidationState | null;
   optimizationReport: OptimizationReport | null;
+  svgType: SvgType | null;
   isProcessing: boolean;
   loadFromContent: (
     content: string,
@@ -44,6 +46,7 @@ type SvgWorkspaceStore = {
   applySafeFixForFinding: (finding: Finding) => void;
   applyTransformForFinding: (finding: Finding) => void;
   resetToOriginal: () => void;
+  setSvgType: (svgType: SvgType | null) => void;
   loadExample: () => void;
   dismissUploadValidation: () => void;
   dismissOptimizationValidation: () => void;
@@ -88,6 +91,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
   uploadValidation: null,
   optimizationValidation: null,
   optimizationReport: null,
+  svgType: null,
   isProcessing: false,
 
   loadFromContent: (content, filename, source) => {
@@ -100,6 +104,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         uploadValidation: null,
         optimizationValidation: null,
         optimizationReport: null,
+        svgType: null,
         isProcessing: false,
       });
       trackAnalysisCompleted(document.analysis);
@@ -130,6 +135,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         uploadValidation: null,
         optimizationValidation: null,
         optimizationReport: null,
+        svgType: null,
         isProcessing: false,
       });
       trackAnalyticsEvent("svg_uploaded");
@@ -151,6 +157,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       uploadValidation: null,
       optimizationValidation: null,
       optimizationReport: null,
+      svgType: null,
       isProcessing: false,
     });
     trackAnalysisCompleted(document.analysis);
@@ -419,6 +426,10 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
     }
   },
 
+  setSvgType: (svgType) => {
+    set({ svgType });
+  },
+
   dismissUploadValidation: () => {
     set({ uploadValidation: null });
   },
@@ -435,6 +446,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
       uploadValidation: null,
       optimizationValidation: null,
       optimizationReport: null,
+      svgType: null,
       isProcessing: false,
     });
   },

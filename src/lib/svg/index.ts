@@ -19,5 +19,6 @@ export type {
   SvgDocument,
   SvgLoadSource,
   SvgMetadata,
+  SvgType,
 } from "./types";
 export type { SvgValidationCode, SvgValidationState } from "./validation";

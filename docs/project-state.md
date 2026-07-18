@@ -261,32 +261,45 @@ Supported validation states:
 
 ---
 
-## SVG Type Detection
+## SVG Type Context
 
-SVG Workspace now derives a lightweight heuristic SVG type during metadata extraction.
+SVG Workspace automatically detects facts about the SVG itself.
 
-Supported types:
+Examples:
+
+- `viewBox`
+- dimensions
+- paths
+- colors
+- gradients
+- masks
+- filters
+- symbols
+
+SVG type is not one of those facts.
+
+Type is optional user-provided context for future-tailored Insights.
+
+Supported values:
 
 - Icon
 - Logo
-- Illustration
-- Diagram
 - Sprite Sheet
-- Unknown
 
-Type detection is:
+Type context is:
 
-- heuristic only
-- structural and usage-oriented
-- intentionally conservative
-- acceptable to return `Unknown`
-- not part of Health scoring
+- optional
+- session-only
+- never guessed
+- never part of Health scoring
 
-This metadata is groundwork for future contextual recommendations around transforms, hardcoded colors, accessibility guidance, and design-system adaptation.
+Insights:
 
-Maps are not a primary SVG type for now. Geography-like SVGs should classify by structure, such as `Illustration` or `Diagram`, rather than by subject matter alone.
-
-`Sprite Sheet` identifies SVG symbol collections intended for reuse via `<symbol>` elements.
+- adapt when type context is provided
+- stay generic when type is not specified
+- never change Health scoring
+- never modify the SVG
+- never replace findings
 
 Upload validation philosophy:
 
