@@ -13,6 +13,19 @@ function roundHighPrecisionNumbers(input: string): string {
   });
 }
 
+export function countHighPrecisionNumbers(svg: SVGSVGElement): number {
+  let count = 0;
+
+  Array.from(svg.querySelectorAll("*")).forEach((element) => {
+    Array.from(element.attributes).forEach((attribute) => {
+      const matches = attribute.value.match(HIGH_PRECISION_NUMBER);
+      count += matches?.length ?? 0;
+    });
+  });
+
+  return count;
+}
+
 export function roundDecimals(svg: SVGSVGElement): void {
   Array.from(svg.querySelectorAll("*")).forEach((element) => {
     Array.from(element.attributes).forEach((attribute) => {

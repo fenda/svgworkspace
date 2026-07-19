@@ -80,6 +80,10 @@ function getStyledElements(svg: SVGSVGElement): Element[] {
   );
 }
 
+export function getStyledElementCount(svg: SVGSVGElement): number {
+  return getStyledElements(svg).length;
+}
+
 export function canConvertInlineStylesToAttributes(svg: SVGSVGElement): boolean {
   return getStyledElements(svg).every((element) => {
     const style = element.getAttribute("style")?.trim() ?? "";

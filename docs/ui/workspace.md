@@ -71,6 +71,26 @@ It is intended to answer:
 
 The report should remain compact and should not duplicate information that already exists elsewhere in the interface.
 
+### Optimization Timeline
+
+When `Optimize SVG` completes, the Inspector shows a read-only Optimization Timeline.
+
+The timeline:
+
+- follows the real safe-fix execution order
+- shows only steps that actually changed the SVG by default
+- records UTF-8 byte sizes before and after each reported step
+- keeps unchanged and skipped steps available in a compact secondary disclosure
+- does not modify the optimizer output or the existing Diff workflow
+
+The timeline is informational only.
+
+It does not allow:
+
+- disabling individual steps
+- restoring an intermediate step
+- downloading intermediate outputs
+
 ## Treatment language
 
 Workspace actions should use this product language:

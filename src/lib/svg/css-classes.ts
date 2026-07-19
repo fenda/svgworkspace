@@ -152,6 +152,10 @@ function getInlineableRuleCount(blocks: ParsedStyleBlock[]): number {
   );
 }
 
+export function getInlineableCssRuleCount(svg: SVGSVGElement): number {
+  return getInlineableRuleCount(getParsedStyleBlocks(svg));
+}
+
 function getElementsWithClass(svg: SVGSVGElement, className: string): Element[] {
   return Array.from(svg.querySelectorAll("[class]")).filter((element) => {
     const classValue = element.getAttribute("class")?.trim();
@@ -169,8 +173,7 @@ export function hasEmbeddedCssClasses(svg: SVGSVGElement): boolean {
 }
 
 export function canInlineCssClasses(svg: SVGSVGElement): boolean {
-  const blocks = getParsedStyleBlocks(svg);
-  return getInlineableRuleCount(blocks) > 0;
+  return getInlineableCssRuleCount(svg) > 0;
 }
 
 export function inlineCssClasses(svg: SVGSVGElement): void {

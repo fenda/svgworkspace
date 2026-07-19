@@ -56,6 +56,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `currentcolor-stroke.svg` | Tests explicit currentColor conversion for direct stroke attributes. | `Hardcoded Stroke Colors` |
 | `currentcolor-mixed.svg` | Tests explicit currentColor conversion for both direct fill and direct stroke attributes while preserving `none`, `url(#...)`, and existing `currentColor` values. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
 | `currentcolor-unsafe.svg` | Tests hardcoded color findings that remain review-only because the colors live in style attributes or use ignored keywords. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
+| `optimization-timeline.svg` | Demonstrates multiple safe optimization steps for the read-only Optimization Timeline, including comments, metadata, hidden content, unused defs, empty structure, inline style conversion, CSS class inlining, fixed dimensions, and decimal rounding. | `Fixed Width & Height`, `Metadata Found`, `Comments Found`, `High Decimal Precision`, `Hidden Elements`, `Unused Definitions`, `Inline Styles`, `Embedded CSS Classes`, `Empty Groups`, `Empty Paths` |
 | `high-precision.svg` | Tests excessive decimal precision detection. | `High Decimal Precision` |
 | `duplicate-ids.svg` | Tests duplicate `id` detection. | `Duplicate IDs` |
 | `messy.svg` | Realistic bad SVG fixture with multiple structural, performance, color, and maintainability issues. | `Missing viewBox`, `Fixed Width & Height`, `Empty Groups`, `Empty Paths`, `Metadata Found`, `Comments Found`, `High Decimal Precision`, `Hidden Elements`, `Hardcoded Fill Colors`, `Hardcoded Stroke Colors`, `Inline Styles` |
@@ -85,4 +86,5 @@ These fixtures are used for manual testing, demos, regression checks, and future
 - `currentcolor-fill.svg`, `currentcolor-stroke.svg`, and `currentcolor-mixed.svg` should expose `Convert to currentColor` as a Transform because they use direct `fill` or `stroke` attributes with safe explicit color values.
 - `currentcolor-mixed.svg` should convert only eligible direct hardcoded paint attributes while preserving `none`, `url(#...)`, and existing `currentColor` values.
 - `currentcolor-unsafe.svg` should keep the hardcoded color findings visible, but it should remain review-only because the colors are embedded in `style` attributes or use ignored keywords instead of safe direct `fill` or `stroke` values.
+- `optimization-timeline.svg` should produce several changed Optimization Timeline steps in the same order as the safe-fix pipeline. Exact byte savings may vary if optimizer dependencies or browser serialization details change.
 - Other fixtures may include header comments for human readability; comment detection is based on comments inside the `<svg>` tree.

@@ -1,4 +1,4 @@
-export { extractSvgMetadata, formatBytes } from "./metadata";
+export { extractSvgMetadata, formatBytes, formatPercentage } from "./metadata";
 export {
   createSvgDocument,
   hasDrawableContent,

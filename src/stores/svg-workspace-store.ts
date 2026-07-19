@@ -5,7 +5,6 @@ import type { Finding } from "@/analysis";
 import {
   applySafeFixesWithReport,
   applySafeFixForFinding,
-  getSafeFixLabelForFinding,
 } from "@/actions/safe-fixes/apply-safe-fixes";
 import { applyCurrentColorTransform } from "@/actions/transforms/current-color";
 import { applyGenerateViewBox } from "@/actions/transforms/generate-viewbox";
@@ -52,37 +51,6 @@ type SvgWorkspaceStore = {
   dismissOptimizationValidation: () => void;
   clear: () => void;
 };
-
-function buildUpdatedOptimizationReport({
-  existingReport,
-  document,
-  nextDocument,
-  nextAppliedLabels,
-}: {
-  existingReport: OptimizationReport | null;
-  document: SvgDocument;
-  nextDocument: SvgDocument;
-  nextAppliedLabels: string[];
-}): OptimizationReport {
-  const sizeBefore = existingReport?.sizeBefore ?? document.originalMetadata.byteLength;
-  const healthBefore = existingReport?.healthBefore ?? document.analysis.health.score;
-  const sizeAfter = nextDocument.metadata.byteLength;
-  const bytesSaved = Math.max(0, sizeBefore - sizeAfter);
-  const percentSaved = sizeBefore > 0
-    ? Math.round((bytesSaved / sizeBefore) * 100)
-    : 0;
-
-  return {
-    appliedCount: nextAppliedLabels.length,
-    appliedLabels: nextAppliedLabels,
-    healthBefore,
-    healthAfter: nextDocument.analysis.health.score,
-    sizeBefore,
-    sizeAfter,
-    bytesSaved,
-    percentSaved,
-  };
-}
 
 export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
   document: null,
@@ -175,7 +143,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
     set({ isProcessing: true, error: null, optimizationValidation: null });
 
     try {
-      const { content: nextContent, appliedLabels } = applySafeFixesWithReport(
+      const { content: nextContent, report } = applySafeFixesWithReport(
         document.content,
       );
       const nextSvg = parseSvgMarkup(nextContent.trim());
@@ -198,19 +166,11 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         document.originalContent,
       );
 
-      const priorLabels = state.optimizationReport?.appliedLabels ?? [];
-      const nextAppliedLabels = [...priorLabels, ...appliedLabels];
-
       set({
         document: nextDocument,
         error: null,
         optimizationValidation: null,
-        optimizationReport: buildUpdatedOptimizationReport({
-          existingReport: state.optimizationReport,
-          document,
-          nextDocument,
-          nextAppliedLabels,
-        }),
+        optimizationReport: report,
         isProcessing: false,
       });
       showSuccessToast("Optimized");
@@ -257,25 +217,12 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         nextContent,
         document.originalContent,
       );
-      const appliedLabel = getSafeFixLabelForFinding(finding.id);
-      const priorLabels = state.optimizationReport?.appliedLabels ?? [];
-      const nextAppliedLabels = appliedLabel
-        ? [...priorLabels, appliedLabel]
-        : priorLabels;
 
       set({
         document: nextDocument,
         error: null,
         optimizationValidation: null,
-        optimizationReport:
-          nextAppliedLabels.length > 0
-            ? buildUpdatedOptimizationReport({
-                existingReport: state.optimizationReport,
-                document,
-                nextDocument,
-                nextAppliedLabels,
-              })
-            : state.optimizationReport,
+        optimizationReport: null,
         isProcessing: false,
       });
       trackAnalysisCompleted(nextDocument.analysis);
@@ -350,19 +297,11 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set) => ({
         document.originalContent,
       );
 
-      const priorLabels = state.optimizationReport?.appliedLabels ?? [];
-      const appliedLabels = [...priorLabels, transformConfig.label];
-
       set({
         document: nextDocument,
         error: null,
         optimizationValidation: null,
-        optimizationReport: buildUpdatedOptimizationReport({
-          existingReport: state.optimizationReport,
-          document,
-          nextDocument,
-          nextAppliedLabels: appliedLabels,
-        }),
+        optimizationReport: null,
         isProcessing: false,
       });
       showSuccessToast(

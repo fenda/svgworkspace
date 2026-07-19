@@ -32,6 +32,12 @@ function isHidden(element: Element): boolean {
   );
 }
 
+export function getHiddenElementCount(svg: SVGSVGElement): number {
+  return Array.from(svg.querySelectorAll("*")).filter((element) =>
+    isHidden(element),
+  ).length;
+}
+
 export function removeHiddenElements(svg: SVGSVGElement): void {
   Array.from(svg.querySelectorAll("*")).forEach((element) => {
     if (isHidden(element)) {
