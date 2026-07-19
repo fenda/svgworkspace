@@ -25,7 +25,7 @@ The intended workflow is:
 3. Review SVG Health.
 4. Apply optimizations.
 5. Compare changes.
-6. Export the optimized SVG.
+6. Export the appropriate output from Export Studio.
 
 ---
 
@@ -43,6 +43,13 @@ The selected background affects only the preview canvas and never modifies the S
 
 Users can override the automatic selection manually.
 
+Available preview modes now include:
+
+- Transparent
+- Light
+- Dark
+- Checkerboard
+
 ### Sprite Explorer
 
 When the uploaded SVG contains one or more `<symbol>` elements, the Preview tab switches to a read-only Sprite Explorer.
@@ -52,12 +59,55 @@ The Sprite Explorer:
 - replaces the normal root SVG preview for that document
 - shows the total symbol count
 - renders symbols in a responsive grid
+- supports instant search by symbol ID, title, and description
+- supports sorting by original order, alphabetical order, and recent selection
+- stores selection in workspace state so it survives tab switches and optimization when the symbol still exists
 - shows each symbol ID or `Unnamed symbol`
 - shows each symbol `viewBox` when available
 
 Each symbol preview is rendered independently from the root SVG so hidden root markup such as `style="display: none"` does not blank the gallery.
 
 Symbol presence is an objective parser fact and does not depend on optional user-provided `Type` context.
+
+Below the gallery, the Preview tab now extends into a read-only Sprite Workspace:
+
+- `Symbol Details` shows factual parser data for the selected symbol
+- `Export` provides original sprite, current sprite, and selected symbol copy/download actions
+
+Standalone symbol export:
+
+- preserves the selected symbol `viewBox` whenever possible
+- includes required namespaces
+- includes referenced shared root definitions when they can be resolved safely
+- includes shared root styles when the selected symbol depends on them
+
+Current standalone export limitations:
+
+- dependency extraction is conservative
+- unresolved shared references produce warnings instead of guessed markup
+- unrelated symbols are never copied into standalone exports
+
+### Export Studio
+
+The lower workspace now includes `Export Studio`.
+
+Export Studio is the single export destination for the current session, even though existing copy/download entry points remain in Preview and Sprite Workspace.
+
+It resolves export sources from workspace state instead of hardcoding them into individual UI sections.
+
+Current source patterns:
+
+- standalone documents: `Original SVG`, `Current SVG`, `Optimized SVG`
+- sprite documents: `Original Sprite`, `Current Sprite`, `Optimized Sprite`, `Selected Symbol`
+
+Unavailable exports stay visible as inactive cards with factual explanations instead of appearing as active controls.
+
+Examples:
+
+- `Optimized SVG` stays unavailable until the user has actually run `Optimize SVG`
+- `Selected Symbol` stays unavailable until a sprite symbol is selected
+
+Copy and download continue to use the shared clipboard and Blob implementations.
 
 ---
 
@@ -223,3 +273,119 @@ The Workspace layout should remain structurally stable before and after user act
 Actions such as Optimize SVG should update the content of existing sections rather than introducing new sections or significantly changing the page layout.
 
 Users should build familiarity with the interface over repeated use. Information may change, but the overall structure should remain predictable.
+
+## Icon Workspace
+
+When the current SVG is not a sprite, Workspace shows a dedicated `Icon Workspace` panel.
+
+The Icon Workspace is read-only in the sense that it never exposes freeform drawing or editing tools.
+
+Instead, this first milestone offers deterministic transformation groups:
+
+- `Appearance`
+- `Geometry`
+- `History`
+- `Preview Background`
+
+### Transformation pipeline
+
+Icon actions run through one shared transformation pipeline.
+
+Each transformation declares:
+
+- `id`
+- `label`
+- `description`
+- `category`
+- `isApplicable()`
+- `apply()`
+
+Buttons stay disabled when a transformation would not change the current SVG.
+
+Current appearance transformations:
+
+- `Convert to currentColor`
+- `Remove fill`
+- `Remove stroke`
+- `Remove inline fill attributes`
+- `Remove inline stroke attributes`
+
+`Remove fill` and `Remove stroke` intentionally set eligible explicit paint values to `none` rather than silently removing them. This keeps the result deterministic and easy to verify in Diff.
+
+Current geometry transformations:
+
+- `Square canvas`
+- `Add padding`
+- `Remove padding`
+- `Reset canvas`
+- `Custom viewBox`
+- `Output size`
+
+Geometry changes:
+
+- operate on `viewBox`, `width`, `height`, and `preserveAspectRatio`
+- never rewrite child path coordinates
+- reuse derived viewBox information only when numeric width and height make that safe
+
+### ViewBox Inspector
+
+The Geometry section includes a dedicated canvas inspector.
+
+It shows:
+
+- the current effective viewBox
+- the current result or pending custom viewBox
+- the geometry delta
+
+When the SVG has no valid viewBox but does have numeric width and height, the inspector makes it explicit that the editable canvas is derived rather than guessed.
+
+### Output and Preview size
+
+Geometry distinguishes between:
+
+- `Output size`: exported `width` / `height`
+- `Preview size`: UI-only inspection size
+
+Output size never changes the viewBox.
+
+Preview size never changes the exported SVG.
+
+### History
+
+Icon Workspace keeps lightweight local session history:
+
+- `Undo`
+- `Redo`
+- `Reset to original`
+
+History stores serialized SVG states only.
+
+- maximum 50 entries
+- cleared on new upload, paste, example load, or workspace clear
+- reset to original clears history
+
+### Synchronization
+
+Every icon transformation updates immediately:
+
+- Preview
+- SVG
+- Diff
+- Inspector metadata
+- Findings
+- Export output
+
+`Optimize SVG` runs against the current transformed SVG state. Because the workspace already tracks serialized document states, optimization and icon transformations share the same local Undo / Redo history for the current session.
+
+Geometry changes also update:
+
+- Scalable findings when a missing viewBox becomes explicit
+- Inspector warnings when output dimensions differ from the canvas
+- the read-only Diff tab so canvas changes remain inspectable
+
+### Known limitations
+
+- no artwork-bounds calculations yet
+- no centering or fit-to-bounds tools yet
+- no per-path geometry editing
+- no arbitrary dragging or handle-based editing

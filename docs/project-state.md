@@ -59,6 +59,8 @@ Compare output
 Export
 ```
 
+Export now converges in a dedicated Export Studio that resolves the currently available export sources for the loaded document.
+
 ---
 
 ## Preview Principle
@@ -88,6 +90,10 @@ Export
 The Optimization Engine is now the primary focus of the product.
 
 The core optimization workflow is now complete.
+
+Sprite-aware inspection is now available as a read-only extension of the Preview workspace.
+
+When an uploaded SVG contains `<symbol>` elements, SVG Workspace keeps the normal analysis, findings, optimization, diff, and export workflow intact while exposing a dedicated symbol browser inside Preview.
 
 ---
 
@@ -193,6 +199,126 @@ SVG Workspace now uses this product language:
 - `Transform`: valid intent-dependent actions
 
 The first Transform action is `Generate ViewBox`.
+
+## Sprite Workspace
+
+When SVG Workspace detects one or more `<symbol>` elements, the Preview tab switches to a Sprite Workspace.
+
+The Sprite Workspace is read-only and currently supports:
+
+- browsing symbols in a responsive gallery
+- search by symbol ID, title, or description
+- sorting by original order, alphabetical order, or recent selection
+- persistent symbol selection during the current workspace session
+- factual symbol inspection
+- copying and downloading standalone symbol exports
+- copying and downloading the original or current sprite
+
+Standalone symbol export tries to include only the shared definitions and root styles that the selected symbol references.
+
+Current limitations:
+
+- dependency extraction is conservative
+- unresolved shared references are warned about rather than guessed
+
+## Export Studio
+
+Export Studio is the unified export destination for the current workspace session.
+
+It reuses the existing copy and download implementations while resolving exports from shared `Export Sources`.
+
+Current sources include:
+
+- `Original SVG`
+- `Current SVG`
+- `Optimized SVG` when an Optimize run is available
+- `Original Sprite`
+- `Current Sprite`
+- `Optimized Sprite` when an Optimize run is available
+- `Selected Symbol` when a sprite symbol is selected
+
+Export source availability is state-aware and factual.
+
+Examples:
+
+- optimized exports stay unavailable until `Optimize SVG` has produced a current optimized result
+- selected symbol export stays unavailable until a symbol is selected
+- current exports remain available even when unchanged from the original, with a calm informational warning
+
+Filename generation is centralized to keep suffixes consistent:
+
+- `logo.svg`
+- `logo-current.svg`
+- `logo-optimized.svg`
+- `arrow-left.svg`
+- SVG Workspace does not yet support per-symbol editing or optimization
+
+## Icon Workspace
+
+When the current SVG is not a sprite, SVG Workspace exposes an Icon Workspace panel for safe, deterministic standalone-icon transformations.
+
+The Icon Workspace is intentionally not a freeform editor.
+
+It now focuses on developer-oriented one-click appearance and canvas actions that:
+
+- are based on parser facts
+- update Preview, SVG, Diff, findings, metadata, and export immediately
+- can be undone during the current session
+- can always be discarded with `Reset to original`
+
+Current groups:
+
+- Appearance
+- Geometry
+- History
+- Preview Background
+
+The shared transformation pipeline now powers these icon actions.
+
+Every transformation declares:
+
+- `id`
+- `label`
+- `description`
+- `category`
+- `isApplicable()`
+- `apply()`
+
+Applicability keeps the UI calm by disabling actions that would not change the current SVG.
+
+Current examples:
+
+- `Convert colors to currentColor`
+- `Remove fill`
+- `Remove stroke`
+- `Remove inline fill attributes`
+- `Remove inline stroke attributes`
+- `Square canvas`
+- `Uniform padding`
+- `Remove padding`
+- `Reset canvas`
+- `Custom viewBox`
+- `Output size`
+- `Preview size`
+
+Known limitations:
+
+- the workspace manipulates canvas geometry, not path coordinates
+- centering artwork, fit-to-bounds, and other artwork-measurement tools are still postponed
+- geometry operations never become freeform vector editing
+- Icon Workspace does not support arbitrary editing, dragging, node tools, or visual handles
+- `Remove fill` and `Remove stroke` currently set eligible explicit paint values to `none` so the result stays deterministic and easy to inspect in Diff
+
+`Optimize SVG` runs against the current standalone SVG state, including any Icon Workspace transformations already applied. Optimization and transformation changes therefore share the same local serialized history so Undo returns to the previous visible state predictably.
+
+Geometry notes:
+
+- square canvas uses only viewBox math and never scales paths
+- uniform padding expands the effective viewBox and stacks correctly
+- remove padding restores the original effective canvas instead of reversing the current stack mathematically
+- reset canvas restores the original `viewBox`, `width`, `height`, and `preserveAspectRatio` only
+- output size changes `width` and `height` without changing the viewBox
+- preview size is UI-only and never exported
 
 ---
 

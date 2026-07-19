@@ -1,7 +1,8 @@
 import { analyzeSvg } from "@/analysis";
+import { extractSvgGeometry } from "@/lib/svg/geometry";
 import { extractSvgMetadata } from "@/lib/svg/metadata";
 import { parseSvgMarkup } from "@/lib/svg/parse";
-import { collectSvgSymbols } from "@/lib/svg/sprites";
+import { collectSvgSpriteData } from "@/lib/svg/sprites";
 import type { SvgDocument } from "@/lib/svg/types";
 import { createValidationError } from "@/lib/svg/validation";
 
@@ -43,6 +44,9 @@ export function createSvgDocument(
 ): SvgDocument {
   const svg = parseSvgMarkup(content.trim());
   const originalSvg = parseSvgMarkup(originalContent.trim());
+  const spriteData = collectSvgSpriteData(svg);
+  const geometry = extractSvgGeometry(svg);
+  const originalGeometry = extractSvgGeometry(originalSvg);
 
   if (!hasDrawableContent(svg)) {
     throw createValidationError("empty_svg");
@@ -52,7 +56,10 @@ export function createSvgDocument(
     filename,
     originalContent,
     content,
-    symbols: collectSvgSymbols(svg),
+    symbols: spriteData.symbols,
+    spriteResources: spriteData.resources,
+    originalGeometry,
+    geometry,
     originalMetadata: extractSvgMetadata(originalSvg, originalContent, filename),
     metadata: extractSvgMetadata(svg, content, filename),
     analysis: analyzeSvg(svg),

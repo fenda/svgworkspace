@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -11,37 +12,52 @@ import {
   Check,
   Copy,
   Download,
+  FileDown,
+  Files,
   Grid3X3,
   Maximize2,
   Minus,
   Moon,
+  Search,
   Plus,
   RotateCcw,
   Sun,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
-import { copySvg } from "@/output/copy-svg";
-import { downloadSvg } from "@/output/download-svg";
 import { createSvgDiff } from "@/output/diff-svg";
 import { formatSvg } from "@/output/format-svg";
 import {
-  getAutomaticPreviewBackground,
+  copySvgWithFeedback,
+  downloadSvgWithFeedback,
+} from "@/output/perform-svg-export";
+import { trackAnalyticsEvent } from "@/lib/analytics";
+import {
+  getSharedResourceUsageSummary,
+  getStandaloneSpriteSymbol,
+  matchesSpriteSymbolSearch,
+  sortSpriteSymbols,
+  type SvgSymbolPreview,
+} from "@/lib/svg";
+import {
   type PreviewBackground,
 } from "@/lib/svg/preview-background";
-import { showSuccessToast } from "@/stores/toast-store";
-import { trackAnalyticsEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type PreviewTab = "preview" | "svg" | "diff";
-
-const PREVIEW_BACKGROUND_STORAGE_KEY = "svg-workspace.preview-background";
 const MIN_ZOOM = 25;
 const MAX_ZOOM = 3200;
 const DEFAULT_INTRINSIC_SIZE = { width: 24, height: 24 };
 
 const ZOOM_STEPS = [
   25, 50, 75, 100, 125, 150, 200, 300, 400, 600, 800, 1200, 1600, 2400, 3200,
+] as const;
+const EMPTY_SYMBOLS: SvgSymbolPreview[] = [];
+
+const SPRITE_SORT_OPTIONS = [
+  { value: "original", label: "Original order" },
+  { value: "alphabetical", label: "Alphabetical" },
+  { value: "recent", label: "Recently selected" },
 ] as const;
 
 const previewTabs: {
@@ -60,13 +76,18 @@ const backgroundOptions: {
   icon: typeof Grid3X3;
 }[] = [
   {
+    id: "transparent",
+    tooltip: "Transparent canvas background",
+    icon: Grid3X3,
+  },
+  {
     id: "checkerboard",
     tooltip: "Checkerboard canvas background",
     icon: Grid3X3,
   },
   {
-    id: "white",
-    tooltip: "White canvas background",
+    id: "light",
+    tooltip: "Light canvas background",
     icon: Sun,
   },
   {
@@ -146,6 +167,10 @@ function getIntrinsicSvgSize(markup: string): { width: number; height: number } 
 
 function getPreviewCanvasStyle(background: PreviewBackground): CSSProperties {
   switch (background) {
+    case "transparent":
+      return {
+        backgroundColor: "transparent",
+      };
     case "checkerboard":
       return {
         backgroundImage:
@@ -154,7 +179,7 @@ function getPreviewCanvasStyle(background: PreviewBackground): CSSProperties {
         backgroundPosition: "0 0, 0 8px, 8px -8px, -8px 0px",
         backgroundColor: "#141418",
       };
-    case "white":
+    case "light":
       return {
         backgroundColor: "#f7f7f8",
       };
@@ -166,7 +191,7 @@ function getPreviewCanvasStyle(background: PreviewBackground): CSSProperties {
 }
 
 function getPreviewForegroundColor(background: PreviewBackground): string {
-  return background === "white" ? "#111827" : "#f5f5f5";
+  return background === "light" ? "#111827" : "#f5f5f5";
 }
 
 function getNextZoom(value: number, direction: "in" | "out"): number {
@@ -194,81 +219,40 @@ function ControlTooltip({
   );
 }
 
+function getSymbolDisplayName(symbol: SvgSymbolPreview): string {
+  return symbol.id?.trim() || "Unnamed symbol";
+}
+
+function formatBooleanFact(value: boolean): string {
+  return value ? "Yes" : "No";
+}
+
 export function PreviewCard() {
-  const { document, source } = useSvgWorkspace();
+  const {
+    document,
+    selectedSymbolKey,
+    spriteSearchQuery,
+    spriteSortMode,
+    recentlySelectedSymbolKeys,
+    previewBackground,
+    previewSizeMode,
+    previewSizeValue,
+    setSelectedSymbolKey,
+    setSpriteSearchQuery,
+    setSpriteSortMode,
+    setPreviewBackground,
+    setPreviewSizeCustom,
+    setPreviewSize,
+  } = useSvgWorkspace();
   const [activeTab, setActiveTab] = useState<PreviewTab>("preview");
   const [copyState, setCopyState] = useState<"idle" | "success" | "error">("idle");
-  const [background, setBackground] = useState<PreviewBackground>(() => {
-    if (typeof window === "undefined") {
-      return "dark";
-    }
-
-    const storedBackground = window.localStorage.getItem(
-      PREVIEW_BACKGROUND_STORAGE_KEY,
-    );
-
-    if (
-      storedBackground === "checkerboard" ||
-      storedBackground === "white" ||
-      storedBackground === "dark"
-    ) {
-      return storedBackground;
-    }
-
-    return "dark";
-  });
-  const [hasManualBackgroundSelection, setHasManualBackgroundSelection] =
-    useState(() => {
-      if (typeof window === "undefined") {
-        return false;
-      }
-
-      const storedBackground = window.localStorage.getItem(
-        PREVIEW_BACKGROUND_STORAGE_KEY,
-      );
-
-      return (
-        storedBackground === "checkerboard" ||
-        storedBackground === "white" ||
-        storedBackground === "dark"
-      );
-    });
   const [zoomPercent, setZoomPercent] = useState(100);
   const [fitZoomPercent, setFitZoomPercent] = useState(100);
-  const [isFitMode, setIsFitMode] = useState(true);
   const hasTrackedDiffViewRef = useRef(false);
   const previewViewportRef = useRef<HTMLDivElement>(null);
   const lastMeasuredContentRef = useRef<string | null>(null);
-  const lastAutomaticBackgroundKeyRef = useRef<string | null>(null);
   const content = document?.content ?? "";
   const intrinsicSize = getIntrinsicSvgSize(content);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !hasManualBackgroundSelection) {
-      return;
-    }
-
-    window.localStorage.setItem(PREVIEW_BACKGROUND_STORAGE_KEY, background);
-  }, [background, hasManualBackgroundSelection]);
-
-  useEffect(() => {
-    if (!document || hasManualBackgroundSelection) {
-      return;
-    }
-
-    const automaticBackgroundKey = `${source ?? "unknown"}:${document.filename}:${document.originalContent}`;
-
-    if (lastAutomaticBackgroundKeyRef.current === automaticBackgroundKey) {
-      return;
-    }
-
-    lastAutomaticBackgroundKeyRef.current = automaticBackgroundKey;
-    setBackground(getAutomaticPreviewBackground(document.originalContent));
-  }, [
-    document,
-    hasManualBackgroundSelection,
-    source,
-  ]);
 
   useEffect(() => {
     if (activeTab === "diff" && !hasTrackedDiffViewRef.current) {
@@ -308,13 +292,7 @@ export function PreviewCard() {
 
       setFitZoomPercent(nextFitZoom);
 
-      if (isNewContent) {
-        setIsFitMode(true);
-        setZoomPercent(nextFitZoom);
-        return;
-      }
-
-      if (isFitMode) {
+      if (isNewContent && previewSizeMode === "custom") {
         setZoomPercent(nextFitZoom);
       }
     };
@@ -325,27 +303,75 @@ export function PreviewCard() {
     observer.observe(viewport);
 
     return () => observer.disconnect();
-  }, [activeTab, content, intrinsicSize.height, intrinsicSize.width, isFitMode]);
+  }, [activeTab, content, intrinsicSize.height, intrinsicSize.width, previewSizeMode]);
+
+  const filename = document?.filename ?? "optimized.svg";
+  const originalContent = document?.originalContent ?? "";
+  const symbols = document?.symbols ?? EMPTY_SYMBOLS;
+  const hasSymbols = symbols.length > 0;
+  const spriteResources = document?.spriteResources ?? null;
+  const formattedCurrent = document ? formatSvg(content) : "";
+  const formattedOriginal = document ? formatSvg(originalContent) : "";
+  const diffLines = document
+    ? createSvgDiff(formattedOriginal, formattedCurrent)
+    : [];
+  const hasChanges = formattedOriginal !== formattedCurrent;
+  const filteredSymbols = useMemo(() => {
+    return symbols.filter((symbol) =>
+      matchesSpriteSymbolSearch(symbol, spriteSearchQuery),
+    );
+  }, [symbols, spriteSearchQuery]);
+  const sortedSymbols = useMemo(() => {
+    return sortSpriteSymbols(
+      filteredSymbols,
+      spriteSortMode,
+      recentlySelectedSymbolKeys,
+    );
+  }, [filteredSymbols, recentlySelectedSymbolKeys, spriteSortMode]);
+  const selectedSymbol = useMemo(() => {
+    return (
+      symbols.find((symbol) => symbol.key === selectedSymbolKey) ?? null
+    );
+  }, [selectedSymbolKey, symbols]);
+  const selectedSymbolExport = useMemo(() => {
+    return selectedSymbol
+      ? getStandaloneSpriteSymbol(selectedSymbol, spriteResources)
+      : null;
+  }, [selectedSymbol, spriteResources]);
+  const selectedSymbolSharedUsage = selectedSymbol
+    ? getSharedResourceUsageSummary(selectedSymbol)
+    : [];
+  const fixedPreviewZoom =
+    previewSizeMode === "fixed" && previewSizeValue
+      ? Math.max(
+          MIN_ZOOM,
+          Math.min(
+            MAX_ZOOM,
+            Math.round(
+              (previewSizeValue / Math.max(intrinsicSize.width, intrinsicSize.height)) * 100,
+            ),
+          ),
+        )
+      : null;
+  const effectiveZoomPercent =
+    previewSizeMode === "fit"
+      ? fitZoomPercent
+      : fixedPreviewZoom ?? zoomPercent;
 
   if (!document) {
     return null;
   }
 
-  const { filename, originalContent, symbols } = document;
-  const hasSymbols = symbols.length > 0;
-  const formattedCurrent = formatSvg(content);
-  const formattedOriginal = formatSvg(originalContent);
-  const diffLines = createSvgDiff(formattedOriginal, formattedCurrent);
-  const hasChanges = formattedOriginal !== formattedCurrent;
   const activeTabPanelId = `preview-tab-panel-${activeTab}`;
   let tabContent: ReactNode;
 
   async function handleCopy() {
     try {
-      await copySvg(formattedCurrent);
+      await copySvgWithFeedback({
+        svgMarkup: formattedCurrent,
+        successMessage: "Copied",
+      });
       setCopyState("success");
-      showSuccessToast("Copied");
-      trackAnalyticsEvent("copy_clicked");
       window.setTimeout(() => setCopyState("idle"), 1800);
     } catch {
       setCopyState("error");
@@ -353,11 +379,33 @@ export function PreviewCard() {
     }
   }
 
+  async function handleCopyWithToast(
+    svgMarkup: string,
+    successMessage: string,
+    warnings: string[] = [],
+  ) {
+    await copySvgWithFeedback({ svgMarkup, successMessage, warnings });
+  }
+
+  function handleDownloadWithToast(
+    svgMarkup: string,
+    downloadName: string,
+    successMessage: string,
+    warnings: string[] = [],
+  ) {
+    downloadSvgWithFeedback({
+      svgMarkup,
+      filename: downloadName,
+      successMessage,
+      warnings,
+    });
+  }
+
   if (activeTab === "preview") {
     tabContent = hasSymbols ? (
       <div className="p-4">
         <div className="space-y-4">
-          <div className="flex items-baseline justify-between gap-3">
+          <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-sm font-medium text-zinc-100">Sprite Explorer</p>
               <p className="mt-1 text-xs text-zinc-400">
@@ -369,42 +417,312 @@ export function PreviewCard() {
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {symbols.map((symbol, index) => (
-              <article
-                key={`${symbol.id ?? "unnamed"}-${index}`}
-                className="rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-3"
+          <div className="flex flex-col gap-3 rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-3 lg:flex-row lg:items-center lg:justify-between">
+            <label className="relative block flex-1">
+              <span className="sr-only">Search symbols</span>
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" />
+              <input
+                type="search"
+                value={spriteSearchQuery}
+                onChange={(event) => setSpriteSearchQuery(event.target.value)}
+                placeholder="Search ID, title, or description"
+                aria-label="Search sprite symbols"
+                className="h-10 w-full rounded-lg border border-white/[0.08] bg-white/[0.02] pl-9 pr-3 text-sm text-zinc-200 outline-none transition focus:border-white/[0.14]"
+              />
+            </label>
+
+            <label className="flex items-center gap-2 text-xs text-zinc-400">
+              <span>Sort</span>
+              <select
+                value={spriteSortMode}
+                aria-label="Sort sprite symbols"
+                onChange={(event) =>
+                  setSpriteSortMode(
+                    event.target.value as (typeof SPRITE_SORT_OPTIONS)[number]["value"],
+                  )
+                }
+                className="h-10 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 text-sm text-zinc-200 outline-none transition focus:border-white/[0.14]"
               >
-                <div
-                  className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-white/[0.05] p-3 transition-colors duration-150"
-                  style={{
-                    ...getPreviewCanvasStyle(background),
-                    color: getPreviewForegroundColor(background),
-                  }}
-                >
-                  {symbol.previewMarkup ? (
+                {SPRITE_SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {sortedSymbols.length > 0 ? (
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {sortedSymbols.map((symbol) => {
+                const isSelected = symbol.key === selectedSymbolKey;
+
+                return (
+                  <button
+                    key={symbol.key}
+                    type="button"
+                    onClick={() => setSelectedSymbolKey(symbol.key)}
+                    className={cn(
+                      "rounded-xl border bg-[#0b0b0d] p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-white/20",
+                      isSelected
+                        ? "border-white/[0.18] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]"
+                        : "border-white/[0.06] hover:border-white/[0.12]",
+                    )}
+                  >
                     <div
-                      aria-hidden="true"
-                      className="flex h-full w-full items-center justify-center [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-full [&>svg]:max-w-full"
-                      dangerouslySetInnerHTML={{ __html: symbol.previewMarkup }}
-                    />
+                      className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-white/[0.05] p-3 transition-colors duration-150"
+                      style={{
+                        ...getPreviewCanvasStyle(previewBackground),
+                        color: getPreviewForegroundColor(previewBackground),
+                      }}
+                    >
+                      {symbol.previewMarkup ? (
+                        <div
+                          aria-hidden="true"
+                          className="flex h-full w-full items-center justify-center [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-full [&>svg]:max-w-full"
+                          dangerouslySetInnerHTML={{ __html: symbol.previewMarkup }}
+                        />
+                      ) : (
+                        <p className="max-w-[14rem] text-center text-xs leading-5 text-zinc-400">
+                          {symbol.previewUnavailableReason}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="mt-3 space-y-1">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="truncate text-sm font-medium text-zinc-200">
+                          {getSymbolDisplayName(symbol)}
+                        </p>
+                        {isSelected ? (
+                          <span className="shrink-0 rounded-full border border-white/[0.1] bg-white/[0.06] px-2 py-0.5 text-[10px] uppercase tracking-wider text-zinc-200">
+                            Selected
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="font-metric text-xs text-zinc-500">
+                        {symbol.viewBox ?? "No viewBox"}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-dashed border-white/[0.08] bg-[#0b0b0d] px-4 py-8 text-center">
+              <p className="text-sm text-zinc-300">No symbols match the current search.</p>
+              <p className="mt-1 text-xs text-zinc-500">Try a different ID, title, or description.</p>
+            </div>
+          )}
+
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
+            <section className="rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium text-zinc-100">Symbol Details</p>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    Factual parser information for the selected symbol.
+                  </p>
+                </div>
+              </div>
+
+              {selectedSymbol ? (
+                <div className="mt-4 space-y-4">
+                  <div
+                    className="flex aspect-[16/10] items-center justify-center overflow-hidden rounded-xl border border-white/[0.05] p-4"
+                    style={{
+                      ...getPreviewCanvasStyle(previewBackground),
+                      color: getPreviewForegroundColor(previewBackground),
+                    }}
+                  >
+                    {selectedSymbol.previewMarkup ? (
+                      <div
+                        aria-hidden="true"
+                        className="flex h-full w-full items-center justify-center [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-full [&>svg]:max-w-full"
+                        dangerouslySetInnerHTML={{ __html: selectedSymbol.previewMarkup }}
+                      />
+                    ) : (
+                      <p className="max-w-xs text-center text-sm leading-6 text-zinc-400">
+                        {selectedSymbol.previewUnavailableReason}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2 xl:grid-cols-3">
+                    {[
+                      ["ID", getSymbolDisplayName(selectedSymbol)],
+                      ["ViewBox", selectedSymbol.viewBox ?? "None"],
+                      ["Estimated size", selectedSymbol.estimatedDimensions ?? "Unavailable"],
+                      ["Paths", String(selectedSymbol.elementCounts.paths)],
+                      ["Groups", String(selectedSymbol.elementCounts.groups)],
+                      ["Circles", String(selectedSymbol.elementCounts.circles)],
+                      ["Rectangles", String(selectedSymbol.elementCounts.rects)],
+                      ["Polygons", String(selectedSymbol.elementCounts.polygons)],
+                      ["Lines", String(selectedSymbol.elementCounts.lines)],
+                      ["Text", String(selectedSymbol.elementCounts.text)],
+                      ["Defs", String(selectedSymbol.elementCounts.defs)],
+                      ["Style usage", formatBooleanFact(selectedSymbol.hasStyleUsage || selectedSymbol.hasSharedStyleUsage)],
+                      ["Title", selectedSymbol.title ?? "None"],
+                      ["Description", selectedSymbol.desc ?? "None"],
+                      ["Shared defs", formatBooleanFact(selectedSymbol.hasSharedDefinitionReferences)],
+                      ["Gradients", formatBooleanFact(selectedSymbol.usesGradients)],
+                      ["Clip paths", formatBooleanFact(selectedSymbol.usesClipPaths)],
+                      ["Masks", formatBooleanFact(selectedSymbol.usesMasks)],
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded-lg border border-white/[0.06] bg-black/10 px-3 py-2.5">
+                        <p className="text-[10px] uppercase tracking-wider text-zinc-500">{label}</p>
+                        <p className="mt-1 text-sm text-zinc-200 break-words">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {selectedSymbolSharedUsage.length > 0 ? (
+                    <div className="rounded-lg border border-white/[0.06] bg-black/10 px-3 py-2.5">
+                      <p className="text-[10px] uppercase tracking-wider text-zinc-500">Shared resources</p>
+                      <p className="mt-1 text-sm text-zinc-300">
+                        {selectedSymbolSharedUsage.join(", ")}
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <div className="mt-4 rounded-xl border border-dashed border-white/[0.08] bg-black/10 px-4 py-8 text-center">
+                  <p className="text-sm text-zinc-300">Select a symbol to inspect it.</p>
+                  <p className="mt-1 text-xs text-zinc-500">Selection survives tab switches and optimization when the symbol still exists.</p>
+                </div>
+              )}
+            </section>
+
+            <section className="rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-4">
+              <div>
+                <p className="text-sm font-medium text-zinc-100">Export</p>
+                <p className="mt-1 text-xs text-zinc-500">
+                  Copy or download the original sprite, the current sprite, or the selected symbol.
+                </p>
+              </div>
+
+              <div className="mt-4 space-y-4">
+                <div className="space-y-2">
+                  <p className="text-[10px] uppercase tracking-wider text-zinc-500">Sprite</p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
+                      onClick={() => void handleCopyWithToast(originalContent, "Copied original sprite")}
+                    >
+                      <Files className="size-3.5" />
+                      Copy original sprite
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
+                      onClick={() => handleDownloadWithToast(originalContent, filename, "Downloaded original sprite")}
+                    >
+                      <FileDown className="size-3.5" />
+                      Download original sprite
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={!hasChanges}
+                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
+                      onClick={() => void handleCopyWithToast(content, "Copied optimized sprite")}
+                    >
+                      <Files className="size-3.5" />
+                      Copy optimized sprite
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={!hasChanges}
+                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
+                      onClick={() => handleDownloadWithToast(content, filename, "Downloaded optimized sprite")}
+                    >
+                      <FileDown className="size-3.5" />
+                      Download optimized sprite
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-[10px] uppercase tracking-wider text-zinc-500">Selected symbol</p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={!selectedSymbolExport?.markup}
+                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
+                      onClick={() => {
+                        if (!selectedSymbolExport?.markup) {
+                          return;
+                        }
+
+                        void handleCopyWithToast(
+                          selectedSymbolExport.markup,
+                          "Copied symbol",
+                          selectedSymbolExport.warnings,
+                        );
+                      }}
+                    >
+                      <Copy className="size-3.5" />
+                      Copy selected symbol
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={!selectedSymbolExport?.markup}
+                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
+                      onClick={() => {
+                        if (!selectedSymbolExport?.markup) {
+                          return;
+                        }
+
+                        handleDownloadWithToast(
+                          selectedSymbolExport.markup,
+                          selectedSymbolExport.filename,
+                          "Downloaded symbol",
+                          selectedSymbolExport.warnings,
+                        );
+                      }}
+                    >
+                      <Download className="size-3.5" />
+                      Download selected symbol
+                    </Button>
+                  </div>
+
+                  {selectedSymbol ? (
+                    <div className="rounded-lg border border-white/[0.06] bg-black/10 px-3 py-2.5">
+                      <p className="text-xs text-zinc-300">
+                        {selectedSymbolExport?.markup
+                          ? `Exports ${getSymbolDisplayName(selectedSymbol)} as a standalone SVG.`
+                          : "This symbol does not have enough information to export as a standalone SVG yet."}
+                      </p>
+                      {selectedSymbolExport?.warnings.length ? (
+                        <p className="mt-1 text-xs leading-5 text-amber-300">
+                          {selectedSymbolExport.warnings[0]}
+                        </p>
+                      ) : (
+                        <p className="mt-1 text-xs leading-5 text-zinc-500">
+                          Shared defs and root styles are included only when the selected symbol references them.
+                        </p>
+                      )}
+                    </div>
                   ) : (
-                    <p className="max-w-[14rem] text-center text-xs leading-5 text-zinc-400">
-                      {symbol.previewUnavailableReason}
+                    <p className="text-xs text-zinc-500">
+                      Select a symbol to enable standalone export.
                     </p>
                   )}
                 </div>
-
-                <div className="mt-3 space-y-1">
-                  <p className="truncate text-sm font-medium text-zinc-200">
-                    {symbol.id?.trim() || "Unnamed symbol"}
-                  </p>
-                  <p className="font-metric text-xs text-zinc-500">
-                    {symbol.viewBox ?? "No viewBox"}
-                  </p>
-                </div>
-              </article>
-            ))}
+              </div>
+            </section>
           </div>
         </div>
       </div>
@@ -416,13 +734,13 @@ export function PreviewCard() {
           <div
             ref={previewViewportRef}
             className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-lg border border-white/[0.05] transition-colors duration-150"
-            style={getPreviewCanvasStyle(background)}
+            style={getPreviewCanvasStyle(previewBackground)}
           >
             <div
               className="flex items-center justify-center transition-[width,height] duration-200 ease-out"
               style={{
-                width: `${(intrinsicSize.width * zoomPercent) / 100}px`,
-                height: `${(intrinsicSize.height * zoomPercent) / 100}px`,
+                width: `${(intrinsicSize.width * effectiveZoomPercent) / 100}px`,
+                height: `${(intrinsicSize.height * effectiveZoomPercent) / 100}px`,
               }}
             >
               <div
@@ -518,18 +836,22 @@ export function PreviewCard() {
                     size="icon-sm"
                     title="Zoom out"
                     aria-label="Zoom out"
-                    disabled={zoomPercent <= MIN_ZOOM}
+                    disabled={effectiveZoomPercent <= MIN_ZOOM}
                     className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
                     onClick={() => {
-                      setIsFitMode(false);
-                      setZoomPercent((current) => getNextZoom(current, "out"));
+                      setZoomPercent(() => {
+                        const nextZoom = getNextZoom(effectiveZoomPercent, "out");
+                        const longestSide = Math.max(intrinsicSize.width, intrinsicSize.height);
+                        setPreviewSizeCustom((longestSide * nextZoom) / 100);
+                        return nextZoom;
+                      });
                     }}
                   >
                     <Minus className="size-3.5" />
                   </Button>
                 </ControlTooltip>
                 <span className="font-metric min-w-[4.5rem] rounded-md px-2 text-center text-xs text-zinc-200">
-                  {zoomPercent}%
+                  {effectiveZoomPercent}%
                 </span>
                 <ControlTooltip label="Zoom in">
                   <Button
@@ -538,11 +860,15 @@ export function PreviewCard() {
                     size="icon-sm"
                     title="Zoom in"
                     aria-label="Zoom in"
-                    disabled={zoomPercent >= MAX_ZOOM}
+                    disabled={effectiveZoomPercent >= MAX_ZOOM}
                     className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
                     onClick={() => {
-                      setIsFitMode(false);
-                      setZoomPercent((current) => getNextZoom(current, "in"));
+                      setZoomPercent(() => {
+                        const nextZoom = getNextZoom(effectiveZoomPercent, "in");
+                        const longestSide = Math.max(intrinsicSize.width, intrinsicSize.height);
+                        setPreviewSizeCustom((longestSide * nextZoom) / 100);
+                        return nextZoom;
+                      });
                     }}
                   >
                     <Plus className="size-3.5" />
@@ -555,11 +881,10 @@ export function PreviewCard() {
                     size="icon-sm"
                     title="Fit to canvas"
                     aria-label="Fit to canvas"
-                    disabled={zoomPercent === fitZoomPercent && isFitMode}
+                    disabled={previewSizeMode === "fit"}
                     className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
                     onClick={() => {
-                      setIsFitMode(true);
-                      setZoomPercent(fitZoomPercent);
+                      setPreviewSize(null);
                     }}
                   >
                     <Maximize2 className="size-3.5" />
@@ -572,11 +897,12 @@ export function PreviewCard() {
                     size="icon-sm"
                     title="Reset to 100%"
                     aria-label="Reset zoom to 100 percent"
-                    disabled={zoomPercent === 100 && !isFitMode}
+                    disabled={previewSizeMode === "custom" && zoomPercent === 100}
                     className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
                     onClick={() => {
-                      setIsFitMode(false);
                       setZoomPercent(100);
+                      const longestSide = Math.max(intrinsicSize.width, intrinsicSize.height);
+                      setPreviewSizeCustom(longestSide);
                     }}
                   >
                     <RotateCcw className="size-3.5" />
@@ -588,7 +914,7 @@ export function PreviewCard() {
             <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
               {backgroundOptions.map((option) => {
                 const Icon = option.icon;
-                const isActive = background === option.id;
+                const isActive = previewBackground === option.id;
 
                 return (
                   <ControlTooltip key={option.id} label={option.tooltip}>
@@ -597,8 +923,7 @@ export function PreviewCard() {
                       title={option.tooltip}
                       aria-label={option.tooltip}
                       onClick={() => {
-                        setHasManualBackgroundSelection(true);
-                        setBackground(option.id);
+                        setPreviewBackground(option.id);
                       }}
                       className={cn(
                         "flex size-7 items-center justify-center rounded-md text-[11px] font-medium transition-colors duration-150",
@@ -639,9 +964,11 @@ export function PreviewCard() {
             aria-label="Download the current formatted SVG"
             className="border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
             onClick={() => {
-              downloadSvg(formattedCurrent, filename);
-              showSuccessToast("Downloaded");
-              trackAnalyticsEvent("download_clicked");
+              downloadSvgWithFeedback({
+                svgMarkup: formattedCurrent,
+                filename,
+                successMessage: "Downloaded",
+              });
             }}
           >
             <Download className="size-3.5" />

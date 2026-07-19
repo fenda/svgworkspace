@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <defs>
+    <linearGradient id="shared-gradient" x1="0" x2="1">
+      <stop offset="0" stop-color="#193f6f"/>
+      <stop offset="1" stop-color="#5ab0ff"/>
+    </linearGradient>
+    <clipPath id="shared-clip">
+      <rect x="2" y="2" width="20" height="20" rx="4"/>
+    </clipPath>
+  </defs>
+  <style>
+    .brand-stroke {
+      stroke: #111827;
+      stroke-width: 1.5;
+    }
+  </style>
+  <symbol id="brand-mark" viewBox="0 0 24 24">
+    <g clip-path="url(#shared-clip)">
+      <path fill="url(#shared-gradient)" class="brand-stroke" d="M4 4h16v16H4z"/>
+    </g>
+    <title>Brand Mark</title>
+    <desc>Uses a shared gradient and clip path.</desc>
+  </symbol>
+  <symbol viewBox="0 0 16 16">
+    <circle cx="8" cy="8" r="6" fill="#fff"/>
+  </symbol>
+</svg>

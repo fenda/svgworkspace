@@ -1,4 +1,4 @@
-export type PreviewBackground = "checkerboard" | "white" | "dark";
+export type PreviewBackground = "transparent" | "checkerboard" | "light" | "dark";
 
 const HEX_SHORT_PATTERN = /^#([\da-f]{3,4})$/i;
 const HEX_LONG_PATTERN = /^#([\da-f]{6}|[\da-f]{8})$/i;
@@ -271,7 +271,7 @@ export function getAutomaticPreviewBackground(
   const totalCount = parsedColors.length;
 
   if (darkCount / totalCount >= 0.7) {
-    return "white";
+    return "light";
   }
 
   if (lightCount / totalCount >= 0.7) {

@@ -1,21 +1,60 @@
 import type { AnalysisResult } from "@/analysis";
+import type { SvgGeometryInfo } from "@/lib/svg/geometry";
 
 export type SvgType = "icon" | "logo" | "sprite_sheet";
 
 export type SvgSymbolElementCounts = {
   paths: number;
-  shapes: number;
-  uses: number;
   groups: number;
+  circles: number;
+  rects: number;
+  polygons: number;
+  lines: number;
+  text: number;
+  defs: number;
+  styles: number;
+  uses: number;
+  shapes: number;
+};
+
+export type SvgSpriteDefinition = {
+  id: string;
+  kind: string;
+  markup: string;
+  references: string[];
+  hasStyleUsage: boolean;
+};
+
+export type SvgSpriteResources = {
+  namespaceAttributes: string;
+  styleBlocks: string[];
+  definitions: SvgSpriteDefinition[];
 };
 
 export type SvgSymbolPreview = {
+  key: string;
+  index: number;
   id: string | null;
+  title: string | null;
+  desc: string | null;
   viewBox: string | null;
+  width: string | null;
+  height: string | null;
+  estimatedDimensions: string | null;
   childMarkup: string;
   previewMarkup: string | null;
   previewUnavailableReason: string | null;
   elementCounts: SvgSymbolElementCounts;
+  referencedDefinitionIds: string[];
+  unresolvedReferenceIds: string[];
+  hasSharedDefinitionReferences: boolean;
+  hasStyleUsage: boolean;
+  hasSharedStyleUsage: boolean;
+  usesGradients: boolean;
+  usesClipPaths: boolean;
+  usesMasks: boolean;
+  usesFilters: boolean;
+  usesMarkers: boolean;
 };
 
 export type SvgMetadata = {
@@ -75,6 +114,9 @@ export type SvgDocument = {
   originalContent: string;
   content: string;
   symbols: SvgSymbolPreview[];
+  spriteResources: SvgSpriteResources | null;
+  originalGeometry: SvgGeometryInfo;
+  geometry: SvgGeometryInfo;
   originalMetadata: SvgMetadata;
   metadata: SvgMetadata;
   analysis: AnalysisResult;
