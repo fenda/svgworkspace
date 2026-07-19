@@ -23,7 +23,16 @@ export function formatBytes(bytes: number): string {
     return `${bytes} B`;
   }
 
-  return `${(bytes / 1024).toFixed(1)} KB`;
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+export function formatPercentage(value: number): string {
+  const normalizedValue = Object.is(value, -0) ? 0 : value;
+  return `${normalizedValue.toFixed(1)}%`;
 }
 
 export function getByteLength(content: string): number {

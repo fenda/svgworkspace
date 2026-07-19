@@ -3,8 +3,13 @@
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
-import { formatBytes } from "@/lib/svg";
-import type { SvgType } from "@/lib/svg/types";
+import { formatBytes, formatPercentage } from "@/lib/svg";
+import type {
+  OptimizationChange,
+  OptimizationReport,
+  OptimizationStep,
+  SvgType,
+} from "@/lib/svg/types";
 
 const TYPE_OPTIONS: Array<{ value: null | SvgType; label: string }> = [
   { value: null, label: "Not specified" },
@@ -32,26 +37,75 @@ function formatStaticValue(value: string | number) {
   );
 }
 
-function formatComparisonValue(current: string | number, original: string | number) {
-  if (current === original) {
-    return formatStaticValue(current);
-  }
-
-  return (
-    <p className="font-metric mt-1 text-sm font-medium text-zinc-300">
-      <span className="text-zinc-500">{original}</span>
-      <span className="mx-1.5 text-zinc-600">→</span>
-      <span>{current}</span>
-    </p>
-  );
-}
-
 function formatSavedValue(bytesSaved: number, percentSaved: number): string {
   if (bytesSaved <= 0) {
     return "0 B";
   }
 
-  return `${formatBytes(bytesSaved)} (${percentSaved}%)`;
+  return `${formatBytes(bytesSaved)} (${formatPercentage(percentSaved)})`;
+}
+
+function formatDeltaText(bytes: number): string {
+  if (bytes > 0) {
+    return `${formatBytes(bytes)} smaller`;
+  }
+
+  if (bytes < 0) {
+    return `${formatBytes(Math.abs(bytes))} larger`;
+  }
+
+  return "size unchanged";
+}
+
+function formatStepValue(step: OptimizationStep): string {
+  return `${formatBytes(step.afterSizeBytes)} · ${formatDeltaText(step.savedBytes)}`;
+}
+
+function formatFinalSummary(report: OptimizationReport): string {
+  if (report.savedBytes > 0) {
+    return `${formatBytes(report.savedBytes)} smaller · ${formatPercentage(report.savedPercentage)}`;
+  }
+
+  if (report.savedBytes < 0) {
+    return `${formatBytes(Math.abs(report.savedBytes))} larger`;
+  }
+
+  return "Optimized size is unchanged.";
+}
+
+function formatChangeSummary(change: OptimizationChange): string {
+  if (typeof change.count === "number") {
+    return `${change.count} ${change.label.toLowerCase()}`;
+  }
+
+  return change.label;
+}
+
+function getSecondaryStepCountLabel(report: OptimizationReport): string | null {
+  const count = report.unchangedStepCount + report.skippedStepCount + report.failedStepCount;
+
+  if (count === 0) {
+    return null;
+  }
+
+  if (report.failedStepCount > 0) {
+    return `${count} additional ${count === 1 ? "step" : "steps"} were unchanged, skipped, or failed`;
+  }
+
+  return `${count} additional ${count === 1 ? "step" : "steps"} were unchanged or skipped`;
+}
+
+function getStepStatusText(step: OptimizationStep): string {
+  switch (step.status) {
+    case "changed":
+      return "Changed";
+    case "unchanged":
+      return "No changes needed";
+    case "skipped":
+      return "Skipped";
+    case "failed":
+      return "Failed";
+  }
 }
 
 function formatValuePair(label: string, value: ReactNode) {
@@ -132,10 +186,12 @@ export function DetailsCard() {
   const { metadata } = document;
   const hasChanges = document.content !== document.originalContent;
   const report = optimizationReport;
-  const showKnownActionsSummary =
-    hasChanges && Boolean(report?.appliedLabels.length);
-  const showFallbackSummary = hasChanges && !showKnownActionsSummary;
+  const hasTimelineReport = Boolean(report);
+  const showFallbackSummary = hasChanges && !hasTimelineReport;
   const summaryLabelClass = "text-[10px] uppercase tracking-wider text-zinc-400";
+  const changedSteps = report?.steps.filter((step) => step.status === "changed") ?? [];
+  const secondarySteps = report?.steps.filter((step) => step.status !== "changed") ?? [];
+  const secondaryStepCountLabel = report ? getSecondaryStepCountLabel(report) : null;
   const informationItems = [
     formatValuePair(
       "Type",
@@ -197,23 +253,20 @@ export function DetailsCard() {
             </p>
           </div>
 
-          {showKnownActionsSummary && report ? (
+          {report ? (
             <div className="mt-3 space-y-3">
               <div className="grid gap-2">
                 <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2">
                   <p className="text-[10px] uppercase tracking-wider text-zinc-500">
-                    Applied
+                    Original
                   </p>
-                  {formatStaticValue(`${report.appliedCount}`)}
+                  {formatStaticValue(formatBytes(report.originalSizeBytes))}
                 </div>
                 <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2">
                   <p className="text-[10px] uppercase tracking-wider text-zinc-500">
-                    Size
+                    Optimized
                   </p>
-                  {formatComparisonValue(
-                    formatBytes(report.sizeAfter),
-                    formatBytes(report.sizeBefore),
-                  )}
+                  {formatStaticValue(formatBytes(report.optimizedSizeBytes))}
                 </div>
                 <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2">
                   <p className="text-[10px] uppercase tracking-wider text-zinc-500">
@@ -221,11 +274,28 @@ export function DetailsCard() {
                   </p>
                   {formatStaticValue(
                     formatSavedValue(
-                      report.bytesSaved,
-                      report.percentSaved,
+                      report.savedBytes,
+                      report.savedPercentage,
                     ),
                   )}
                 </div>
+                <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2">
+                  <p className="text-[10px] uppercase tracking-wider text-zinc-500">
+                    Changed steps
+                  </p>
+                  {formatStaticValue(`${report.changedStepCount}`)}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <p className="text-sm text-zinc-300">
+                  {formatFinalSummary(report)}
+                </p>
+                {secondaryStepCountLabel ? (
+                  <p className="text-xs leading-5 text-zinc-500">
+                    {secondaryStepCountLabel}
+                  </p>
+                ) : null}
               </div>
 
               <Button
@@ -266,28 +336,97 @@ export function DetailsCard() {
         </div>
 
         <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3">
-          <p className={summaryLabelClass}>Applied</p>
+          <p className={summaryLabelClass}>Optimization Timeline</p>
 
-          {showKnownActionsSummary && report ? (
-            <div className="mt-3 max-h-48 overflow-y-auto pr-1">
-              <ul className="grid grid-cols-1 gap-x-4 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                {report.appliedLabels.map((label, index) => (
+          {report ? (
+            <div className="mt-3 space-y-3">
+              <ol className="space-y-3">
+                <li className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
+                  <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                    Original
+                  </p>
+                  <p className="mt-1 font-metric text-sm font-medium text-zinc-200">
+                    {formatBytes(report.originalSizeBytes)}
+                  </p>
+                </li>
+
+                {changedSteps.map((step) => (
                   <li
-                    key={`${label}-${index}`}
-                    className="text-sm leading-5 text-zinc-300"
+                    key={step.id}
+                    className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5"
                   >
-                    {label}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-zinc-200">
+                          {step.label}
+                        </p>
+                        <p className="mt-1 text-xs text-zinc-500">
+                          {getStepStatusText(step)}
+                        </p>
+                      </div>
+                      <p className="font-metric shrink-0 text-xs text-zinc-400">
+                        {formatStepValue(step)}
+                      </p>
+                    </div>
+                    {step.changes && step.changes.length > 0 ? (
+                      <div className="mt-2 space-y-1">
+                        {step.changes.map((change, index) => (
+                          <p
+                            key={`${step.id}-${change.type}-${index}`}
+                            className="text-xs leading-5 text-zinc-400"
+                          >
+                            {formatChangeSummary(change)}
+                          </p>
+                        ))}
+                      </div>
+                    ) : step.description ? (
+                      <p className="mt-2 text-xs leading-5 text-zinc-400">
+                        {step.description}
+                      </p>
+                    ) : null}
                   </li>
                 ))}
-              </ul>
+
+                <li className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
+                  <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                    Optimized
+                  </p>
+                  <p className="mt-1 font-metric text-sm font-medium text-zinc-200">
+                    {formatBytes(report.optimizedSizeBytes)}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-zinc-400">
+                    {formatFinalSummary(report)}
+                  </p>
+                </li>
+              </ol>
+
+              {secondarySteps.length > 0 ? (
+                <details className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
+                  <summary className="cursor-pointer list-none text-xs text-zinc-400 [&::-webkit-details-marker]:hidden">
+                    {secondaryStepCountLabel}
+                  </summary>
+                  <div className="mt-2 space-y-2">
+                    {secondarySteps.map((step) => (
+                      <div key={`${step.id}-${step.status}`} className="text-xs text-zinc-400">
+                        <p className="font-medium text-zinc-300">
+                          {step.label}
+                        </p>
+                        <p className="mt-0.5">
+                          {getStepStatusText(step)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              ) : null}
             </div>
           ) : showFallbackSummary ? (
             <p className="mt-3 text-sm text-zinc-400">
-              No actions recorded.
+              No optimization timeline is available for the current output.
             </p>
           ) : (
             <p className="mt-3 text-sm text-zinc-400">
-              No actions applied yet.
+              No optimization timeline yet.
             </p>
           )}
         </div>

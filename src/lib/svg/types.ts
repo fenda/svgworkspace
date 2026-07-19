@@ -29,15 +29,45 @@ export type SvgMetadata = {
   scalableExplanation: string;
 };
 
+export type OptimizationStepStatus =
+  | "changed"
+  | "unchanged"
+  | "skipped"
+  | "failed";
+
+export type OptimizationChange = {
+  type: string;
+  label: string;
+  count?: number;
+};
+
+export type OptimizationStep = {
+  id: string;
+  label: string;
+  description?: string;
+  status: OptimizationStepStatus;
+  beforeSizeBytes: number;
+  afterSizeBytes: number;
+  savedBytes: number;
+  savedPercentage: number;
+  changes?: OptimizationChange[];
+  warning?: string;
+};
+
 export type OptimizationReport = {
+  originalSizeBytes: number;
+  optimizedSizeBytes: number;
+  savedBytes: number;
+  savedPercentage: number;
+  startedAt?: string;
+  completedAt?: string;
+  steps: OptimizationStep[];
   appliedCount: number;
   appliedLabels: string[];
-  healthBefore: number;
-  healthAfter: number;
-  sizeBefore: number;
-  sizeAfter: number;
-  bytesSaved: number;
-  percentSaved: number;
+  changedStepCount: number;
+  unchangedStepCount: number;
+  skippedStepCount: number;
+  failedStepCount: number;
 };
 
 export type SvgDocument = {

@@ -299,6 +299,24 @@ For scalability:
 
 ---
 
+## Optimization Timeline
+
+After `Optimize SVG` runs, SVG Workspace now stores a read-only Optimization Timeline.
+
+The timeline:
+
+- uses the existing safe-fix sequence
+- measures real intermediate SVG outputs after each step
+- records factual before/after UTF-8 byte sizes
+- distinguishes changed, unchanged, and skipped steps
+- keeps the final optimized SVG output unchanged from the existing optimizer
+
+Only changed steps are shown prominently by default.
+
+Unchanged and skipped steps are kept in the report for debugging and calmer secondary disclosure.
+
+---
+
 ## SVG Type Context
 
 SVG Workspace automatically detects facts about the SVG itself.
