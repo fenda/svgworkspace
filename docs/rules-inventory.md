@@ -20,14 +20,14 @@ Optional SVG type context and Inspector Insights are not part of this rules inve
 
 | ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `STRUCTURE_001` | Missing viewBox | Structure | Warning | 5 | Transform when width/height make generation safe, otherwise Manual | Implemented | `missing-viewbox.svg`, `scalable-width-height-only.svg`, `scalable-missing-dimensions.svg`, `messy.svg` | Strong structural penalty is consistent with missing scalability support. |
+| `STRUCTURE_001` | Missing viewBox | Structure | Warning | 5 | Transform when width/height make generation safe, otherwise Manual | Implemented | `missing-viewbox.svg`, `scalable-width-height-only.svg`, `scalable-missing-dimensions.svg`, `messy.svg`, `sprite-all-symbols-viewbox.svg`, `sprite-missing-symbol-viewbox.svg` | Adapts to SVG structure: standalone SVGs use root analysis, while sprite containers suppress root viewBox warnings and aggregate symbol-level viewBox gaps instead. |
 | `STRUCTURE_002` | Fixed Width & Height | Structure | Info | 2 | Auto when `viewBox` is valid, otherwise Manual | Implemented | `fixed-dimensions.svg`, `fixed-dimensions-no-viewbox.svg`, `missing-viewbox.svg`, `messy.svg`, `illustrator-export.svg` | Rule metadata now defaults to Manual and the finding upgrades to Auto only when the existing `viewBox` makes removal safe. |
 | `STRUCTURE_003` | Duplicate IDs | Structure | Warning | 4 | Manual | Implemented | `duplicate-ids.svg` | Clear standalone rule with dedicated fixture. |
 | `STRUCTURE_004` | Empty Groups | Structure | Info | 1 | Auto | Implemented | `empty-groups.svg`, `messy.svg` | Explicit Auto metadata now matches optimizer behavior. |
 | `STRUCTURE_005` | Empty Paths | Structure | Warning | 3 | Auto | Implemented | `empty-paths.svg`, `messy.svg` | Warning severity is reasonable because empty paths usually indicate export noise or corruption. |
 | `STRUCTURE_006` | Empty Definitions | Structure | Info | 1 | Auto | Implemented | `empty-defs.svg` | Explicit auto metadata is present. |
 | `STRUCTURE_007` | Empty Symbols | Structure | Info | 1 | Auto | Implemented | `empty-symbols.svg` | Explicit auto metadata is present. |
-| `STRUCTURE_008` | Invalid viewBox | Structure | Warning | 5 | Manual | Implemented | `invalid-viewbox.svg` | Keeps malformed scaling metadata visible without guessing a repair. |
+| `STRUCTURE_008` | Invalid viewBox | Structure | Warning | 5 | Manual | Implemented | `invalid-viewbox.svg` | Applies to standalone SVGs. Sprite containers defer scalability analysis to their symbols instead of the root container. |
 
 ## Performance
 

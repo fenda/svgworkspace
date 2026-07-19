@@ -1,4 +1,5 @@
 import type { AnalysisRule } from "@/analysis/models";
+import { isSpriteContainerSvg } from "@/lib/svg";
 import { analyzeScalability } from "@/lib/svg/viewbox";
 import { createRuleFinding } from "../utils";
 
@@ -13,6 +14,10 @@ export const structure008InvalidViewBox: AnalysisRule = {
   introducedIn: "0.4.6",
   status: "implemented",
   analyze(svg) {
+    if (isSpriteContainerSvg(svg)) {
+      return null;
+    }
+
     const scalability = analyzeScalability(svg);
 
     if (scalability.state !== "invalid") {

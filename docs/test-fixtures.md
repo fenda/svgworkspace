@@ -37,6 +37,9 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `unused-defs.svg` | Tests `PERFORMANCE_005` unused definitions while preserving used ones. | `Unused Definitions` |
 | `empty-defs.svg` | Tests empty `<defs>` cleanup after structural optimization. | `Empty Definitions` |
 | `empty-symbols.svg` | Tests removal of symbol elements with no meaningful content. | `Empty Symbols` |
+| `sprite-all-symbols-viewbox.svg` | Tests a sprite container whose root SVG has no `viewBox`, but every symbol defines a valid `viewBox`. | None |
+| `sprite-missing-symbol-viewbox.svg` | Tests a sprite container that aggregates missing and invalid symbol `viewBox` values into one scalability finding. | `Some symbols are missing a viewBox` |
+| `sprite-explorer.svg` | Tests read-only Sprite Explorer preview with multiple symbols, a hidden root SVG, an unnamed symbol, and a symbol without a usable `viewBox`. | `Some symbols are missing a viewBox` |
 | `unused-namespaces.svg` | Tests `PERFORMANCE_006` unused namespace removal while preserving the default SVG namespace. | `Unused Namespaces` |
 | `namespace-in-use.svg` | Tests that namespace declarations remain when prefixed elements or attributes still use them. | None |
 | `inline-styles-safe.svg` | Tests safe inline style conversion to presentation attributes. | `Inline Styles` |
@@ -69,6 +72,9 @@ These fixtures are used for manual testing, demos, regression checks, and future
 - `invalid-viewbox.svg` should stay manual because SVG Workspace does not guess how to repair an invalid `viewBox`.
 - `empty-defs.svg` should optimize away the empty `<defs>` block only after other safe cleanup has left it truly empty.
 - `empty-symbols.svg` is automatic because the symbol subtree contains no meaningful drawable or definition content.
+- `sprite-all-symbols-viewbox.svg` should not report a scalability issue even though the root SVG has no `viewBox`, because each symbol defines its own valid `viewBox`.
+- `sprite-missing-symbol-viewbox.svg` should report one aggregated scalability finding instead of one finding per symbol.
+- `sprite-explorer.svg` should switch the Preview tab into Sprite Explorer mode, render valid symbols independently from the hidden root SVG, label unnamed symbols clearly, keep invalid symbol previews isolated instead of breaking the full gallery, and report the aggregated sprite-specific `viewBox` finding.
 - `inline-styles-safe.svg` is automatic because every declaration maps cleanly to safe SVG presentation attributes.
 - `inline-styles-unsafe.svg` remains manual because at least one declaration is not safe to convert automatically.
 - `unused-namespaces.svg` removes only prefixed namespace declarations that are not referenced by any element or attribute name.

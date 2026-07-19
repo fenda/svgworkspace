@@ -165,6 +165,10 @@ function getPreviewCanvasStyle(background: PreviewBackground): CSSProperties {
   }
 }
 
+function getPreviewForegroundColor(background: PreviewBackground): string {
+  return background === "white" ? "#111827" : "#f5f5f5";
+}
+
 function getNextZoom(value: number, direction: "in" | "out"): number {
   if (direction === "in") {
     return ZOOM_STEPS.find((step) => step > value) ?? value;
@@ -327,7 +331,8 @@ export function PreviewCard() {
     return null;
   }
 
-  const { filename, originalContent } = document;
+  const { filename, originalContent, symbols } = document;
+  const hasSymbols = symbols.length > 0;
   const formattedCurrent = formatSvg(content);
   const formattedOriginal = formatSvg(originalContent);
   const diffLines = createSvgDiff(formattedOriginal, formattedCurrent);
@@ -349,7 +354,61 @@ export function PreviewCard() {
   }
 
   if (activeTab === "preview") {
-    tabContent = (
+    tabContent = hasSymbols ? (
+      <div className="p-4">
+        <div className="space-y-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-zinc-100">Sprite Explorer</p>
+              <p className="mt-1 text-xs text-zinc-400">
+                {symbols.length} {symbols.length === 1 ? "symbol" : "symbols"}
+              </p>
+            </div>
+            <p className="text-xs text-zinc-500">
+              Symbols are rendered independently from the root SVG.
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {symbols.map((symbol, index) => (
+              <article
+                key={`${symbol.id ?? "unnamed"}-${index}`}
+                className="rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-3"
+              >
+                <div
+                  className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-white/[0.05] p-3 transition-colors duration-150"
+                  style={{
+                    ...getPreviewCanvasStyle(background),
+                    color: getPreviewForegroundColor(background),
+                  }}
+                >
+                  {symbol.previewMarkup ? (
+                    <div
+                      aria-hidden="true"
+                      className="flex h-full w-full items-center justify-center [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-full [&>svg]:max-w-full"
+                      dangerouslySetInnerHTML={{ __html: symbol.previewMarkup }}
+                    />
+                  ) : (
+                    <p className="max-w-[14rem] text-center text-xs leading-5 text-zinc-400">
+                      {symbol.previewUnavailableReason}
+                    </p>
+                  )}
+                </div>
+
+                <div className="mt-3 space-y-1">
+                  <p className="truncate text-sm font-medium text-zinc-200">
+                    {symbol.id?.trim() || "Unnamed symbol"}
+                  </p>
+                  <p className="font-metric text-xs text-zinc-500">
+                    {symbol.viewBox ?? "No viewBox"}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    ) : (
       <div className="p-4">
         <div
           className="mx-auto flex aspect-[16/10] w-full max-w-[560px] items-center justify-center rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-3"
@@ -450,79 +509,81 @@ export function PreviewCard() {
         </div>
         {activeTab === "preview" ? (
           <div className="flex flex-wrap items-center justify-end gap-2">
-            <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
-              <ControlTooltip label="Zoom out">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  title="Zoom out"
-                  aria-label="Zoom out"
-                  disabled={zoomPercent <= MIN_ZOOM}
-                  className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
-                  onClick={() => {
-                    setIsFitMode(false);
-                    setZoomPercent((current) => getNextZoom(current, "out"));
-                  }}
-                >
-                  <Minus className="size-3.5" />
-                </Button>
-              </ControlTooltip>
-              <span className="font-metric min-w-[4.5rem] rounded-md px-2 text-center text-xs text-zinc-200">
-                {zoomPercent}%
-              </span>
-              <ControlTooltip label="Zoom in">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  title="Zoom in"
-                  aria-label="Zoom in"
-                  disabled={zoomPercent >= MAX_ZOOM}
-                  className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
-                  onClick={() => {
-                    setIsFitMode(false);
-                    setZoomPercent((current) => getNextZoom(current, "in"));
-                  }}
-                >
-                  <Plus className="size-3.5" />
-                </Button>
-              </ControlTooltip>
-              <ControlTooltip label="Fit to canvas">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  title="Fit to canvas"
-                  aria-label="Fit to canvas"
-                  disabled={zoomPercent === fitZoomPercent && isFitMode}
-                  className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
-                  onClick={() => {
-                    setIsFitMode(true);
-                    setZoomPercent(fitZoomPercent);
-                  }}
-                >
-                  <Maximize2 className="size-3.5" />
-                </Button>
-              </ControlTooltip>
-              <ControlTooltip label="Reset to 100%">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  title="Reset to 100%"
-                  aria-label="Reset zoom to 100 percent"
-                  disabled={zoomPercent === 100 && !isFitMode}
-                  className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
-                  onClick={() => {
-                    setIsFitMode(false);
-                    setZoomPercent(100);
-                  }}
-                >
-                  <RotateCcw className="size-3.5" />
-                </Button>
-              </ControlTooltip>
-            </div>
+            {!hasSymbols ? (
+              <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
+                <ControlTooltip label="Zoom out">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    title="Zoom out"
+                    aria-label="Zoom out"
+                    disabled={zoomPercent <= MIN_ZOOM}
+                    className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
+                    onClick={() => {
+                      setIsFitMode(false);
+                      setZoomPercent((current) => getNextZoom(current, "out"));
+                    }}
+                  >
+                    <Minus className="size-3.5" />
+                  </Button>
+                </ControlTooltip>
+                <span className="font-metric min-w-[4.5rem] rounded-md px-2 text-center text-xs text-zinc-200">
+                  {zoomPercent}%
+                </span>
+                <ControlTooltip label="Zoom in">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    title="Zoom in"
+                    aria-label="Zoom in"
+                    disabled={zoomPercent >= MAX_ZOOM}
+                    className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
+                    onClick={() => {
+                      setIsFitMode(false);
+                      setZoomPercent((current) => getNextZoom(current, "in"));
+                    }}
+                  >
+                    <Plus className="size-3.5" />
+                  </Button>
+                </ControlTooltip>
+                <ControlTooltip label="Fit to canvas">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    title="Fit to canvas"
+                    aria-label="Fit to canvas"
+                    disabled={zoomPercent === fitZoomPercent && isFitMode}
+                    className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
+                    onClick={() => {
+                      setIsFitMode(true);
+                      setZoomPercent(fitZoomPercent);
+                    }}
+                  >
+                    <Maximize2 className="size-3.5" />
+                  </Button>
+                </ControlTooltip>
+                <ControlTooltip label="Reset to 100%">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    title="Reset to 100%"
+                    aria-label="Reset zoom to 100 percent"
+                    disabled={zoomPercent === 100 && !isFitMode}
+                    className="text-zinc-300 transition-colors duration-150 hover:bg-white/5 hover:text-zinc-100 disabled:text-zinc-600"
+                    onClick={() => {
+                      setIsFitMode(false);
+                      setZoomPercent(100);
+                    }}
+                  >
+                    <RotateCcw className="size-3.5" />
+                  </Button>
+                </ControlTooltip>
+              </div>
+            ) : null}
 
             <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.02] p-1">
               {backgroundOptions.map((option) => {
