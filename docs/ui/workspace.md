@@ -43,6 +43,22 @@ The selected background affects only the preview canvas and never modifies the S
 
 Users can override the automatic selection manually.
 
+### Sprite Explorer
+
+When the uploaded SVG contains one or more `<symbol>` elements, the Preview tab switches to a read-only Sprite Explorer.
+
+The Sprite Explorer:
+
+- replaces the normal root SVG preview for that document
+- shows the total symbol count
+- renders symbols in a responsive grid
+- shows each symbol ID or `Unnamed symbol`
+- shows each symbol `viewBox` when available
+
+Each symbol preview is rendered independently from the root SVG so hidden root markup such as `style="display: none"` does not blank the gallery.
+
+Symbol presence is an objective parser fact and does not depend on optional user-provided `Type` context.
+
 ---
 
 ## Optimization Report

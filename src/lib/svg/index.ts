@@ -7,6 +7,14 @@ export {
   readSvgFile,
 } from "./load";
 export { parseSvgMarkup, serializeSvg } from "./parse";
+export {
+  collectSvgSymbols,
+  createSpriteSymbolPreview,
+  getSpriteScalabilitySummary,
+  isSpriteContainerSvg,
+  resolveSpriteViewBox,
+  summarizeSpriteViewBoxes,
+} from "./sprites";
 export { hasValidViewBox } from "./viewbox";
 export {
   createValidationError,
@@ -19,6 +27,8 @@ export type {
   SvgDocument,
   SvgLoadSource,
   SvgMetadata,
+  SvgSymbolElementCounts,
+  SvgSymbolPreview,
   SvgType,
 } from "./types";
 export type { SvgValidationCode, SvgValidationState } from "./validation";

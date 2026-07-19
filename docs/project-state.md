@@ -261,6 +261,44 @@ Supported validation states:
 
 ---
 
+## Sprite Explorer Preview
+
+SVG Workspace now detects `<symbol>` elements as objective SVG structure.
+
+When symbols are present:
+
+- the Preview tab shows a read-only Sprite Explorer instead of the root SVG preview
+- each symbol is rendered independently as a standalone preview
+- symbol IDs and `viewBox` values are shown when available
+- unnamed symbols are still surfaced
+
+Sprite Explorer is driven by parser facts only:
+
+- symbol count
+- symbol IDs
+- symbol `viewBox` values
+
+It is not connected to the optional `Type` context selector.
+
+---
+
+## Structure-aware Findings
+
+SVG Workspace findings may adapt based on objective SVG structure.
+
+Example:
+
+- standalone SVGs are evaluated from the root `<svg>`
+- sprite containers are evaluated from their `<symbol>` elements where appropriate
+
+For scalability:
+
+- standalone SVGs still use root `viewBox` analysis
+- sprite containers do not report root `Missing viewBox`
+- sprite containers instead aggregate symbol-level `viewBox` problems into a single finding when needed
+
+---
+
 ## SVG Type Context
 
 SVG Workspace automatically detects facts about the SVG itself.
