@@ -150,6 +150,7 @@ Recommended future additions:
 - [Optimization Engine Milestone](./docs/milestones/optimization-engine.md)
 - [Milestones Index](./docs/milestones/README.md)
 - [Rules Specification](./docs/RULES.md)
+- [SEO and Indexing](./docs/seo.md)
 
 ## License
 

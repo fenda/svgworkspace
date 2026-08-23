@@ -1,6 +1,7 @@
 # Apache / DreamHost compatibility for Next.js static export
 Options -MultiViews
 DirectoryIndex index.html
+ErrorDocument 404 /404.html
 
 # Long-lived cache for fingerprinted Next.js build assets (JS, CSS, fonts, etc.)
 <IfModule mod_setenvif.c>
@@ -20,8 +21,8 @@ DirectoryIndex index.html
   RewriteCond %{REQUEST_URI} !(.*)/$
   RewriteRule ^(.*)$ $1/ [L,R=301]
 
-  # Fallback unknown routes to the exported 404 page
+  # Return the exported 404 page with an actual 404 status for unknown routes.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /404.html [L]
+  RewriteRule . - [R=404,L]
 </IfModule>

@@ -23,9 +23,6 @@ export const metadata: Metadata = {
   title: SITE_TITLE,
   description: SITE_DESCRIPTION,
   applicationName: "SVG Workspace",
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,

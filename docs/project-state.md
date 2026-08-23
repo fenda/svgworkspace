@@ -150,6 +150,17 @@ Current inventory and follow-up notes live in:
 
 - docs/rules-inventory.md
 
+## Search Indexing
+
+SVG Workspace is prepared for discovery as an application-first product:
+
+- the homepage is the single indexable product page
+- canonical URLs, `robots.txt`, and the sitemap use `https://svgworkspace.com`
+- unfinished placeholder routes are intentionally `noindex`
+- development SVG fixtures are excluded from crawling
+
+See [SEO and Indexing](./seo.md) for the production indexing policy and Google Search Console setup.
+
 ---
 
 # Product Philosophy
