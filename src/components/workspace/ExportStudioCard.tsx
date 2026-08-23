@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Download } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 import { resolveExportSources } from "@/export-studio";
@@ -9,6 +9,7 @@ import {
   copySvgWithFeedback,
   downloadSvgWithFeedback,
 } from "@/output/perform-svg-export";
+import { useWorkspaceUiStore } from "@/stores/workspace-ui-store";
 
 export function ExportStudioCard() {
   const {
@@ -16,6 +17,15 @@ export function ExportStudioCard() {
     optimizationReport,
     selectedSymbolKey,
   } = useSvgWorkspace();
+  const collapsed = useWorkspaceUiStore(
+    (state) => state.collapsedCards["export-studio"],
+  );
+  const toggleCardCollapsed = useWorkspaceUiStore(
+    (state) => state.toggleCardCollapsed,
+  );
+  const setLastActiveWorkspace = useWorkspaceUiStore(
+    (state) => state.setLastActiveWorkspace,
+  );
 
   if (!document) {
     return null;
@@ -29,14 +39,40 @@ export function ExportStudioCard() {
   });
 
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
+    <div
+      data-workspace-card="export-studio"
+      className="rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]"
+      onFocusCapture={() => setLastActiveWorkspace("export-studio")}
+      onMouseDown={() => setLastActiveWorkspace("export-studio")}
+    >
       <div className="border-b border-white/10 px-4 py-3">
-        <p className="text-sm font-medium text-zinc-200">Export Studio</p>
-        <p className="mt-1 text-xs text-zinc-500">
-          Export sources adapt to the current document state and reuse the existing copy/download pipeline.
-        </p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-zinc-200">Export Studio</p>
+            <p className="mt-1 text-xs text-zinc-500">
+              Export sources adapt to the current document state and reuse the existing copy/download pipeline.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label={collapsed ? "Expand Export Studio" : "Collapse Export Studio"}
+            className="text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+            onClick={() => toggleCardCollapsed("export-studio")}
+          >
+            {collapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
+          </Button>
+        </div>
       </div>
 
+      {collapsed ? (
+        <div className="px-4 py-3">
+          <p className="text-xs text-zinc-500">
+            {exportSources.length} export sources are available in this workspace.
+          </p>
+        </div>
+      ) : (
       <div className="grid gap-3 px-4 py-4 lg:grid-cols-2 xl:grid-cols-3">
         {exportSources.map((source) => (
           <section
@@ -118,6 +154,7 @@ export function ExportStudioCard() {
           </section>
         ))}
       </div>
+      )}
     </div>
   );
 }

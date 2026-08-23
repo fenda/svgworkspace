@@ -13,7 +13,7 @@ export const performance002CommentsFound: AnalysisRule = {
   title: "Comments Found",
   description: "The SVG contains XML comments.",
   severity: "info",
-  scoreImpact: 1,
+  scoreImpact: 0,
   fixType: "auto",
   introducedIn: "0.2.0",
   status: "implemented",

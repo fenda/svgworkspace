@@ -20,21 +20,26 @@ SVG Workspace should provide guidance rather than absolute pass/fail judgments w
 
 | ID | Title | Severity | Fix Type |
 |----|-------|----------|----------|
-| ACCESSIBILITY_001 | Missing Title | Warning | Manual |
-| ACCESSIBILITY_002 | Empty Title | Warning | Manual |
-| ACCESSIBILITY_003 | Missing Description | Info | Manual |
-| ACCESSIBILITY_004 | Empty Description | Info | Manual |
+| ACCESSIBILITY_001 | Missing Title | Info | Manual / context required |
+| ACCESSIBILITY_002 | Empty Title | Info | Manual / context required |
+| ACCESSIBILITY_003 | Missing Description | Info | Manual / context required |
+| ACCESSIBILITY_004 | Empty Description | Info | Manual / context required |
 | ACCESSIBILITY_005 | Decorative SVG | Info | Manual |
 
 ---
 
-## Planned Rules
+## Treatment And Scoring Notes
 
-- ACCESSIBILITY_006 Missing Role
-- ACCESSIBILITY_007 Missing aria-labelledby
-- ACCESSIBILITY_008 Missing aria-describedby
-- ACCESSIBILITY_009 Focusable SVG
-- ACCESSIBILITY_010 Keyboard Accessibility
+- These rules report SVG facts and provide Review guidance; they do not reduce SVG Health because the embedding context is unavailable.
+- Decorative SVGs and sprite containers are exempt from title and description guidance.
+- A non-empty `aria-label` or `aria-labelledby` also satisfies the internal accessible-name check, so a missing `<title>` is not reported in that case.
+- Only direct child `<title>` and `<desc>` elements are considered. A title inside a `<symbol>` does not name the root SVG document.
+- Empty title and description guidance is also skipped when decorative markup or another accessible name makes the empty child irrelevant.
+
+## Future Considerations
+
+- Consider context-aware accessibility review only when SVG Workspace receives explicit embedding information.
+- Do not add contrast checks without an authoritative rendering background and usage context.
 
 ---
 
@@ -45,6 +50,17 @@ SVG Workspace should provide guidance rather than absolute pass/fail judgments w
 - WCAG 2.2
 
 ---
+
+## Fixture References
+
+- `missing-title.svg`
+- `empty-title.svg`
+- `missing-desc.svg`
+- `empty-desc.svg`
+- `decorative-aria-hidden.svg`
+- `decorative-role-presentation.svg`
+- `decorative-role-none.svg`
+- `decorative-empty-title.svg`
 
 ## Notes
 

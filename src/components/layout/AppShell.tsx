@@ -4,12 +4,14 @@ import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { ToastViewport } from "@/components/ui/toast-viewport";
 import { MobileLanding } from "@/components/MobileLanding";
+import { CommandPalette } from "@/components/workspace/CommandPalette";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <AnalyticsConsent />
       <ToastViewport />
+      <CommandPalette />
       <div className="md:hidden">
         <MobileLanding />
       </div>

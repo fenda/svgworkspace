@@ -46,6 +46,7 @@ Transform actions are intentionally separate from automatic optimizations:
 ## Analysis
 
 - [x] Add optional SVG type context and contextual Insights in the Inspector
+- [x] Complete an SVG Analysis and Health Quality Pass with objective scoring, context-aware accessibility guidance, and verified internal-reference detection
 - [ ] Add more performance rules
 - [ ] Add more maintainability rules
 - [ ] Improve explanations

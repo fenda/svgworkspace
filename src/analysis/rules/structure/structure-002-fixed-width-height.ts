@@ -8,7 +8,7 @@ export const structure002FixedWidthHeight: AnalysisRule = {
   title: "Fixed Width & Height",
   description: "The SVG defines explicit width and height attributes.",
   severity: "info",
-  scoreImpact: 2,
+  scoreImpact: 1,
   fixType: "manual",
   introducedIn: "0.2.0",
   status: "implemented",

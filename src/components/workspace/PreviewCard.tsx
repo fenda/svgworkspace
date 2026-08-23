@@ -9,6 +9,8 @@ import {
   type ReactNode,
 } from "react";
 import {
+  ChevronDown,
+  ChevronRight,
   Check,
   Copy,
   Download,
@@ -43,6 +45,7 @@ import {
   type PreviewBackground,
 } from "@/lib/svg/preview-background";
 import { cn } from "@/lib/utils";
+import { useWorkspaceUiStore } from "@/stores/workspace-ui-store";
 
 type PreviewTab = "preview" | "svg" | "diff";
 const MIN_ZOOM = 25;
@@ -244,6 +247,9 @@ export function PreviewCard() {
     setPreviewSizeCustom,
     setPreviewSize,
   } = useSvgWorkspace();
+  const collapsed = useWorkspaceUiStore((state) => state.collapsedCards.preview);
+  const toggleCardCollapsed = useWorkspaceUiStore((state) => state.toggleCardCollapsed);
+  const setLastActiveWorkspace = useWorkspaceUiStore((state) => state.setLastActiveWorkspace);
   const [activeTab, setActiveTab] = useState<PreviewTab>("preview");
   const [copyState, setCopyState] = useState<"idle" | "success" | "error">("idle");
   const [zoomPercent, setZoomPercent] = useState(100);
@@ -427,6 +433,7 @@ export function PreviewCard() {
                 onChange={(event) => setSpriteSearchQuery(event.target.value)}
                 placeholder="Search ID, title, or description"
                 aria-label="Search sprite symbols"
+                data-sprite-search
                 className="h-10 w-full rounded-lg border border-white/[0.08] bg-white/[0.02] pl-9 pr-3 text-sm text-zinc-200 outline-none transition focus:border-white/[0.14]"
               />
             </label>
@@ -587,7 +594,7 @@ export function PreviewCard() {
                 </div>
               ) : (
                 <div className="mt-4 rounded-xl border border-dashed border-white/[0.08] bg-black/10 px-4 py-8 text-center">
-                  <p className="text-sm text-zinc-300">Select a symbol to inspect it.</p>
+                  <p className="text-sm text-zinc-300">Select a symbol in Sprite Explorer.</p>
                   <p className="mt-1 text-xs text-zinc-500">Selection survives tab switches and optimization when the symbol still exists.</p>
                 </div>
               )}
@@ -717,7 +724,7 @@ export function PreviewCard() {
                     </div>
                   ) : (
                     <p className="text-xs text-zinc-500">
-                      Select a symbol to enable standalone export.
+                      Select a symbol in Sprite Explorer to enable standalone export.
                     </p>
                   )}
                 </div>
@@ -796,7 +803,12 @@ export function PreviewCard() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14] lg:min-h-[520px]">
+    <div
+      data-workspace-card="preview"
+      className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14] lg:min-h-[520px]"
+      onFocusCapture={() => setLastActiveWorkspace("preview")}
+      onMouseDown={() => setLastActiveWorkspace("preview")}
+    >
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
         <div
           role="tablist"
@@ -938,10 +950,28 @@ export function PreviewCard() {
                 );
               })}
             </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label={collapsed ? "Expand Preview" : "Collapse Preview"}
+              className="text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+              onClick={() => toggleCardCollapsed("preview")}
+            >
+              {collapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
+            </Button>
           </div>
         ) : null}
       </div>
 
+      {collapsed ? (
+        <div className="px-4 py-3">
+          <p className="text-xs text-zinc-500">
+            Preview, SVG source, diff, and sprite exploration are available here.
+          </p>
+        </div>
+      ) : (
+        <>
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
         <div className="flex flex-wrap items-center gap-2">
           <Button
@@ -990,6 +1020,8 @@ export function PreviewCard() {
       >
         {tabContent}
       </div>
+        </>
+      )}
     </div>
   );
 }

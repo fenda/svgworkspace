@@ -20,8 +20,8 @@ They currently support explicit Transform actions for direct hardcoded paint att
 
 | ID | Title | Severity | Score Impact | Fix Type / Treatment |
 | --- | --- | --- | --- | --- |
-| `COLORS_001` | Hardcoded Fill Colors | Warning | 3 | Transform when direct fill attributes are eligible, otherwise Manual |
-| `COLORS_002` | Hardcoded Stroke Colors | Warning | 3 | Transform when direct stroke attributes are eligible, otherwise Manual |
+| `COLORS_001` | Hardcoded Fill Colors | Info | 0 | Transform when direct fill attributes are eligible, otherwise Manual |
+| `COLORS_002` | Hardcoded Stroke Colors | Info | 0 | Transform when direct stroke attributes are eligible, otherwise Manual |
 
 ---
 
@@ -38,10 +38,9 @@ They currently support explicit Transform actions for direct hardcoded paint att
 
 ## Scoring Notes
 
-- Both implemented color rules are currently `Warning` findings with a score impact of `3`.
-- This is consistent between fill and stroke.
-- The current scoring is provisional and should be revisited once real color replacement workflows exist.
-- The rules inventory notes that Transform-oriented color findings may currently be penalizing the score more than the product can meaningfully act on.
+- Both rules are `Info` findings with a score impact of `0`.
+- Fixed colors describe an adaptation opportunity, not an objective SVG defect: brand colors and illustration palettes can be intentional.
+- `currentColor` remains an explicit Transform and is never included in Optimize SVG.
 
 ---
 
@@ -64,5 +63,5 @@ See [docs/test-fixtures.md](/Users/fernandasampaio/Work/svg-workspace/docs/test-
 ## Future Considerations
 
 - Extend Transform options beyond `currentColor` to support CSS variables or token-based mapping.
-- Decide whether Transform findings should keep their current score impact before richer configurable actions ship.
+- Consider additional explicit color transforms only when they can preserve user intent and remain clearly reversible.
 - Consider future rules for gradients, paint servers, and theme-hostile embedded styles once the treatment model is standardized.

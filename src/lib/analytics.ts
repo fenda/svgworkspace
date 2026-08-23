@@ -1,6 +1,7 @@
 "use client";
 
 import type { AnalysisResult, Severity } from "@/analysis";
+import { ensureAnalyticsQueue } from "./analytics-queue";
 
 const GA_MEASUREMENT_ID = "G-XDK5R1FYNK";
 const GA_SCRIPT_ID = "svg-workspace-ga4";
@@ -33,13 +34,7 @@ function ensureGtag() {
     return;
   }
 
-  window.dataLayer = window.dataLayer || [];
-
-  if (!window.gtag) {
-    window.gtag = (...args: unknown[]) => {
-      window.dataLayer?.push(args);
-    };
-  }
+  ensureAnalyticsQueue(window);
 }
 
 function loadGaScript(): Promise<void> {
@@ -94,18 +89,6 @@ function loadGaScript(): Promise<void> {
   return scriptLoadPromise;
 }
 
-function sendPageView() {
-  if (!analyticsEnabled || typeof window === "undefined" || !window.gtag) {
-    return;
-  }
-
-  window.gtag("event", "page_view", {
-    page_title: document.title,
-    page_location: window.location.href,
-    page_path: window.location.pathname,
-  });
-}
-
 export async function enableAnalytics() {
   if (typeof window === "undefined") {
     return;
@@ -119,8 +102,17 @@ export async function enableAnalytics() {
   }
 
   analyticsEnabled = true;
+  window.gtag("consent", "default", {
+    analytics_storage: "denied",
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+  });
   window.gtag("consent", "update", {
     analytics_storage: "granted",
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
   });
 
   if (!analyticsInitialized) {
@@ -129,12 +121,9 @@ export async function enableAnalytics() {
       anonymize_ip: true,
       allow_google_signals: false,
       allow_ad_personalization_signals: false,
-      send_page_view: false,
     });
     analyticsInitialized = true;
   }
-
-  sendPageView();
 }
 
 export function disableAnalytics() {

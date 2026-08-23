@@ -294,17 +294,15 @@ Documentation should reference the permanent Rule ID.
 
 # Scoring
 
-Current scoring is provisional.
+Rules contribute through `scoreImpact`. The current model is additive and intentionally simple, but it follows a stable quality policy:
 
-Rules contribute through `scoreImpact`.
+- `5-6` points are reserved for verified structural or rendering risks.
+- `1` point is used for objectively measurable cleanup or portability concerns.
+- `0` points are used for optional cleanup, intent-dependent transforms, and guidance that requires embedding context.
 
-Future versions may use weighted scoring.
+Health must not claim to know visual contrast, brand intent, or accessible naming supplied by surrounding HTML. Those checks may be shown as guidance, but should not lower the generic SVG Health score.
 
-Do not optimize rule design around the current scoring algorithm.
-
-Scoring may evolve.
-
-Rule identifiers must not.
+Do not optimize rule design around a target score. A clean SVG should reach a high score without unnecessary markup, and rule identifiers remain permanent even if scoring evolves.
 
 ---
 

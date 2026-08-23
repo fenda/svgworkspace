@@ -25,19 +25,18 @@ These rules mostly focus on safe cleanup opportunities:
 
 | ID | Title | Severity | Score Impact | Fix Type / Treatment |
 | --- | --- | --- | --- | --- |
-| `PERFORMANCE_001` | Metadata Found | Info | 2 | Auto |
-| `PERFORMANCE_002` | Comments Found | Info | 1 | Auto |
-| `PERFORMANCE_003` | High Decimal Precision | Info | 3 | Auto |
-| `PERFORMANCE_004` | Hidden Elements | Info | 2 | Auto |
-| `PERFORMANCE_005` | Unused Definitions | Info | 2 | Auto |
-| `PERFORMANCE_006` | Unused Namespaces | Info | 1 | Auto |
+| `PERFORMANCE_001` | Metadata Found | Info | 0 | Auto |
+| `PERFORMANCE_002` | Comments Found | Info | 0 | Auto |
+| `PERFORMANCE_003` | High Decimal Precision | Info | 1 | Auto |
+| `PERFORMANCE_004` | Hidden Elements | Info | 1 | Auto |
+| `PERFORMANCE_005` | Unused Definitions | Info | 1 | Auto |
+| `PERFORMANCE_006` | Unused Namespaces | Info | 0 | Auto |
 
 ---
 
 ## Treatment Notes
 
-- All current Performance rules are treated as safe cleanup opportunities.
-- Some rules explicitly declare `fixType: auto`; others are currently treated as Auto through fallback logic in the safe-fix layer.
+- All current Performance rules explicitly declare Auto metadata and are treated as safe cleanup opportunities.
 - These fixes are applied through `Optimize SVG` and individual automatic fix actions.
 - Safety remains the priority: cleanup should never change rendering.
 
@@ -46,9 +45,8 @@ These rules mostly focus on safe cleanup opportunities:
 ## Scoring Notes
 
 - All current Performance findings are `Info`.
-- Score impacts range from `1` to `3` depending on how much export overhead or cleanup value the rule represents.
-- The rules inventory recommends revisiting whether fully automatic cleanup findings should reduce score as much as they currently do.
-- The current performance scoring model should continue to be treated as provisional.
+- Optional markup cleanup such as metadata, comments, and namespace declarations has no Health penalty.
+- Measurable payload cleanup such as precision, hidden content, and unused definitions carries a small one-point impact.
 
 ---
 
@@ -70,6 +68,5 @@ See [docs/test-fixtures.md](/Users/fernandasampaio/Work/svg-workspace/docs/test-
 
 ## Future Considerations
 
-- Standardize explicit rule metadata so all Auto-capable rules declare `fixType` directly.
-- Revisit score impact for cleanup-only rules once the broader SVG Health model is recalibrated.
+- Add performance rules only when their rendering safety can be established from the SVG itself.
 - Add future performance rules only when they preserve rendering and can be explained clearly.

@@ -1,24 +1,29 @@
 import type { AnalysisRule } from "@/analysis/models";
-import { hasEmptyElementText } from "./shared";
+import { hasAccessibleName, hasEmptyElementText, isAccessibilityContextExempt } from "./shared";
 import { createRuleFinding } from "../utils";
 
 export const accessibility002EmptyTitle: AnalysisRule = {
   id: "ACCESSIBILITY_002",
   category: "accessibility",
   title: "Empty Title",
-  description: "The SVG contains an empty title element.",
-  severity: "warning",
-  scoreImpact: 4,
+  description: "This standalone SVG contains an empty internal <title> element.",
+  severity: "info",
+  scoreImpact: 0,
   fixType: "manual",
   introducedIn: "0.2.1",
   status: "implemented",
   analyze(svg) {
-    if (!hasEmptyElementText(svg, "title")) {
+    if (
+      isAccessibilityContextExempt(svg) ||
+      hasAccessibleName(svg) ||
+      !hasEmptyElementText(svg, "title")
+    ) {
       return null;
     }
 
     return createRuleFinding(accessibility002EmptyTitle, {
-      recommendation: "Fill the <title> element with a short, meaningful label.",
+      recommendation:
+        "If this SVG relies on its internal title for an accessible name, fill it with a short, meaningful label.",
     });
   },
 };

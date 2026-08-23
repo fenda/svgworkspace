@@ -8,7 +8,7 @@ export const performance006UnusedNamespaces: AnalysisRule = {
   title: "Unused Namespaces",
   description: "This SVG declares namespaces that are not used in the document.",
   severity: "info",
-  scoreImpact: 1,
+  scoreImpact: 0,
   fixType: "auto",
   introducedIn: "0.4.1",
   status: "implemented",

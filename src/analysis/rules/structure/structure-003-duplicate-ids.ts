@@ -26,7 +26,7 @@ export const structure003DuplicateIds: AnalysisRule = {
   title: "Duplicate IDs",
   description: "The SVG contains duplicate id attributes.",
   severity: "warning",
-  scoreImpact: 4,
+  scoreImpact: 5,
   fixType: "manual",
   introducedIn: "0.2.0",
   status: "implemented",

@@ -1,5 +1,5 @@
 import type { AnalysisRule } from "@/analysis/models";
-import { hasElement, isDecorativeSvg } from "./shared";
+import { hasAccessibleName, isAccessibilityContextExempt } from "./shared";
 import { createRuleFinding } from "../utils";
 
 export const accessibility001MissingTitle: AnalysisRule = {
@@ -7,19 +7,20 @@ export const accessibility001MissingTitle: AnalysisRule = {
   category: "accessibility",
   title: "Missing Title",
   description:
-    "This SVG has no accessible title. Screen readers may not provide useful context.",
-  severity: "warning",
-  scoreImpact: 4,
+    "This standalone SVG has no internal accessible name.",
+  severity: "info",
+  scoreImpact: 0,
   fixType: "manual",
   introducedIn: "0.2.1",
   status: "implemented",
   analyze(svg) {
-    if (isDecorativeSvg(svg) || hasElement(svg, "title")) {
+    if (isAccessibilityContextExempt(svg) || hasAccessibleName(svg)) {
       return null;
     }
 
     return createRuleFinding(accessibility001MissingTitle, {
-      recommendation: "Add a meaningful <title> element for assistive technologies.",
+      recommendation:
+        "If this SVG is meaningful and is not named by surrounding HTML, add a short <title> or an accessible name.",
     });
   },
 };

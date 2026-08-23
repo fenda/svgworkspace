@@ -38,6 +38,7 @@ type SpriteSortMode = "original" | "alphabetical" | "recent";
 type PreviewSizeMode = "fit" | "fixed" | "custom";
 
 const PREVIEW_BACKGROUND_STORAGE_KEY = "svg-workspace.preview-background";
+const PREVIEW_SIZE_STORAGE_KEY = "svg-workspace.preview-size";
 function isStoredPreviewBackground(value: string | null): value is PreviewBackground {
   return (
     value === "transparent" ||
@@ -79,6 +80,72 @@ function persistPreviewBackground(background: PreviewBackground): void {
   }
 
   window.localStorage.setItem(PREVIEW_BACKGROUND_STORAGE_KEY, background);
+}
+
+function getInitialPreviewSizeState(): {
+  previewSizeMode: PreviewSizeMode;
+  previewSizeValue: number | null;
+} {
+  if (typeof window === "undefined") {
+    return {
+      previewSizeMode: "fit",
+      previewSizeValue: null,
+    };
+  }
+
+  const rawValue = window.localStorage.getItem(PREVIEW_SIZE_STORAGE_KEY);
+
+  if (!rawValue) {
+    return {
+      previewSizeMode: "fit",
+      previewSizeValue: null,
+    };
+  }
+
+  try {
+    const parsed = JSON.parse(rawValue) as {
+      previewSizeMode?: PreviewSizeMode;
+      previewSizeValue?: number | null;
+    };
+
+    if (
+      parsed.previewSizeMode === "fit" ||
+      parsed.previewSizeMode === "fixed" ||
+      parsed.previewSizeMode === "custom"
+    ) {
+      return {
+        previewSizeMode: parsed.previewSizeMode,
+        previewSizeValue:
+          typeof parsed.previewSizeValue === "number"
+            ? parsed.previewSizeValue
+            : null,
+      };
+    }
+  } catch {
+    return {
+      previewSizeMode: "fit",
+      previewSizeValue: null,
+    };
+  }
+
+  return {
+    previewSizeMode: "fit",
+    previewSizeValue: null,
+  };
+}
+
+function persistPreviewSize(
+  previewSizeMode: PreviewSizeMode,
+  previewSizeValue: number | null,
+): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.setItem(
+    PREVIEW_SIZE_STORAGE_KEY,
+    JSON.stringify({ previewSizeMode, previewSizeValue }),
+  );
 }
 
 function getLoadedPreviewBackground(
@@ -173,6 +240,7 @@ type SvgWorkspaceStore = {
 };
 
 const initialPreviewBackgroundState = getInitialPreviewBackgroundState();
+const initialPreviewSizeState = getInitialPreviewSizeState();
 
 export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
   function loadDocument(
@@ -201,8 +269,8 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
           state.previewBackground,
           state.hasManualPreviewBackground,
         ),
-        previewSizeMode: "fit",
-        previewSizeValue: null,
+        previewSizeMode: state.previewSizeMode,
+        previewSizeValue: state.previewSizeValue,
         history: [],
         historyIndex: -1,
         isProcessing: false,
@@ -323,8 +391,8 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
     spriteSortMode: "original",
     recentlySelectedSymbolKeys: [],
     previewBackground: initialPreviewBackgroundState.previewBackground,
-    previewSizeMode: "fit",
-    previewSizeValue: null,
+    previewSizeMode: initialPreviewSizeState.previewSizeMode,
+    previewSizeValue: initialPreviewSizeState.previewSizeValue,
     hasManualPreviewBackground:
       initialPreviewBackgroundState.hasManualPreviewBackground,
     history: [],
@@ -377,7 +445,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
 
         commitDocumentChange(nextContent, {
           optimizationReport: report,
-          successToast: "Optimized",
+          successToast: "Optimization complete",
         });
       } catch (error) {
         set({
@@ -432,15 +500,15 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
             ? {
                 apply: (content: string) =>
                   applyCurrentColorTransform(content, "fill"),
-                toast: "Converted to currentColor",
+                toast: "Applied currentColor",
                 analyticsId: "use_currentcolor",
               }
             : finding.id === "COLORS_002"
               ? {
                   apply: (content: string) =>
                     applyCurrentColorTransform(content, "stroke"),
-                  toast: "Converted to currentColor",
-                  analyticsId: "use_currentcolor",
+                toast: "Applied currentColor",
+                analyticsId: "use_currentcolor",
                 }
               : null;
 
@@ -489,9 +557,12 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
           payload,
         );
         const label = getIconWorkspaceTransformationLabel(transformationId);
+        const successToast = transformationId.startsWith("geometry-")
+          ? "Geometry updated"
+          : result.summary ?? label;
 
         commitDocumentChange(result.svgMarkup, {
-          successToast: result.summary ?? label,
+          successToast,
           trackTransformId: transformationId,
         });
       } catch (error) {
@@ -645,6 +716,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
     },
 
     setPreviewSize: (size) => {
+      persistPreviewSize(size === null ? "fit" : "fixed", size);
       set({
         previewSizeMode: size === null ? "fit" : "fixed",
         previewSizeValue: size,
@@ -652,6 +724,7 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
     },
 
     setPreviewSizeCustom: (size) => {
+      persistPreviewSize("custom", size);
       set({
         previewSizeMode: "custom",
         previewSizeValue: size,
@@ -679,8 +752,8 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
         spriteSearchQuery: "",
         spriteSortMode: "original",
         recentlySelectedSymbolKeys: [],
-        previewSizeMode: "fit",
-        previewSizeValue: null,
+        previewSizeMode: initialPreviewSizeState.previewSizeMode,
+        previewSizeValue: initialPreviewSizeState.previewSizeValue,
         history: [],
         historyIndex: -1,
         isProcessing: false,

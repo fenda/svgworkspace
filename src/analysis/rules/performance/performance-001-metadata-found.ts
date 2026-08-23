@@ -7,7 +7,7 @@ export const performance001MetadataFound: AnalysisRule = {
   title: "Metadata Found",
   description: "Metadata elements were detected.",
   severity: "info",
-  scoreImpact: 2,
+  scoreImpact: 0,
   fixType: "auto",
   introducedIn: "0.2.0",
   status: "implemented",

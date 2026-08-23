@@ -181,3 +181,8 @@
     72px 72px,
     72px 72px;
 }
+
+/* Match CookieConsent's enabled Analytics state to the app's success palette. */
+#cc-main {
+  --cc-toggle-on-bg: var(--color-emerald-400);
+}

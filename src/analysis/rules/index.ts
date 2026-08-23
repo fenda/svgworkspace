@@ -26,6 +26,7 @@ import { structure005EmptyPaths } from "./structure/structure-005-empty-paths";
 import { structure006EmptyDefinitions } from "./structure/structure-006-empty-definitions";
 import { structure007EmptySymbols } from "./structure/structure-007-empty-symbols";
 import { structure008InvalidViewBox } from "./structure/structure-008-invalid-viewbox";
+import { structure009BrokenInternalReferences } from "./structure/structure-009-broken-internal-references";
 import { validateRuleMetadata } from "./utils";
 import type { AnalysisRule } from "@/analysis/models";
 
@@ -38,6 +39,7 @@ const structureRules: AnalysisRule[] = [
   structure006EmptyDefinitions,
   structure007EmptySymbols,
   structure008InvalidViewBox,
+  structure009BrokenInternalReferences,
 ];
 
 const performanceRules: AnalysisRule[] = [

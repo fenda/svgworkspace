@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 import { formatBytes, formatPercentage } from "@/lib/svg";
@@ -10,6 +11,7 @@ import type {
   OptimizationStep,
   SvgType,
 } from "@/lib/svg/types";
+import { useWorkspaceUiStore } from "@/stores/workspace-ui-store";
 
 const TYPE_OPTIONS: Array<{ value: null | SvgType; label: string }> = [
   { value: null, label: "Not specified" },
@@ -178,6 +180,9 @@ export function DetailsCard() {
     insights,
   } =
     useSvgWorkspace();
+  const collapsed = useWorkspaceUiStore((state) => state.collapsedCards.inspector);
+  const toggleCardCollapsed = useWorkspaceUiStore((state) => state.toggleCardCollapsed);
+  const setLastActiveWorkspace = useWorkspaceUiStore((state) => state.setLastActiveWorkspace);
 
   if (!document) {
     return null;
@@ -208,11 +213,35 @@ export function DetailsCard() {
   ];
 
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
+    <div
+      data-workspace-card="inspector"
+      className="rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]"
+      onFocusCapture={() => setLastActiveWorkspace("inspector")}
+      onMouseDown={() => setLastActiveWorkspace("inspector")}
+    >
       <div className="border-b border-white/10 px-4 py-3">
-        <p className="text-sm font-medium text-zinc-200">Inspector</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm font-medium text-zinc-200">Inspector</p>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label={collapsed ? "Expand Inspector" : "Collapse Inspector"}
+            className="text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+            onClick={() => toggleCardCollapsed("inspector")}
+          >
+            {collapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
+          </Button>
+        </div>
       </div>
 
+      {collapsed ? (
+        <div className="px-4 py-3">
+          <p className="text-xs text-zinc-500">
+            SVG information, insights, and optimization details are available here.
+          </p>
+        </div>
+      ) : (
       <div className="grid gap-4 px-4 py-4 lg:grid-cols-3">
         <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3">
           <p className={summaryLabelClass}>
@@ -431,6 +460,7 @@ export function DetailsCard() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }

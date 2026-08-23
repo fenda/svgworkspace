@@ -9,7 +9,7 @@ export const structure001MissingViewBox: AnalysisRule = {
   title: "Missing viewBox",
   description: "The SVG does not contain a viewBox attribute.",
   severity: "warning",
-  scoreImpact: 5,
+  scoreImpact: 6,
   fixType: "manual",
   introducedIn: "0.2.0",
   status: "implemented",

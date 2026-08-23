@@ -4,6 +4,21 @@ This document describes intentional user experience decisions for the SVG Worksp
 
 ---
 
+## Workspace productivity
+
+SVG Workspace should feel like a developer tool rather than a static report.
+
+The workspace now supports:
+
+- `Command Palette` for searchable actions
+- keyboard shortcuts for palette, undo, redo, and sprite search
+- persistent card collapse state
+- persistent focus mode
+- persistent preview-size preferences
+- lightweight workspace navigation via toolbar and commands
+
+These controls should extend the existing workflow rather than replace it.
+
 ## Upload flow
 
 After a successful:
@@ -108,6 +123,73 @@ Examples:
 - `Selected Symbol` stays unavailable until a sprite symbol is selected
 
 Copy and download continue to use the shared clipboard and Blob implementations.
+
+## Command Palette
+
+The Command Palette is the fastest way to discover and trigger workspace actions.
+
+It opens with:
+
+- `Ctrl + K`
+- `Cmd + K`
+
+The palette consumes a shared `Action Registry`.
+
+Actions may include:
+
+- optimization
+- undo / redo
+- reset
+- icon workspace transformations
+- export actions
+- workspace navigation
+
+Unavailable actions should remain visible when useful, with a factual disabled reason.
+
+The palette should remain keyboard navigable:
+
+- arrow keys move selection
+- `Enter` executes the selected action
+- `Escape` closes the palette
+
+## Focus Mode
+
+Focus Mode is a workflow preference, not a separate route.
+
+When enabled, the workspace keeps:
+
+- the toolbar
+- Preview
+- the most relevant secondary workspace card
+
+This mode is intended to reduce distraction during focused editing or export work.
+
+Focus Mode state should persist across reloads for the current browser.
+
+## Collapsible cards
+
+Major workspace cards are collapsible and should remember their expanded state.
+
+Current top-level collapsible cards include:
+
+- Preview
+- SVG Health
+- Icon Workspace
+- Inspector
+- Export Studio
+
+Collapsed cards should still communicate what kind of information or tools they contain.
+
+## Keyboard shortcuts
+
+Current workspace shortcuts:
+
+- `Ctrl/Cmd + K`: open Command Palette
+- `Ctrl/Cmd + Z`: undo
+- `Ctrl/Cmd + Shift + Z`: redo
+- `/`: focus Sprite Explorer search when available
+
+Browser defaults should only be prevented when SVG Workspace is actively taking over a matching workspace action.
 
 ---
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 import { getSeverityTextClass } from "@/analysis/display";
@@ -9,6 +10,7 @@ import { SeverityIcon } from "./FindingsList";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { getFixType, isAutomaticFixFinding } from "@/actions/safe-fixes";
+import { useWorkspaceUiStore } from "@/stores/workspace-ui-store";
 
 function getFixTypeLabel(fixType: ReturnType<typeof getFixType>): string {
   switch (fixType) {
@@ -67,6 +69,9 @@ export function AnalysisCard() {
     applySafeFixForFinding,
     applyTransformForFinding,
   } = useSvgWorkspace();
+  const collapsed = useWorkspaceUiStore((state) => state.collapsedCards.health);
+  const toggleCardCollapsed = useWorkspaceUiStore((state) => state.toggleCardCollapsed);
+  const setLastActiveWorkspace = useWorkspaceUiStore((state) => state.setLastActiveWorkspace);
 
   if (!document) {
     return null;
@@ -87,21 +92,48 @@ export function AnalysisCard() {
     : "[&_[data-slot=progress-indicator]]:bg-emerald-400 [&_[data-slot=progress-track]]:bg-white/[0.06]";
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14] lg:min-h-[520px] lg:max-h-[520px]">
+    <div
+      data-workspace-card="health"
+      className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14] lg:min-h-[520px] lg:max-h-[520px]"
+      onFocusCapture={() => setLastActiveWorkspace("health")}
+      onMouseDown={() => setLastActiveWorkspace("health")}
+    >
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
         <p className="text-sm font-medium text-zinc-200">SVG Health</p>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={automaticFixCount === 0 || isProcessing}
-          className="border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
-          onClick={applyCurrentSafeFixes}
-        >
-          Optimize SVG
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={automaticFixCount === 0 || isProcessing}
+            className="border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
+            onClick={applyCurrentSafeFixes}
+          >
+            Optimize SVG
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label={collapsed ? "Expand SVG Health" : "Collapse SVG Health"}
+            className="text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+            onClick={() => toggleCardCollapsed("health")}
+          >
+            {collapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
+          </Button>
+        </div>
       </div>
 
+      {collapsed ? (
+        <div className="px-4 py-3">
+          <p className="text-xs text-zinc-500">
+            {hasFindings
+              ? `${health.findingCount} issues found with ${automaticFixCount} automatic optimizations available.`
+              : "No issues detected."}
+          </p>
+        </div>
+      ) : (
+        <>
       <div className="shrink-0 space-y-2 border-b border-white/10 px-4 py-3">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -254,6 +286,8 @@ export function AnalysisCard() {
           <p className="mt-2 shrink-0 text-xs text-amber-400">{error}</p>
         ) : null}
       </div>
+        </>
+      )}
     </div>
   );
 }

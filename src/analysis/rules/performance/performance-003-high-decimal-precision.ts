@@ -14,7 +14,7 @@ export const performance003HighDecimalPrecision: AnalysisRule = {
   title: "High Decimal Precision",
   description: "Coordinates contain excessive decimal places.",
   severity: "info",
-  scoreImpact: 3,
+  scoreImpact: 1,
   fixType: "auto",
   introducedIn: "0.2.0",
   status: "implemented",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import { Redo2, RotateCcw, Undo2 } from "lucide-react";
+import { ChevronDown, ChevronRight, Redo2, RotateCcw, Undo2 } from "lucide-react";
 import {
   getIconWorkspaceTransformationApplicability,
   getIconWorkspaceTransformationStates,
@@ -23,6 +23,7 @@ import {
   type SvgGeometryInfo,
 } from "@/lib/svg";
 import { cn } from "@/lib/utils";
+import { useWorkspaceUiStore } from "@/stores/workspace-ui-store";
 
 const BACKGROUND_OPTIONS: Array<{ id: PreviewBackground; label: string }> = [
   { id: "transparent", label: "Transparent" },
@@ -212,6 +213,15 @@ export function IconWorkspaceCard() {
     setPreviewBackground,
     setPreviewSize,
   } = useSvgWorkspace();
+  const collapsed = useWorkspaceUiStore(
+    (state) => state.collapsedCards["icon-workspace"],
+  );
+  const toggleCardCollapsed = useWorkspaceUiStore(
+    (state) => state.toggleCardCollapsed,
+  );
+  const setLastActiveWorkspace = useWorkspaceUiStore(
+    (state) => state.setLastActiveWorkspace,
+  );
   const [customViewBoxDraft, setCustomViewBoxDraft] = useState<ViewBoxDraft>({
     minX: "0",
     minY: "0",
@@ -314,14 +324,40 @@ export function IconWorkspaceCard() {
   };
 
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]">
+    <div
+      data-workspace-card="icon-workspace"
+      className="rounded-xl border border-white/10 bg-[#0d0d10] transition-colors duration-150 hover:border-white/[0.14]"
+      onFocusCapture={() => setLastActiveWorkspace("icon-workspace")}
+      onMouseDown={() => setLastActiveWorkspace("icon-workspace")}
+    >
       <div className="border-b border-white/10 px-4 py-3">
-        <p className="text-sm font-medium text-zinc-200">Icon Workspace</p>
-        <p className="mt-1 text-xs text-zinc-500">
-          Deterministic transformations for standalone SVGs. Sprites remain isolated in Sprite Workspace.
-        </p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-zinc-200">Icon Workspace</p>
+            <p className="mt-1 text-xs text-zinc-500">
+              Deterministic transformations for standalone SVGs. Sprites remain isolated in Sprite Workspace.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label={collapsed ? "Expand Icon Workspace" : "Collapse Icon Workspace"}
+            className="text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+            onClick={() => toggleCardCollapsed("icon-workspace")}
+          >
+            {collapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
+          </Button>
+        </div>
       </div>
 
+      {collapsed ? (
+        <div className="px-4 py-3">
+          <p className="text-xs text-zinc-500">
+            Appearance tools, geometry controls, history, and preview preferences are available here.
+          </p>
+        </div>
+      ) : (
       <div className="grid gap-4 px-4 py-4 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
         <div className="space-y-4">
           <WorkspaceGroup title="Appearance">
@@ -814,6 +850,7 @@ export function IconWorkspaceCard() {
           </WorkspaceGroup>
         </div>
       </div>
+      )}
     </div>
   );
 }

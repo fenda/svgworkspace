@@ -1,188 +1,97 @@
 # SVG Workspace Rules Inventory
 
-Last reviewed: July 2026
+Last reviewed: August 2026
 
-This inventory reflects the currently implemented rule set in `src/analysis/rules/*`, the current fixture catalog in [docs/test-fixtures.md](/Users/fernandasampaio/Work/svg-workspace/docs/test-fixtures.md), and the current treatment wiring in `src/actions/safe-fixes/*`.
+This inventory is the implementation reference for rules registered in `src/analysis/rules/*`. SVG Health contains only the Structure, Performance, Colors, Accessibility, and Maintainability categories. React Ready findings remain destination-specific and do not affect Health.
 
-Optional SVG type context and Inspector Insights are not part of this rules inventory. They are informational only and do not affect SVG Health scoring or treatment classification.
+## Scoring Philosophy
+
+SVG Health measures objective production quality, not every possible improvement.
+
+- `5-6`: a verified structural or rendering risk, such as a missing or invalid `viewBox`, duplicate IDs, or a reference to a missing local ID.
+- `1`: a measurable cleanup or portability concern that can be established from the SVG itself.
+- `0`: optional cleanup, user-intent-dependent transforms, or accessibility guidance that requires embedding context.
+
+This lets a clean SVG reach `100` without optional markup. It also keeps a comment, hardcoded brand color, or missing internal description from being treated like a broken reference. Grade bands remain `A+` at 95 and above, `A` at 90 and above, and so on.
 
 ## Summary
 
-- SVG Health rules: 23
+- SVG Health rules: 24
 - React Ready rules: 5
-- Auto-capable rules: 13
-- Manual-only rules: 12
-- Transform-capable rules in the UI: 3
-- Rules with explicit metadata in code: 28
+- Auto-capable Health rules: 13
+- Health rules with explicit metadata in code: 24
 - Safe-fix treatment fallback rules remaining: 0
 
 ## Structure
 
-| ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `STRUCTURE_001` | Missing viewBox | Structure | Warning | 5 | Transform when width/height make generation safe, otherwise Manual | Implemented | `missing-viewbox.svg`, `scalable-width-height-only.svg`, `scalable-missing-dimensions.svg`, `messy.svg`, `sprite-all-symbols-viewbox.svg`, `sprite-missing-symbol-viewbox.svg` | Adapts to SVG structure: standalone SVGs use root analysis, while sprite containers suppress root viewBox warnings and aggregate symbol-level viewBox gaps instead. |
-| `STRUCTURE_002` | Fixed Width & Height | Structure | Info | 2 | Auto when `viewBox` is valid, otherwise Manual | Implemented | `fixed-dimensions.svg`, `fixed-dimensions-no-viewbox.svg`, `missing-viewbox.svg`, `messy.svg`, `illustrator-export.svg` | Rule metadata now defaults to Manual and the finding upgrades to Auto only when the existing `viewBox` makes removal safe. |
-| `STRUCTURE_003` | Duplicate IDs | Structure | Warning | 4 | Manual | Implemented | `duplicate-ids.svg` | Clear standalone rule with dedicated fixture. |
-| `STRUCTURE_004` | Empty Groups | Structure | Info | 1 | Auto | Implemented | `empty-groups.svg`, `messy.svg` | Explicit Auto metadata now matches optimizer behavior. |
-| `STRUCTURE_005` | Empty Paths | Structure | Warning | 3 | Auto | Implemented | `empty-paths.svg`, `messy.svg` | Warning severity is reasonable because empty paths usually indicate export noise or corruption. |
-| `STRUCTURE_006` | Empty Definitions | Structure | Info | 1 | Auto | Implemented | `empty-defs.svg` | Explicit auto metadata is present. |
-| `STRUCTURE_007` | Empty Symbols | Structure | Info | 1 | Auto | Implemented | `empty-symbols.svg` | Explicit auto metadata is present. |
-| `STRUCTURE_008` | Invalid viewBox | Structure | Warning | 5 | Manual | Implemented | `invalid-viewbox.svg` | Applies to standalone SVGs. Sprite containers defer scalability analysis to their symbols instead of the root container. |
+| ID | Title | Severity | Score | Treatment | Fixture coverage | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `STRUCTURE_001` | Missing viewBox | Warning | 6 | Transform when numeric width/height make generation safe; otherwise Review | `missing-viewbox.svg`, scalability fixtures, sprite viewBox fixtures | Sprites suppress the irrelevant root check and aggregate symbol viewBox gaps. |
+| `STRUCTURE_002` | Fixed Width & Height | Info | 1 | Optimize with a valid viewBox; otherwise Review | fixed-dimensions fixtures, `messy.svg` | Fixed output dimensions are a small reusability concern, not a rendering failure. |
+| `STRUCTURE_003` | Duplicate IDs | Warning | 5 | Review | `duplicate-ids.svg` | Duplicate IDs can break local references. |
+| `STRUCTURE_004` | Empty Groups | Info | 1 | Optimize | `empty-groups.svg`, `messy.svg` | Safe export-noise cleanup. |
+| `STRUCTURE_005` | Empty Paths | Info | 1 | Optimize | `empty-paths.svg`, `messy.svg` | Empty paths are normally removable export residue. |
+| `STRUCTURE_006` | Empty Definitions | Info | 1 | Optimize | `empty-defs.svg` | Runs after dependent cleanup steps. |
+| `STRUCTURE_007` | Empty Symbols | Info | 1 | Optimize | `empty-symbols.svg` | Removes only symbols with no meaningful content. |
+| `STRUCTURE_008` | Invalid viewBox | Warning | 6 | Review | `invalid-viewbox.svg` | Sprite containers defer scalability inspection to symbols. |
+| `STRUCTURE_009` | Broken Internal References | Warning | 5 | Review | `broken-internal-references.svg`, `internal-references-valid.svg` | Detects only verified missing local `url(#id)` and `href="#id"` targets. |
 
 ## Performance
 
-| ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `PERFORMANCE_001` | Metadata Found | Performance | Info | 2 | Auto | Implemented | `metadata.svg`, `messy.svg`, `illustrator-export.svg` | Explicit Auto metadata now matches optimizer behavior. |
-| `PERFORMANCE_002` | Comments Found | Performance | Info | 1 | Auto | Implemented | `comments.svg`, `messy.svg`, `illustrator-export.svg` | Lowest-impact cleanup rule; score is reasonable. |
-| `PERFORMANCE_003` | High Decimal Precision | Performance | Info | 3 | Auto | Implemented | `high-precision.svg`, `messy.svg`, `illustrator-export.svg` | Explicit Auto metadata now matches optimizer behavior. |
-| `PERFORMANCE_004` | Hidden Elements | Performance | Info | 2 | Auto | Implemented | `hidden-elements.svg`, `messy.svg` | Detects both direct attributes and inline style forms. |
-| `PERFORMANCE_005` | Unused Definitions | Performance | Info | 2 | Auto | Implemented | `unused-defs.svg` | Explicit Auto metadata now matches optimizer behavior. |
-| `PERFORMANCE_006` | Unused Namespaces | Performance | Info | 1 | Auto | Implemented | `unused-namespaces.svg`, `namespace-in-use.svg` | Includes both positive and negative coverage. |
+| ID | Title | Severity | Score | Treatment | Fixture coverage | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `PERFORMANCE_001` | Metadata Found | Info | 0 | Optimize | `metadata.svg`, `messy.svg`, `illustrator-export.svg` | Optional export cleanup. |
+| `PERFORMANCE_002` | Comments Found | Info | 0 | Optimize | `comments.svg`, `messy.svg`, `illustrator-export.svg` | Comments do not lower Health on their own. |
+| `PERFORMANCE_003` | High Decimal Precision | Info | 1 | Optimize | `high-precision.svg`, `messy.svg`, `illustrator-export.svg` | Measurable payload cleanup. |
+| `PERFORMANCE_004` | Hidden Elements | Info | 1 | Optimize | `hidden-elements.svg`, `messy.svg` | Detects static direct and inline hidden states. |
+| `PERFORMANCE_005` | Unused Definitions | Info | 1 | Optimize | `unused-defs.svg` | Preserves referenced definition chains. |
+| `PERFORMANCE_006` | Unused Namespaces | Info | 0 | Optimize | `unused-namespaces.svg`, `namespace-in-use.svg` | Optional declaration cleanup. |
 
 ## Colors
 
-| ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `COLORS_001` | Hardcoded Fill Colors | Colors | Warning | 3 | Transform when direct fill attributes are eligible, otherwise Manual | Implemented | `hardcoded-fill.svg`, `hardcoded-colors.svg`, `currentcolor-fill.svg`, `currentcolor-mixed.svg`, `currentcolor-unsafe.svg`, `messy.svg`, `illustrator-export.svg` | `Convert to currentColor` is available only for direct fill attributes with safe explicit color values. |
-| `COLORS_002` | Hardcoded Stroke Colors | Colors | Warning | 3 | Transform when direct stroke attributes are eligible, otherwise Manual | Implemented | `hardcoded-stroke.svg`, `hardcoded-colors.svg`, `currentcolor-stroke.svg`, `currentcolor-mixed.svg`, `currentcolor-unsafe.svg`, `messy.svg`, `illustrator-export.svg` | `Convert to currentColor` is available only for direct stroke attributes with safe explicit color values. |
+| ID | Title | Severity | Score | Treatment | Fixture coverage | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `COLORS_001` | Hardcoded Fill Colors | Info | 0 | Transform when direct attributes are eligible; otherwise Review | hardcoded and currentColor fixtures | Fixed colors can be intentional, especially for brand assets. |
+| `COLORS_002` | Hardcoded Stroke Colors | Info | 0 | Transform when direct attributes are eligible; otherwise Review | hardcoded and currentColor fixtures | `currentColor` is explicit and never part of Optimize SVG. |
 
 ## Accessibility
 
-| ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `ACCESSIBILITY_001` | Missing Title | Accessibility | Warning | 4 | Manual | Implemented | `missing-title.svg` | Decorative SVGs are intentionally exempted. |
-| `ACCESSIBILITY_002` | Empty Title | Accessibility | Warning | 4 | Manual | Implemented | `empty-title.svg`, `decorative-empty-title.svg` | Consistent with `Missing Title`. |
-| `ACCESSIBILITY_003` | Missing Description | Accessibility | Info | 2 | Manual | Implemented | `missing-desc.svg` | Lower severity fits the contextual nature documented in accessibility guidance. |
-| `ACCESSIBILITY_004` | Empty Description | Accessibility | Info | 2 | Manual | Implemented | `empty-desc.svg` | Parallel with `Missing Description`. |
-| `ACCESSIBILITY_005` | Decorative SVG | Accessibility | Info | 0 | Manual / review-only guidance | Implemented | `decorative-aria-hidden.svg`, `decorative-role-presentation.svg`, `decorative-role-none.svg`, `decorative-empty-title.svg` | Informational only, which is appropriate because it should not penalize intentional decorative markup. |
+| ID | Title | Severity | Score | Treatment | Fixture coverage | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `ACCESSIBILITY_001` | Missing Title | Info | 0 | Review | `missing-title.svg` | Guidance only; skipped for decorative, sprite, and explicitly self-labeled SVGs. |
+| `ACCESSIBILITY_002` | Empty Title | Info | 0 | Review | `empty-title.svg`, `decorative-empty-title.svg` | Guidance only; skipped where another accessible name exists. |
+| `ACCESSIBILITY_003` | Missing Description | Info | 0 | Review | `missing-desc.svg` | Long descriptions are context-dependent. |
+| `ACCESSIBILITY_004` | Empty Description | Info | 0 | Review | `empty-desc.svg` | Advises only when a direct empty `<desc>` is present. |
+| `ACCESSIBILITY_005` | Decorative SVG | Info | 0 | Review guidance | decorative fixtures | Confirms an intentional decorative signal without penalizing it. |
 
 ## Maintainability
 
-| ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `MAINTAINABILITY_001` | Inline Styles | Maintainability | Warning | 3 | Auto when all declarations are safe, otherwise Manual | Implemented | `inline-styles-safe.svg`, `inline-styles-unsafe.svg`, `inline-styles.svg`, `react-inline-style.svg`, `messy.svg` | Dynamic treatment is implemented in the rule itself. |
-| `MAINTAINABILITY_002` | Embedded CSS Classes | Maintainability | Warning | 3 | Auto when at least one rule is safely inlineable, otherwise Manual | Implemented | `css-classes-safe.svg`, `css-classes-partial.svg`, `css-classes-mixed.svg`, `css-classes-unsafe-selector.svg`, `css-classes-unsafe-declaration.svg` | Partial safe inlining is implemented; docs outside the fixture file still need to reflect that nuance consistently. |
+| ID | Title | Severity | Score | Treatment | Fixture coverage | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `MAINTAINABILITY_001` | Inline Styles | Warning | 3 | Optimize when every declaration is safe; otherwise Review | inline-style fixtures | Existing Auto/Review behavior remains unchanged. |
+| `MAINTAINABILITY_002` | Embedded CSS Classes | Warning | 3 | Optimize when at least one rule is safe; otherwise Review | CSS class fixtures | Safe rules can be partially inlined while unsafe rules remain. |
 
 ## React Ready
 
-| ID | Title | Category | Severity | Score Impact | Fix Type / Treatment | Status | Fixture Coverage | Notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `REACT_001` | class Attribute | React Ready | Warning | 3 | Manual | Implemented | `react-class-attribute.svg` | Destination-specific; does not affect SVG Health. |
-| `REACT_002` | Kebab-case Attributes | React Ready | Warning | 4 | Manual | Implemented | `react-kebab-attributes.svg` | Reasonable warning because it directly breaks JSX ergonomics. |
-| `REACT_003` | Inline Style String | React Ready | Warning | 4 | Manual | Implemented | `react-inline-style.svg` | Overlaps in subject matter with `MAINTAINABILITY_001`, but the categories and recommendations are distinct. |
-| `REACT_004` | xlink Attribute | React Ready | Info | 2 | Manual | Implemented | `react-xlink.svg` | Lower severity is appropriate. |
-| `REACT_005` | Inline Event Handlers | React Ready | Warning | 4 | Manual | Implemented | `react-event-handlers.svg` | High enough to surface conversion risk. |
+`REACT_001` through `REACT_005` retain their existing metadata and fixtures. They are separate conversion guidance and do not contribute to SVG Health.
 
-## Consistency Review
+## Audit Results
 
-### Severity
+- All registered rules declare explicit metadata and no safe-fix treatment fallback remains.
+- Sprite-aware scalability behavior is preserved: root container viewBox findings are suppressed for sprites, while symbol-level gaps remain aggregated into one finding.
+- Accessibility findings now describe context-required guidance instead of asserting that the standalone markup is inaccessible. Decorative SVGs, sprite containers, and SVGs with `aria-label` or `aria-labelledby` do not receive missing-title guidance. Direct child `<title>` and `<desc>` elements are used so nested symbol metadata cannot satisfy the root document check.
+- Cleanup-only scoring is lighter. Optional metadata, comments, namespace declarations, hardcoded colors, and accessibility guidance do not reduce Health.
+- `STRUCTURE_009` adds the one high-value missing check identified in this pass: verified broken internal references that can cause paint, clipping, masks, filters, markers, or `<use>` content to fail.
 
-- Accessibility severities are internally consistent: missing or empty `<title>` is `Warning`, while `<desc>` guidance and decorative detection are `Info`.
-- Structure severities are mostly reasonable, but `STRUCTURE_005 Empty Paths` is more punitive than several Auto-cleanup performance rules even though it is often export residue.
-- Colors rules are both `Warning`, which is consistent with the future design-system treatment direction.
+## Candidate Rules Rejected
 
-### Scoring
+- Visual contrast: SVG Workspace cannot know the final background, placement, inherited color, or surrounding UI context.
+- Missing role and ARIA linkage requirements: accessible naming may come from the embedding document, so generic Health cannot make a reliable pass/fail judgment.
+- Generic animation or scripting warnings: their safety and intent depend on the runtime environment and would create too many false positives.
+- Broad malformed-CSS linting: complex CSS is already preserved for Review; generic style warnings would not be specific enough to improve Health.
 
-- Score impacts are broadly proportional, but several treatment-only cleanup rules still subtract score despite being safe and fully automatable.
-- Transform-category color rules currently subtract 3 points each even though the product does not yet offer a user-facing configurable treatment flow.
-- React Ready rules have scores, but they live outside SVG Health; the separation is good and should remain explicit in docs.
+## Known Limitations
 
-### Treatment Classification
-
-- Dynamic treatment is implemented correctly for `STRUCTURE_001`, `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002`.
-- `COLORS_001` and `COLORS_002` now declare `choice` directly in their rule definitions and downgrade to `manual` when no safe direct-attribute currentColor transform is available.
-- The safe-fix layer no longer infers treatment from fallback rule ID lists. Each finding now carries an explicit fix type produced from rule metadata.
-
-### Duplication / Overlap
-
-- `MAINTAINABILITY_001 Inline Styles` and `REACT_003 Inline Style String` intentionally overlap in source syntax but target different outcomes: SVG maintainability vs JSX compatibility.
-- `COLORS_001` and `COLORS_002` are parallel and not duplicative.
-- No direct duplicate rule IDs or materially duplicated SVG Health rules were found.
-
-### Fixture Coverage
-
-- Every implemented rule has at least one positive fixture.
-- Several rules also have useful negative or combined coverage (`namespace-in-use.svg`, `decorative-empty-title.svg`, `messy.svg`, `illustrator-export.svg`).
-- The fixture catalog is stronger than the category docs currently suggest.
-
-### Documentation Drift
-
-- Category rule docs for Colors, Maintainability, Performance, and Structure have now been aligned with the implemented rule set.
-- `docs/RULES.md` now matches the implemented metadata contract: explicit rule metadata in code, lowercase internal severity/fix-type values, and development-only metadata validation.
-- Dynamic treatment behavior still deserves careful documentation because several rules default to `manual` in metadata and then upgrade the returned finding to `auto` or `choice` only when the SVG state makes that safe.
-
-## Recommended Follow-ups
-
-### Scoring Changes
-
-- Revisit penalties for fully safe Auto cleanup rules such as `PERFORMANCE_001` through `PERFORMANCE_006`, `STRUCTURE_004`, `STRUCTURE_006`, and `STRUCTURE_007` so the score emphasizes user judgment and rendering risk more than removable export noise.
-- Re-evaluate whether `STRUCTURE_005 Empty Paths` should stay at `3`, since it currently scores as more severe than several safe cleanup findings.
-- Review whether Transform-oriented color findings should subtract the full 3 points each before configurable treatments exist.
-
-### Treatment Changes
-
-- Keep rule metadata as the treatment source of truth and avoid reintroducing rule-ID fallback inference in `src/actions/safe-fixes/index.ts`.
-- Consider whether `ACCESSIBILITY_005 Decorative SVG` should remain labeled as a treatment-bearing finding or be documented as contextual review guidance only.
-
-### Documentation Fixes
-
-- Keep category docs aligned when dynamic treatment behavior changes, especially for `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002`.
-- Add a short note in category docs clarifying which rules are SVG Health rules versus React Ready conversion guidance.
-
-### Fixture Gaps
-
-- Consider adding a dedicated fixture for `PERFORMANCE_001` + `PERFORMANCE_002` together if combined export-noise cleanup is an important regression path outside `messy.svg`.
-- Consider adding a narrow fixture for `STRUCTURE_005 Empty Paths` with no other issues if deeper automated regression work is planned.
-
-### Future Rules
-
-- Add more maintainability rules only after the metadata/treatment pattern is standardized, so new rules do not inherit today’s fix-type inconsistency.
-- Prioritize future structure/performance rules that preserve rendering and are safe to explain clearly before adding more destination-specific guidance.
-
-## Treatment and Scoring Review
-
-### Proposed treatment model
-
-- `Optimize`: safe, objective improvements that preserve rendering and can run automatically with no user judgment required. This is the product-language equivalent of the current internal `Auto` treatment.
-- `Review`: findings that need user context, editorial judgment, or destination-specific intent before any change should be made. This maps to the current internal `Manual` treatment.
-- `Transform`: findings where multiple valid outcomes exist and the right action depends on user intent, design-system goals, or framework targets. This is the clearest product-language replacement for the current internal `Choice` treatment.
-- The current code terms `auto`, `manual`, and `choice` should stay in place for now. The product should converge on `Optimize`, `Review`, and `Transform` first in documentation and later in UI copy when the treatment model is fully explicit in rule metadata.
-
-### Scoring recommendations
-
-- Health should emphasize objective SVG quality issues over future workflow opportunities.
-- Structural and rendering-adjacent findings such as `STRUCTURE_001 Missing viewBox`, `STRUCTURE_003 Duplicate IDs`, and missing accessible titles should remain meaningful score contributors because they represent real quality or usability defects.
-- Safe cleanup findings that `Optimize SVG` can resolve immediately should generally carry lighter penalties than they do today. This especially applies to metadata, comments, empty wrappers, empty definitions, empty symbols, and unused namespaces.
-- `STRUCTURE_005 Empty Paths` should be reviewed for a smaller penalty. It is often export residue, and its current impact is heavier than several comparable safe cleanup findings.
-- `COLORS_001` and `COLORS_002` should not heavily penalize SVG Health while they remain intent-dependent transforms. They describe styling strategy, not necessarily a broken SVG.
-- `ACCESSIBILITY_003 Missing Description` and `ACCESSIBILITY_004 Empty Description` should likely stay low-impact unless the product later gains enough context to distinguish simple icons from richer illustrative SVGs.
-- `ACCESSIBILITY_005 Decorative SVG` should continue to contribute `0` to Health because it is contextual guidance, not a defect.
-
-### Metadata recommendations
-
-- All implemented rules now declare `severity`, `scoreImpact`, `fixType`, `introducedIn`, and `status` directly in code.
-- Next priority is documenting the dynamic-treatment pattern more explicitly so future rules do not guess whether a rule-level `fixType` can be overridden per finding.
-- Dynamic-treatment rules should keep their runtime checks, but their metadata contract still needs to be documented more explicitly. `STRUCTURE_002`, `MAINTAINABILITY_001`, and `MAINTAINABILITY_002` are the best templates for that follow-up.
-- React Ready rules are already conceptually separate from SVG Health; future metadata cleanup should preserve that distinction instead of flattening everything into one scoring model.
-
-### Implementation follow-ups
-
-#### Low-risk cleanup
-
-- Consider extracting a small helper for dynamic rule metadata if future rules need to declare default treatment plus safe override behavior more often.
-- Keep the development-only metadata validator current as new required fields are added.
-- No fallback treatment inference remains in `src/actions/safe-fixes/index.ts`; preserving that simplification should be a maintenance goal.
-
-#### Product decisions needed
-
-- Continue aligning user-facing language around `Transform` while preserving internal `choice` metadata for now.
-- Decide whether hardcoded color findings belong in Health scoring at all, or whether they should be presented as styling opportunities outside the core grade.
-- Decide how much auto-fixable cleanup should reduce score now that `Optimize SVG` is a first-class preview action.
-- Decide whether description-related accessibility findings need more context-sensitive scoring guidance for icons versus illustrative graphics.
-
-#### Future UI work
-
-- Align user-facing treatment labels with the proposed `Optimize`, `Review`, and `Transform` model once the metadata is explicit enough to support it consistently.
-- Separate objective Health issues from optional transformation opportunities more clearly in the interface if scoring remains coupled to both.
-- Keep remaining unsafe CSS, color strategy findings, and future destination-specific workflows visible as follow-up opportunities rather than framing them as broken output.
+- Internal-reference detection intentionally covers explicit local URL and `href` fragments only. It does not attempt to reason about arbitrary script-built references, external documents, or SMIL timing references.
+- Accessibility guidance cannot determine whether an embedding application supplies an accessible name or long description outside the SVG.
+- Health does not evaluate visual contrast, branding intent, or design-system requirements without explicit context.

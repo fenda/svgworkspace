@@ -8,7 +8,7 @@ export const performance005UnusedDefinitions: AnalysisRule = {
   title: "Unused Definitions",
   description: "Definitions inside <defs> are present but never referenced.",
   severity: "info",
-  scoreImpact: 2,
+  scoreImpact: 1,
   fixType: "auto",
   introducedIn: "0.4.0-preview",
   status: "implemented",

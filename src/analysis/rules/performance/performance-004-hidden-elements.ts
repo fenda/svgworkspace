@@ -43,7 +43,7 @@ export const performance004HiddenElements: AnalysisRule = {
   title: "Hidden Elements",
   description: "The SVG contains elements that are hidden and do not affect rendering.",
   severity: "info",
-  scoreImpact: 2,
+  scoreImpact: 1,
   fixType: "auto",
   introducedIn: "0.2.0",
   status: "implemented",

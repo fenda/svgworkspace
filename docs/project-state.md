@@ -253,6 +253,31 @@ Filename generation is centralized to keep suffixes consistent:
 - `arrow-left.svg`
 - SVG Workspace does not yet support per-symbol editing or optimization
 
+## Workspace Productivity
+
+SVG Workspace now includes a shared productivity layer for day-to-day developer workflow.
+
+Current additions include:
+
+- a `Command Palette` for searching workspace actions
+- a centralized `Action Registry` that powers commands and future reusable actions
+- persistent `Workspace Preferences` for focus mode, expanded cards, and active workspace state
+- persistent preview-size preferences
+- `Focus Mode` for reducing the visible workspace to the most relevant panels
+- collapsible major workspace cards
+- standardized export and optimization feedback through the toast system
+
+Keyboard shortcuts currently include:
+
+- `Ctrl/Cmd + K` to open Command Palette
+- `Ctrl/Cmd + Z` to undo
+- `Ctrl/Cmd + Shift + Z` to redo
+- `/` to focus Sprite Explorer search when available
+
+These changes improve workflow only.
+
+They do not add new SVG optimization or transformation behavior.
+
 ## Icon Workspace
 
 When the current SVG is not a sprite, SVG Workspace exposes an Icon Workspace panel for safe, deterministic standalone-icon transformations.
@@ -599,6 +624,7 @@ Current rules:
 - Empty Paths
 - Empty Definitions
 - Empty Symbols
+- Broken Internal References
 
 ### Performance
 
@@ -638,7 +664,15 @@ Current rules:
 - Health check count
 - Optimize / Review / Transform issue classification
 
-Scoring is currently provisional and should be recalibrated after more rules are added.
+## SVG Health Scoring
+
+Health uses rule-owned deductions based on objective SVG quality:
+
+- 5-6 points for verified structural or rendering risks.
+- 1 point for measurable cleanup or portability concerns.
+- 0 points for optional cleanup, intent-dependent transforms, and accessibility guidance that requires embedding context.
+
+Hardcoded colors, internal title/description guidance, comments, metadata, and unused namespace declarations remain visible when useful but do not lower the generic score. See `docs/rules-inventory.md` for the complete audit rationale and known limitations.
 
 ---
 

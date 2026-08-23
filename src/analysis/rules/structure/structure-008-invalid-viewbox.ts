@@ -9,7 +9,7 @@ export const structure008InvalidViewBox: AnalysisRule = {
   title: "Invalid viewBox",
   description: "The SVG contains a viewBox attribute that appears to be invalid.",
   severity: "warning",
-  scoreImpact: 5,
+  scoreImpact: 6,
   fixType: "manual",
   introducedIn: "0.4.6",
   status: "implemented",

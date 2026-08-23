@@ -1,0 +1,13 @@
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <title>Valid internal references fixture</title>
+  <desc>Tests that valid local paint and use references are preserved.</desc>
+  <defs>
+    <linearGradient id="brand-gradient">
+      <stop offset="0" stop-color="#0ea5e9" />
+      <stop offset="1" stop-color="#0369a1" />
+    </linearGradient>
+    <path id="check" d="M6 12l4 4 8-8" />
+  </defs>
+  <rect x="2" y="2" width="20" height="20" fill="url(#brand-gradient)" />
+  <use href="#check" fill="none" stroke="currentColor" />
+</svg>

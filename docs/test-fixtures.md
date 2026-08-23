@@ -17,7 +17,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `decorative-aria-hidden.svg` | Tests decorative SVG detection via `aria-hidden="true"`. | `Decorative SVG` |
 | `decorative-role-presentation.svg` | Tests decorative SVG detection via `role="presentation"`. | `Decorative SVG` |
 | `decorative-role-none.svg` | Tests decorative SVG detection via `role="none"`. | `Decorative SVG` |
-| `decorative-empty-title.svg` | Tests decorative SVG context while still flagging an empty title. | `Decorative SVG`, `Empty Title` |
+| `decorative-empty-title.svg` | Tests that decorative SVG context suppresses empty-title guidance. | `Decorative SVG` |
 | `react-good.svg` | Clean SVG with no React Ready issues. | None |
 | `react-class-attribute.svg` | Tests class attribute detection for JSX compatibility. | `class Attribute` |
 | `react-kebab-attributes.svg` | Tests kebab-case attribute detection for JSX compatibility. | `Kebab-case Attributes` |
@@ -75,6 +75,8 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `optimization-timeline.svg` | Demonstrates multiple safe optimization steps for the read-only Optimization Timeline, including comments, metadata, hidden content, unused defs, empty structure, inline style conversion, CSS class inlining, fixed dimensions, and decimal rounding. | `Fixed Width & Height`, `Metadata Found`, `Comments Found`, `High Decimal Precision`, `Hidden Elements`, `Unused Definitions`, `Inline Styles`, `Embedded CSS Classes`, `Empty Groups`, `Empty Paths` |
 | `high-precision.svg` | Tests excessive decimal precision detection. | `High Decimal Precision` |
 | `duplicate-ids.svg` | Tests duplicate `id` detection. | `Duplicate IDs` |
+| `broken-internal-references.svg` | Tests verified missing local paint-server and `<use>` references. | `Broken Internal References` |
+| `internal-references-valid.svg` | Tests that present local paint-server and `<use>` targets are not flagged. | None |
 | `messy.svg` | Realistic bad SVG fixture with multiple structural, performance, color, and maintainability issues. | `Missing viewBox`, `Fixed Width & Height`, `Empty Groups`, `Empty Paths`, `Metadata Found`, `Comments Found`, `High Decimal Precision`, `Hidden Elements`, `Hardcoded Fill Colors`, `Hardcoded Stroke Colors`, `Inline Styles` |
 | `illustrator-export.svg` | Realistic design-tool export fixture before optimization. | `Fixed Width & Height`, `Metadata Found`, `Comments Found`, `High Decimal Precision`, `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
 
