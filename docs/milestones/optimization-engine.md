@@ -26,7 +26,7 @@ Transform actions are intentionally separate from automatic optimizations:
 - [x] Remove empty defs
 - [x] Remove empty symbols
 - [x] Remove unused namespaces
-- [ ] Normalize whitespace
+- [x] Normalize structural whitespace while preserving text-sensitive content
 - [x] Generate missing viewBox in safe cases as a Transform
 - [ ] Normalize IDs as an optional treatment
 - [ ] Add additional performance optimizations

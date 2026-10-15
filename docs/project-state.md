@@ -645,6 +645,7 @@ Current rules:
 - PERFORMANCE_004 — Hidden Elements
 - PERFORMANCE_005 — Unused Definitions
 - PERFORMANCE_006 — Unused Namespaces
+- PERFORMANCE_007 — Excess Whitespace
 
 ### Colors
 
@@ -702,6 +703,7 @@ Safe automatic fixes are implemented for:
 - Remove hidden elements
 - PERFORMANCE_005 — Remove unused definitions
 - PERFORMANCE_006 — Remove unused namespace declarations
+- PERFORMANCE_007 — Normalize structural whitespace while preserving text-sensitive content
 - Convert simple inline styles to presentation attributes when every declaration is safely convertible
 - Inline safe embedded CSS class rules while preserving unsupported rules in the same <style> block
 

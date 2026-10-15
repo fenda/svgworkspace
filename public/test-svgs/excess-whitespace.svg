@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32">
+  <title>Whitespace fixture</title>
+  <desc>Structural whitespace can be removed without changing text content.</desc>
+
+  <g>
+    <path d="M2 2h20v20H2z" />
+  </g>
+
+  <style>
+    .label { letter-spacing: 0.1em; }
+  </style>
+  <text xml:space="preserve" x="0" y="30">  Keep this spacing  </text>
+</svg>

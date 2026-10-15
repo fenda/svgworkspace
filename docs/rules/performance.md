@@ -18,6 +18,7 @@ These rules mostly focus on safe cleanup opportunities:
 - hidden markup
 - unused definitions
 - unused namespace declarations
+- excess structural whitespace
 
 ---
 
@@ -31,6 +32,7 @@ These rules mostly focus on safe cleanup opportunities:
 | `PERFORMANCE_004` | Hidden Elements | Info | 1 | Auto |
 | `PERFORMANCE_005` | Unused Definitions | Info | 1 | Auto |
 | `PERFORMANCE_006` | Unused Namespaces | Info | 0 | Auto |
+| `PERFORMANCE_007` | Excess Whitespace | Info | 0 | Auto |
 
 ---
 
@@ -45,7 +47,7 @@ These rules mostly focus on safe cleanup opportunities:
 ## Scoring Notes
 
 - All current Performance findings are `Info`.
-- Optional markup cleanup such as metadata, comments, and namespace declarations has no Health penalty.
+- Optional markup cleanup such as metadata, comments, namespace declarations, and structural whitespace has no Health penalty.
 - Measurable payload cleanup such as precision, hidden content, and unused definitions carries a small one-point impact.
 
 ---
@@ -59,6 +61,7 @@ These rules mostly focus on safe cleanup opportunities:
 - `unused-defs.svg`
 - `unused-namespaces.svg`
 - `namespace-in-use.svg`
+- `excess-whitespace.svg`
 - `messy.svg`
 - `illustrator-export.svg`
 

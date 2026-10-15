@@ -13,6 +13,7 @@ import { performance003HighDecimalPrecision } from "./performance/performance-00
 import { performance004HiddenElements } from "./performance/performance-004-hidden-elements";
 import { performance005UnusedDefinitions } from "./performance/performance-005-unused-definitions";
 import { performance006UnusedNamespaces } from "./performance/performance-006-unused-namespaces";
+import { performance007ExcessWhitespace } from "./performance/performance-007-excess-whitespace";
 import { react001ClassAttribute } from "./react-ready/react-001-class-attribute";
 import { react002KebabCaseAttributes } from "./react-ready/react-002-kebab-case-attributes";
 import { react003InlineStyleString } from "./react-ready/react-003-inline-style-string";
@@ -49,6 +50,7 @@ const performanceRules: AnalysisRule[] = [
   performance004HiddenElements,
   performance005UnusedDefinitions,
   performance006UnusedNamespaces,
+  performance007ExcessWhitespace,
 ];
 
 const colorRules: AnalysisRule[] = [

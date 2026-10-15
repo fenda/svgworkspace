@@ -13,6 +13,7 @@ import {
 } from "@/lib/svg/inline-styles";
 import { getUnusedNamespacePrefixes } from "@/lib/svg/namespaces";
 import { hasValidViewBox } from "@/lib/svg/viewbox";
+import { getRemovableWhitespaceNodeCount } from "@/lib/svg/whitespace";
 import type {
   OptimizationChange,
   OptimizationReport,
@@ -31,6 +32,7 @@ import { getHiddenElementCount, removeHiddenElements } from "./fixes/remove-hidd
 import { removeMetadata } from "./fixes/remove-metadata";
 import { removeUnusedDefs } from "./fixes/remove-unused-defs";
 import { removeUnusedNamespaces } from "./fixes/remove-unused-namespaces";
+import { normalizeWhitespace } from "./fixes/normalize-whitespace";
 
 type SafeFix = (svg: SVGSVGElement) => void;
 type SafeFixDefinition = {
@@ -124,6 +126,19 @@ const SAFE_FIXES_BY_FINDING_ID: Record<string, SafeFixDefinition> = {
       const count = getUnusedNamespacePrefixes(beforeSvg).length;
       return count > 0
         ? [{ type: "unused_namespaces_removed", label: "Unused namespaces removed", count }]
+        : [];
+    },
+  },
+  PERFORMANCE_007: {
+    id: "normalize-whitespace",
+    label: "Normalize whitespace",
+    description: "Remove structural whitespace while preserving text-sensitive SVG content.",
+    apply: normalizeWhitespace,
+    getApplicability: (svg) => getRemovableWhitespaceNodeCount(svg) > 0,
+    getChanges: (beforeSvg) => {
+      const count = getRemovableWhitespaceNodeCount(beforeSvg);
+      return count > 0
+        ? [{ type: "whitespace_normalized", label: "Whitespace nodes removed", count }]
         : [];
     },
   },
@@ -253,6 +268,7 @@ const SAFE_FIX_SEQUENCE: SafeFixDefinition[] = [
   SAFE_FIXES_BY_FINDING_ID.STRUCTURE_005,
   SAFE_FIXES_BY_FINDING_ID.STRUCTURE_004,
   SAFE_FIXES_BY_FINDING_ID.PERFORMANCE_006,
+  SAFE_FIXES_BY_FINDING_ID.PERFORMANCE_007,
   SAFE_FIXES_BY_FINDING_ID.PERFORMANCE_003,
 ];
 

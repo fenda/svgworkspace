@@ -50,6 +50,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `sprite-shared-defs.svg` | Tests Sprite Workspace selection and standalone export when symbols depend on shared root gradients, clip paths, and styles. | None |
 | `unused-namespaces.svg` | Tests `PERFORMANCE_006` unused namespace removal while preserving the default SVG namespace. | `Unused Namespaces` |
 | `namespace-in-use.svg` | Tests that namespace declarations remain when prefixed elements or attributes still use them. | None |
+| `excess-whitespace.svg` | Tests `PERFORMANCE_007` structural whitespace cleanup while preserving `<style>` and `xml:space="preserve"` text content. | `Excess Whitespace` |
 | `inline-styles-safe.svg` | Tests safe inline style conversion to presentation attributes. | `Inline Styles` |
 | `inline-styles-unsafe.svg` | Tests inline styles that remain manual because they contain unsafe declarations. | `Inline Styles` |
 | `css-classes-safe.svg` | Tests safe embedded CSS class inlining to presentation attributes. | `Embedded CSS Classes` |
@@ -98,6 +99,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 - `invalid-viewbox.svg` should stay manual because SVG Workspace does not guess how to repair an invalid `viewBox`.
 - `empty-defs.svg` should optimize away the empty `<defs>` block only after other safe cleanup has left it truly empty.
 - `empty-symbols.svg` is automatic because the symbol subtree contains no meaningful drawable or definition content.
+- `excess-whitespace.svg` must remove only structural whitespace. Text, style content, foreign content, and `xml:space="preserve"` subtrees remain intact.
 - `sprite-all-symbols-viewbox.svg` should not report a scalability issue even though the root SVG has no `viewBox`, because each symbol defines its own valid `viewBox`.
 - `sprite-missing-symbol-viewbox.svg` should report one aggregated scalability finding instead of one finding per symbol.
 - `sprite-explorer.svg` should switch the Preview tab into Sprite Explorer mode, render valid symbols independently from the hidden root SVG, label unnamed symbols clearly, keep invalid symbol previews isolated instead of breaking the full gallery, and report the aggregated sprite-specific `viewBox` finding.

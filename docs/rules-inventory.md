@@ -16,9 +16,9 @@ This lets a clean SVG reach `100` without optional markup. It also keeps a comme
 
 ## Summary
 
-- SVG Health rules: 24
+- SVG Health rules: 25
 - React Ready rules: 5
-- Auto-capable Health rules: 13
+- Auto-capable Health rules: 14
 - Health rules with explicit metadata in code: 24
 - Safe-fix treatment fallback rules remaining: 0
 
@@ -46,6 +46,7 @@ This lets a clean SVG reach `100` without optional markup. It also keeps a comme
 | `PERFORMANCE_004` | Hidden Elements | Info | 1 | Optimize | `hidden-elements.svg`, `messy.svg` | Detects static direct and inline hidden states. |
 | `PERFORMANCE_005` | Unused Definitions | Info | 1 | Optimize | `unused-defs.svg` | Preserves referenced definition chains. |
 | `PERFORMANCE_006` | Unused Namespaces | Info | 0 | Optimize | `unused-namespaces.svg`, `namespace-in-use.svg` | Optional declaration cleanup. |
+| `PERFORMANCE_007` | Excess Whitespace | Info | 0 | Optimize | `excess-whitespace.svg` | Removes structural whitespace while preserving text-sensitive content. |
 
 ## Colors
 
