@@ -4,6 +4,13 @@ SVG Workspace keeps a set of canonical SVG fixtures under `public/test-svgs/`.
 
 These fixtures are used for manual testing, demos, regression checks, and future automated tests.
 
+## Formatted Output
+
+### formatter-text-content.svg
+
+- Contains embedded CSS and nested text content.
+- Formatted SVG output must preserve the `<style>`, `<text>`, and `<tspan>` markup exactly rather than treating their whitespace as structural noise.
+
 ## Fixtures
 
 | Fixture | Purpose | Expected findings |

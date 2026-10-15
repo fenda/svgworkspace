@@ -12,18 +12,18 @@ function escapeAttribute(value: string): string {
   return escapeText(value).replaceAll('"', "&quot;");
 }
 
-function removeWhitespaceOnlyTextNodes(node: Node): void {
-  Array.from(node.childNodes).forEach((child) => {
-    if (child.nodeType === Node.TEXT_NODE) {
-      if (!child.textContent?.trim()) {
-        child.remove();
-      }
-      return;
-    }
-
-    removeWhitespaceOnlyTextNodes(child);
-  });
-}
+// Whitespace and child markup can affect text, CSS, scripts, or embedded content.
+// Keep these elements intact instead of treating their children as structural noise.
+const TEXT_SENSITIVE_ELEMENTS = new Set([
+  "desc",
+  "foreignobject",
+  "script",
+  "style",
+  "text",
+  "textpath",
+  "title",
+  "tspan",
+]);
 
 function formatAttributes(element: Element): string {
   return element
@@ -49,6 +49,11 @@ function formatNode(node: Node, depth: number): string {
 
   const element = node as Element;
   const tagName = element.tagName;
+
+  if (TEXT_SENSITIVE_ELEMENTS.has(tagName.toLowerCase())) {
+    return `${indent}${new XMLSerializer().serializeToString(element)}`;
+  }
+
   const attributes = formatAttributes(element);
   const openingTag = attributes ? `<${tagName} ${attributes}` : `<${tagName}`;
   const children = Array.from(element.childNodes).filter((child) => {
@@ -78,7 +83,6 @@ export function formatSvg(content: string): string {
   assertBrowser();
 
   const svg = parseSvgMarkup(content.trim()).cloneNode(true) as SVGSVGElement;
-  removeWhitespaceOnlyTextNodes(svg);
 
   return `${formatNode(svg, 0)}\n`;
 }

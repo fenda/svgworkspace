@@ -5,6 +5,7 @@ Status: Next
 ## Output
 
 - [ ] Improve formatted SVG output
+- [x] Preserve text-sensitive SVG markup during formatted output
 - [ ] Better diff visualization
 - [x] Add Optimization Report after `Optimize SVG`
 - [x] Add a read-only Optimization Timeline based on real intermediate safe-fix outputs
