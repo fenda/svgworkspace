@@ -223,6 +223,16 @@ It does not allow:
 - restoring an intermediate step
 - downloading intermediate outputs
 
+## Diff
+
+The Diff tab compares formatted original and current SVG markup line by line.
+
+- context rows show both source and current line numbers
+- removed rows show only the original line number
+- added rows show only the current line number
+
+This keeps markup changes inspectable without changing the SVG output itself.
+
 ## Treatment language
 
 Workspace actions should use this product language:

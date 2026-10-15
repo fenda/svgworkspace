@@ -780,11 +780,31 @@ export function PreviewCard() {
                   <span
                     key={`${line.kind}-${index}-${line.text}`}
                     className={cn(
-                      "grid grid-cols-[14px_minmax(0,1fr)] gap-2 px-2",
+                      "grid grid-cols-[2.5rem_14px_2.5rem_minmax(0,1fr)] gap-2 px-2",
                       getDiffRowClass(line.kind),
                     )}
                   >
-                    <span>{getDiffMarker(line.kind)}</span>
+                    <span
+                      aria-label={
+                        line.originalLineNumber
+                          ? `Original line ${line.originalLineNumber}`
+                          : "Not present in original"
+                      }
+                      className="select-none text-right text-zinc-600"
+                    >
+                      {line.originalLineNumber ?? ""}
+                    </span>
+                    <span aria-hidden="true">{getDiffMarker(line.kind)}</span>
+                    <span
+                      aria-label={
+                        line.currentLineNumber
+                          ? `Current line ${line.currentLineNumber}`
+                          : "Not present in current"
+                      }
+                      className="select-none text-right text-zinc-600"
+                    >
+                      {line.currentLineNumber ?? ""}
+                    </span>
                     <span className="whitespace-pre-wrap break-all">{line.text}</span>
                   </span>
                 ))}

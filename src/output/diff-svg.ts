@@ -1,6 +1,8 @@
 export type DiffLine = {
   kind: "context" | "added" | "removed";
   text: string;
+  originalLineNumber: number | null;
+  currentLineNumber: number | null;
 };
 
 function buildLcsMatrix(left: string[], right: string[]): number[][] {
@@ -30,29 +32,54 @@ export function createSvgDiff(original: string, current: string): DiffLine[] {
 
   while (i < left.length && j < right.length) {
     if (left[i] === right[j]) {
-      diff.push({ kind: "context", text: left[i] ?? "" });
+      diff.push({
+        kind: "context",
+        text: left[i] ?? "",
+        originalLineNumber: i + 1,
+        currentLineNumber: j + 1,
+      });
       i += 1;
       j += 1;
       continue;
     }
 
     if (matrix[i + 1][j] >= matrix[i][j + 1]) {
-      diff.push({ kind: "removed", text: left[i] ?? "" });
+      diff.push({
+        kind: "removed",
+        text: left[i] ?? "",
+        originalLineNumber: i + 1,
+        currentLineNumber: null,
+      });
       i += 1;
       continue;
     }
 
-    diff.push({ kind: "added", text: right[j] ?? "" });
+    diff.push({
+      kind: "added",
+      text: right[j] ?? "",
+      originalLineNumber: null,
+      currentLineNumber: j + 1,
+    });
     j += 1;
   }
 
   while (i < left.length) {
-    diff.push({ kind: "removed", text: left[i] ?? "" });
+    diff.push({
+      kind: "removed",
+      text: left[i] ?? "",
+      originalLineNumber: i + 1,
+      currentLineNumber: null,
+    });
     i += 1;
   }
 
   while (j < right.length) {
-    diff.push({ kind: "added", text: right[j] ?? "" });
+    diff.push({
+      kind: "added",
+      text: right[j] ?? "",
+      originalLineNumber: null,
+      currentLineNumber: j + 1,
+    });
     j += 1;
   }
 
