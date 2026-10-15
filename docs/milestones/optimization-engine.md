@@ -51,7 +51,7 @@ Transform actions are intentionally separate from automatic optimizations:
 - [ ] Add more performance rules
 - [ ] Add more maintainability rules
 - [ ] Improve explanations
-- [ ] Improve issue grouping
+- [x] Group findings by Health category for easier scanning
 
 ## Future Treatments
 

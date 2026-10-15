@@ -270,6 +270,8 @@ It should remain focused on:
 
 Transform and Review findings should remain visible in the issues list, but they should not be framed as automatic optimizations.
 
+Issues are grouped by Health category in the order Structure, Performance, Colors, Accessibility, and Maintainability. Grouping improves scanning without changing finding priority, treatment, or scoring.
+
 ---
 
 ## SVG Details

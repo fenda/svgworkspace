@@ -60,6 +60,14 @@ function getCategoryLabel(category: SvgHealthCategory): string {
   }
 }
 
+const issueCategoryOrder: SvgHealthCategory[] = [
+  "structure",
+  "performance",
+  "colors",
+  "accessibility",
+  "maintainability",
+];
+
 export function AnalysisCard() {
   const {
     document,
@@ -80,6 +88,12 @@ export function AnalysisCard() {
   const { findings, health } = document.analysis;
   const hasFindings = health.findingCount > 0;
   const automaticFixCount = findings.filter(isAutomaticFixFinding).length;
+  const findingGroups = issueCategoryOrder
+    .map((category) => ({
+      category,
+      findings: findings.filter((finding) => finding.category === category),
+    }))
+    .filter((group) => group.findings.length > 0);
   const automaticOptimizationLabel =
     automaticFixCount === 1
       ? "1 available"
@@ -212,88 +226,100 @@ export function AnalysisCard() {
         </div>
 
         {hasFindings ? (
-          <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
-            {findings.map((finding) => {
-              const fixType = getFixType(finding);
-              const isAutoFix = fixType === "auto";
-              const isTransformFix =
-                fixType === "choice" &&
-                (
-                  finding.id === "STRUCTURE_001" ||
-                  finding.id === "COLORS_001" ||
-                  finding.id === "COLORS_002"
-                );
-              const isActionable = isAutoFix || isTransformFix;
-              const buttonLabel = getFixButtonLabel(fixType, finding.id);
-              const reviewGuidanceId = `review-guidance-${finding.id}`;
-
-              return (
-                <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
-                  <div className="flex items-start gap-3">
-                    <SeverityIcon severity={finding.severity} />
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className={cn(
-                          "text-sm font-medium",
-                          getSeverityTextClass(finding.severity),
-                        )}
-                      >
-                        {finding.title}
-                      </p>
-                      <p className="mt-0.5 text-xs leading-5 text-zinc-400">
-                        {finding.description}
-                      </p>
-                      {fixType === "manual" ? (
-                        <p
-                          id={reviewGuidanceId}
-                          className="mt-2 text-xs leading-5 text-zinc-300"
-                        >
-                          <span className="font-medium text-zinc-200">Review guidance: </span>
-                          {finding.recommendation}
-                        </p>
-                      ) : null}
-                      <Badge
-                        variant="outline"
-                        className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal capitalize text-zinc-400"
-                      >
-                        {finding.category}
-                      </Badge>
-                      <Badge
-                        variant="outline"
-                        className="mt-1.5 ml-2 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-400"
-                      >
-                        {getFixTypeLabel(fixType)}
-                      </Badge>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      aria-label={`${buttonLabel} issue: ${finding.title}`}
-                      aria-describedby={
-                        fixType === "manual" ? reviewGuidanceId : undefined
-                      }
-                      title={
-                        fixType === "manual"
-                          ? "This issue needs manual review."
-                          : undefined
-                      }
-                      disabled={!isActionable || isProcessing}
-                      className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-300 opacity-100"
-                      onClick={() => {
-                        if (isAutoFix) {
-                          applySafeFixForFinding(finding);
-                        } else if (isTransformFix) {
-                          applyTransformForFinding(finding);
-                        }
-                      }}
-                    >
-                      {buttonLabel}
-                    </Button>
-                  </div>
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
+            {findingGroups.map(({ category, findings: categoryFindings }) => (
+              <section key={category} aria-labelledby={`issue-category-${category}`}>
+                <div className="mb-1.5 flex items-center gap-2">
+                  <p
+                    id={`issue-category-${category}`}
+                    className="text-[10px] font-medium uppercase tracking-wider text-zinc-500"
+                  >
+                    {getCategoryLabel(category)}
+                  </p>
+                  <span className="h-px flex-1 bg-white/[0.06]" aria-hidden="true" />
+                  <p className="font-metric text-[10px] text-zinc-500">
+                    {categoryFindings.length}
+                  </p>
                 </div>
-              );
-            })}
+                <div className="space-y-1.5">
+                  {categoryFindings.map((finding) => {
+                    const fixType = getFixType(finding);
+                    const isAutoFix = fixType === "auto";
+                    const isTransformFix =
+                      fixType === "choice" &&
+                      (
+                        finding.id === "STRUCTURE_001" ||
+                        finding.id === "COLORS_001" ||
+                        finding.id === "COLORS_002"
+                      );
+                    const isActionable = isAutoFix || isTransformFix;
+                    const buttonLabel = getFixButtonLabel(fixType, finding.id);
+                    const reviewGuidanceId = `review-guidance-${finding.id}`;
+
+                    return (
+                      <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
+                        <div className="flex items-start gap-3">
+                          <SeverityIcon severity={finding.severity} />
+                          <div className="min-w-0 flex-1">
+                            <p
+                              className={cn(
+                                "text-sm font-medium",
+                                getSeverityTextClass(finding.severity),
+                              )}
+                            >
+                              {finding.title}
+                            </p>
+                            <p className="mt-0.5 text-xs leading-5 text-zinc-400">
+                              {finding.description}
+                            </p>
+                            {fixType === "manual" ? (
+                              <p
+                                id={reviewGuidanceId}
+                                className="mt-2 text-xs leading-5 text-zinc-300"
+                              >
+                                <span className="font-medium text-zinc-200">Review guidance: </span>
+                                {finding.recommendation}
+                              </p>
+                            ) : null}
+                            <Badge
+                              variant="outline"
+                              className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-400"
+                            >
+                              {getFixTypeLabel(fixType)}
+                            </Badge>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            aria-label={`${buttonLabel} issue: ${finding.title}`}
+                            aria-describedby={
+                              fixType === "manual" ? reviewGuidanceId : undefined
+                            }
+                            title={
+                              fixType === "manual"
+                                ? "This issue needs manual review."
+                                : undefined
+                            }
+                            disabled={!isActionable || isProcessing}
+                            className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-300 opacity-100"
+                            onClick={() => {
+                              if (isAutoFix) {
+                                applySafeFixForFinding(finding);
+                              } else if (isTransformFix) {
+                                applyTransformForFinding(finding);
+                              }
+                            }}
+                          >
+                            {buttonLabel}
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
           </div>
         ) : (
           <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
