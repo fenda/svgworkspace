@@ -74,7 +74,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `icon-inline-styles.svg` | Tests Icon Workspace appearance transforms on eligible inline fill and stroke style declarations. | `Inline Styles` |
 | `icon-fill-stroke-attributes.svg` | Tests direct `fill` and `stroke` attribute removal separately from broader paint removal. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
 | `geometry-portrait-icon.svg` | Tests square-canvas math on a portrait icon. | `Hardcoded Fill Colors` |
-| `geometry-landscape-icon.svg` | Tests square-canvas math on a landscape icon. | `Hardcoded Fill Colors` |
+| `geometry-landscape-icon.svg` | Tests measured artwork centering and fit-to-bounds without rewriting paths. | `Hardcoded Fill Colors` |
 | `geometry-non-zero-origin.svg` | Tests square-canvas and padding math when the viewBox origin is not zero. | `Hardcoded Fill Colors` |
 | `geometry-missing-viewbox.svg` | Tests Geometry Workspace derivation from numeric width and height when the SVG is missing a viewBox. | `Missing viewBox`, `Fixed Width & Height` |
 | `geometry-large-padding.svg` | Tests stacked padding and remove-padding behavior. | `Hardcoded Fill Colors` |

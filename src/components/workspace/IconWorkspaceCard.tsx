@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight, Redo2, RotateCcw, Undo2 } from "lucide-react";
 import {
   getIconWorkspaceTransformationApplicability,
@@ -16,6 +16,7 @@ import {
   formatGeometryNumber,
   formatViewBox,
   getViewBoxDelta,
+  measureSvgArtworkBounds,
   normalizeToSquareCanvas,
   validateCustomViewBox,
   type ParsedViewBox,
@@ -233,6 +234,24 @@ export function IconWorkspaceCard() {
     height: "24",
   });
   const [isAspectLocked, setIsAspectLocked] = useState(true);
+  const [artworkBounds, setArtworkBounds] = useState<ParsedViewBox | null>(null);
+  const [artworkBoundsReason, setArtworkBoundsReason] = useState<string | null>(null);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      if (!document || !isIconWorkspaceEligible(document)) {
+        setArtworkBounds(null);
+        setArtworkBoundsReason(null);
+        return;
+      }
+
+      const measurement = measureSvgArtworkBounds(document.content);
+      setArtworkBounds(measurement.bounds);
+      setArtworkBoundsReason(measurement.bounds ? null : measurement.reason);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [document]);
 
   const transformationStates = useMemo(() => {
     if (!document || !isIconWorkspaceEligible(document)) {
@@ -286,6 +305,18 @@ export function IconWorkspaceCard() {
     document.content,
     document.originalContent,
     "geometry-square-canvas",
+  );
+  const centerArtworkApplicability = getIconWorkspaceTransformationApplicability(
+    document.content,
+    document.originalContent,
+    "geometry-center-artwork",
+    { artworkBounds: artworkBounds ?? undefined },
+  );
+  const fitCanvasApplicability = getIconWorkspaceTransformationApplicability(
+    document.content,
+    document.originalContent,
+    "geometry-fit-canvas-to-artwork",
+    { artworkBounds: artworkBounds ?? undefined },
   );
   const removePaddingApplicability = getIconWorkspaceTransformationApplicability(
     document.content,
@@ -512,7 +543,29 @@ export function IconWorkspaceCard() {
               </div>
             ) : null}
 
-            <div className="grid gap-2 sm:grid-cols-3">
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={!centerArtworkApplicability.applicable || isProcessing}
+                aria-describedby="center-artwork-help"
+                className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
+                onClick={() => applyIconWorkspaceTransformation("geometry-center-artwork", { artworkBounds: artworkBounds ?? undefined })}
+              >
+                Center artwork
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={!fitCanvasApplicability.applicable || isProcessing}
+                aria-describedby="fit-canvas-help"
+                className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
+                onClick={() => applyIconWorkspaceTransformation("geometry-fit-canvas-to-artwork", { artworkBounds: artworkBounds ?? undefined })}
+              >
+                Fit to artwork
+              </Button>
               <Button
                 type="button"
                 variant="outline"
@@ -548,6 +601,16 @@ export function IconWorkspaceCard() {
               </Button>
             </div>
             <div className="space-y-1 text-xs text-zinc-500">
+              <p id="center-artwork-help">
+                {centerArtworkApplicability.applicable
+                  ? "Center measured artwork while keeping the canvas dimensions unchanged."
+                  : `Unavailable: ${artworkBoundsReason ?? centerArtworkApplicability.reason}`}
+              </p>
+              <p id="fit-canvas-help">
+                {fitCanvasApplicability.applicable
+                  ? "Set the viewBox to the measured artwork bounds without scaling paths."
+                  : `Unavailable: ${artworkBoundsReason ?? fitCanvasApplicability.reason}`}
+              </p>
               <p id="square-canvas-help">
                 {squareApplicability.applicable
                   ? "Expand the current canvas to a square without scaling the artwork."

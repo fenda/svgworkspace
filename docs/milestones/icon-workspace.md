@@ -35,10 +35,11 @@ Support safe, deterministic transformations for standalone icons directly inside
 - [x] Output size controls
 - [x] Preview size controls
 - [x] Geometry summary and warnings
+- [x] Center artwork from measured browser bounds
+- [x] Fit canvas to measured artwork bounds
 
 ## Next Follow-ups
 
-- [ ] Canvas-bound artwork-fit transformations such as centering or resize-to-bounds
 - [ ] Safe geometry transformations that still avoid direct path editing
 - [ ] Add more icon-specific transformations where parser facts make them deterministic
 - [ ] Consider future multi-icon collection workflows separately from the standalone Icon Workspace

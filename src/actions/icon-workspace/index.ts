@@ -1,5 +1,10 @@
 import { parseSvgMarkup } from "@/lib/svg/parse";
-import { formatViewBox } from "@/lib/svg";
+import {
+  areViewBoxesEqual,
+  centerCanvasOnArtwork,
+  fitCanvasToArtwork,
+  formatViewBox,
+} from "@/lib/svg";
 import type { SvgDocument } from "@/lib/svg/types";
 import {
   applyCustomViewBox,
@@ -25,6 +30,7 @@ import type { ParsedViewBox } from "@/lib/svg/viewbox";
 
 export type IconWorkspaceCategory = "appearance" | "structure" | "canvas";
 export type IconWorkspaceTransformationPayload = {
+  artworkBounds?: ParsedViewBox;
   padding?: number;
   viewBox?: ParsedViewBox;
   width?: number;
@@ -221,6 +227,66 @@ const transformations: SvgTransformation[] = [
         summary: formatSummary("Removed", "stroke attribute", count),
         changeCount: count,
       };
+    },
+  },
+  {
+    id: "geometry-center-artwork",
+    label: "Center artwork",
+    description: "Center measured artwork within the current canvas without changing path coordinates.",
+    category: "canvas",
+    listedInOverview: false,
+    isApplicable: (svg, _originalSvg, payload) => {
+      const canvas = getGeometryInfo(svg).effectiveViewBox;
+      const artwork = payload?.artworkBounds;
+
+      if (!canvas || !artwork) {
+        return { applicable: false, reason: "Measurable artwork bounds and a valid canvas are required." };
+      }
+
+      return areViewBoxesEqual(canvas, centerCanvasOnArtwork(canvas, artwork))
+        ? { applicable: false, reason: "Artwork is already centered in the current canvas." }
+        : { applicable: true };
+    },
+    apply: (svg, _originalSvg, payload) => {
+      const canvas = getGeometryInfo(svg).effectiveViewBox;
+      const artwork = payload?.artworkBounds;
+
+      if (!canvas || !artwork) {
+        return { svgMarkup: "", changed: false };
+      }
+
+      const next = centerCanvasOnArtwork(canvas, artwork);
+      svg.setAttribute("viewBox", formatViewBox(next));
+      return { svgMarkup: "", changed: true, summary: "Centered artwork in the current canvas.", changeCount: 1 };
+    },
+  },
+  {
+    id: "geometry-fit-canvas-to-artwork",
+    label: "Fit canvas to artwork",
+    description: "Resize the viewBox to the measured artwork bounds without changing path coordinates.",
+    category: "canvas",
+    listedInOverview: false,
+    isApplicable: (svg, _originalSvg, payload) => {
+      const current = getGeometryInfo(svg).effectiveViewBox;
+      const artwork = payload?.artworkBounds;
+
+      if (!current || !artwork) {
+        return { applicable: false, reason: "Measurable artwork bounds and a valid canvas are required." };
+      }
+
+      return areViewBoxesEqual(current, fitCanvasToArtwork(artwork))
+        ? { applicable: false, reason: "The current canvas already fits the artwork bounds." }
+        : { applicable: true };
+    },
+    apply: (svg, _originalSvg, payload) => {
+      const artwork = payload?.artworkBounds;
+
+      if (!artwork) {
+        return { svgMarkup: "", changed: false };
+      }
+
+      svg.setAttribute("viewBox", formatViewBox(fitCanvasToArtwork(artwork)));
+      return { svgMarkup: "", changed: true, summary: "Resized the canvas to artwork bounds.", changeCount: 1 };
     },
   },
   {

@@ -9,14 +9,18 @@ export {
 export {
   areViewBoxesEqual,
   calculateLockedOutputSize,
+  centerCanvasOnArtwork,
   detectUniformPadding,
   expandViewBoxWithPadding,
   formatGeometryNumber,
   formatViewBox,
+  fitCanvasToArtwork,
   getViewBoxDelta,
   normalizeToSquareCanvas,
   validateCustomViewBoxValues,
 } from "./geometry-math";
+export { measureSvgArtworkBounds } from "./artwork-bounds";
+export type { ArtworkBoundsResult } from "./artwork-bounds";
 export {
   createSvgDocument,
   hasDrawableContent,

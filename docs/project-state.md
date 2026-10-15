@@ -336,11 +336,13 @@ Current examples:
 - `Custom viewBox`
 - `Output size`
 - `Preview size`
+- `Center artwork` using measured browser bounds
+- `Fit canvas to artwork` using measured browser bounds
 
 Known limitations:
 
 - the workspace manipulates canvas geometry, not path coordinates
-- centering artwork, fit-to-bounds, and other artwork-measurement tools are still postponed
+- browser-measured artwork bounds are intentionally unavailable when the browser cannot expose a positive SVG bounding box
 - geometry operations never become freeform vector editing
 - Icon Workspace does not support arbitrary editing, dragging, node tools, or visual handles
 - `Remove fill` and `Remove stroke` currently set eligible explicit paint values to `none` so the result stays deterministic and easy to inspect in Diff

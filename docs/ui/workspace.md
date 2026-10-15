@@ -414,12 +414,15 @@ Current geometry transformations:
 - `Reset canvas`
 - `Custom viewBox`
 - `Output size`
+- `Center artwork`
+- `Fit canvas to artwork`
 
 Geometry changes:
 
 - operate on `viewBox`, `width`, `height`, and `preserveAspectRatio`
 - never rewrite child path coordinates
 - reuse derived viewBox information only when numeric width and height make that safe
+- measure artwork bounds in the browser before centering or fitting a canvas; if bounds cannot be measured, those actions remain unavailable
 
 ### ViewBox Inspector
 

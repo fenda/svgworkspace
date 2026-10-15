@@ -50,6 +50,27 @@ export function normalizeToSquareCanvas(box: ParsedViewBox): ParsedViewBox {
   };
 }
 
+export function centerCanvasOnArtwork(
+  canvas: ParsedViewBox,
+  artwork: ParsedViewBox,
+): ParsedViewBox {
+  return {
+    minX: roundGeometryValue(artwork.minX + artwork.width / 2 - canvas.width / 2),
+    minY: roundGeometryValue(artwork.minY + artwork.height / 2 - canvas.height / 2),
+    width: canvas.width,
+    height: canvas.height,
+  };
+}
+
+export function fitCanvasToArtwork(artwork: ParsedViewBox): ParsedViewBox {
+  return {
+    minX: roundGeometryValue(artwork.minX),
+    minY: roundGeometryValue(artwork.minY),
+    width: roundGeometryValue(artwork.width),
+    height: roundGeometryValue(artwork.height),
+  };
+}
+
 export function expandViewBoxWithPadding(
   box: ParsedViewBox,
   padding: number,
