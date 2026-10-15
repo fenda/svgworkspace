@@ -1,6 +1,7 @@
 import type { AnalysisRule } from "@/analysis/models";
 import {
   canInlineCssClasses,
+  getEmbeddedCssReviewSummary,
   hasEmbeddedCssClasses,
 } from "@/lib/svg/css-classes";
 import { createRuleFinding } from "../utils";
@@ -27,7 +28,8 @@ export const maintainability002EmbeddedCssClasses: AnalysisRule = {
       fixType: canInlineSafely ? "auto" : "manual",
       recommendation: canInlineSafely
         ? "Inline safe simple class-based presentation styles as SVG attributes while preserving unsupported CSS."
-        : "Review embedded CSS manually. Complex selectors or unsupported declarations are not safe to inline automatically.",
+        : getEmbeddedCssReviewSummary(svg) ??
+          "Review embedded CSS manually. Complex selectors or unsupported declarations are not safe to inline automatically.",
     });
   },
 };

@@ -3,6 +3,10 @@ import {
   parseStyleDeclarations,
   type ParsedStyleDeclaration,
 } from "./inline-styles";
+import {
+  summarizeCssReviewReasons,
+  type CssReviewReason,
+} from "./css-review";
 
 type SafeClassRule = {
   className: string;
@@ -18,7 +22,10 @@ type CssRuleSegment =
   | {
       kind: "unsafe";
       raw: string;
+      reason: CssReviewReason;
     };
+
+type UnsafeCssRuleSegment = Extract<CssRuleSegment, { kind: "unsafe" }>;
 
 type ParsedStyleBlock = {
   element: Element;
@@ -41,6 +48,7 @@ function parseRule(selector: string, body: string, raw: string): CssRuleSegment 
     return {
       kind: "unsafe",
       raw,
+      reason: "complex selector",
     };
   }
 
@@ -48,6 +56,7 @@ function parseRule(selector: string, body: string, raw: string): CssRuleSegment 
     return {
       kind: "unsafe",
       raw,
+      reason: "unsupported syntax",
     };
   }
 
@@ -61,6 +70,7 @@ function parseRule(selector: string, body: string, raw: string): CssRuleSegment 
     return {
       kind: "unsafe",
       raw,
+      reason: "unsupported declarations",
     };
   }
 
@@ -97,6 +107,7 @@ function parseStyleBlock(cssText: string): CssRuleSegment[] {
         rules.push({
           kind: "unsafe",
           raw: cssText.slice(cursor),
+          reason: "unsupported syntax",
         });
       }
 
@@ -122,6 +133,7 @@ function parseStyleBlock(cssText: string): CssRuleSegment[] {
       rules.push({
         kind: "unsafe",
         raw: cssText.slice(selectorStart),
+        reason: "unsupported syntax",
       });
       break;
     }
@@ -142,6 +154,24 @@ function getParsedStyleBlocks(svg: SVGSVGElement): ParsedStyleBlock[] {
     element,
     rules: parseStyleBlock(element.textContent ?? ""),
   }));
+}
+
+function isUnsafeCssRule(
+  rule: CssRuleSegment,
+): rule is UnsafeCssRuleSegment {
+  return rule.kind === "unsafe";
+}
+
+function getCssReviewSummaryFromRules(
+  rules: CssRuleSegment[],
+): string | null {
+  const unsafeRules = rules.filter(isUnsafeCssRule);
+
+  if (unsafeRules.length === 0) {
+    return null;
+  }
+
+  return summarizeCssReviewReasons(unsafeRules.map((rule) => rule.reason));
 }
 
 function getInlineableRuleCount(blocks: ParsedStyleBlock[]): number {
@@ -174,6 +204,16 @@ export function hasEmbeddedCssClasses(svg: SVGSVGElement): boolean {
 
 export function canInlineCssClasses(svg: SVGSVGElement): boolean {
   return getInlineableCssRuleCount(svg) > 0;
+}
+
+export function getCssReviewSummary(cssText: string): string | null {
+  return getCssReviewSummaryFromRules(parseStyleBlock(cssText));
+}
+
+export function getEmbeddedCssReviewSummary(svg: SVGSVGElement): string | null {
+  return getCssReviewSummaryFromRules(
+    getParsedStyleBlocks(svg).flatMap(({ rules }) => rules),
+  );
 }
 
 export function inlineCssClasses(svg: SVGSVGElement): void {
@@ -213,7 +253,7 @@ export function inlineCssClasses(svg: SVGSVGElement): void {
 
   blocks.forEach(({ element, rules }) => {
     const remainingRules = rules
-      .filter((rule) => rule.kind === "unsafe")
+      .filter(isUnsafeCssRule)
       .map((rule) => rule.raw.trim())
       .filter(Boolean);
 

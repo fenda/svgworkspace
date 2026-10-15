@@ -32,6 +32,7 @@ Unlike destination-specific React Ready checks, Maintainability rules are platfo
   - safe simple class rules can be inlined
   - unsupported rules remain in the `<style>` block
   - the `<style>` block is removed only when no rules remain
+- Manual CSS findings expose review guidance that identifies whether complex selectors, unsupported declarations, or unsupported syntax blocked automatic treatment.
 - These treatments are implemented in the optimization engine and are already available through `Optimize SVG` and individual auto-fix actions.
 
 ---

@@ -42,7 +42,7 @@ Transform actions are intentionally separate from automatic optimizations:
 
 - [x] Auto-inline simple single-class embedded CSS when safe rules can be isolated
 - [x] Preserve unsupported embedded CSS rules while removing only the safe rules that were successfully inlined
-- [ ] Keep complex CSS selectors and unsupported declarations as manual review
+- [x] Keep complex CSS selectors and unsupported declarations as manual review with explicit blocker guidance
 
 ## Analysis
 

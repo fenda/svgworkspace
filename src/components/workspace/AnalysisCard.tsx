@@ -225,6 +225,7 @@ export function AnalysisCard() {
                 );
               const isActionable = isAutoFix || isTransformFix;
               const buttonLabel = getFixButtonLabel(fixType, finding.id);
+              const reviewGuidanceId = `review-guidance-${finding.id}`;
 
               return (
                 <div key={finding.id} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-2.5">
@@ -242,6 +243,15 @@ export function AnalysisCard() {
                       <p className="mt-0.5 text-xs leading-5 text-zinc-400">
                         {finding.description}
                       </p>
+                      {fixType === "manual" ? (
+                        <p
+                          id={reviewGuidanceId}
+                          className="mt-2 text-xs leading-5 text-zinc-300"
+                        >
+                          <span className="font-medium text-zinc-200">Review guidance: </span>
+                          {finding.recommendation}
+                        </p>
+                      ) : null}
                       <Badge
                         variant="outline"
                         className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal capitalize text-zinc-400"
@@ -260,6 +270,14 @@ export function AnalysisCard() {
                       variant="outline"
                       size="sm"
                       aria-label={`${buttonLabel} issue: ${finding.title}`}
+                      aria-describedby={
+                        fixType === "manual" ? reviewGuidanceId : undefined
+                      }
+                      title={
+                        fixType === "manual"
+                          ? "This issue needs manual review."
+                          : undefined
+                      }
                       disabled={!isActionable || isProcessing}
                       className="h-7 shrink-0 border-white/[0.08] bg-white/[0.02] px-2.5 text-[11px] text-zinc-300 opacity-100"
                       onClick={() => {
