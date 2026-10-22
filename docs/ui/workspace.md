@@ -102,6 +102,17 @@ Current standalone export limitations:
 - unresolved shared references produce warnings instead of guessed markup
 - unrelated symbols are never copied into standalone exports
 
+### Sprite Builder
+
+The standalone Sprite Builder uses the shared application shell and keeps its collection workflow separate from the single-document workspace.
+
+- Preview controls provide zoom, fit/reset, and transparent, checkerboard, light, and dark backgrounds for generated symbols.
+- Preview, SVG, and Diff views make generated output and batch changes inspectable.
+- Batch tools run existing Auto-safe fixes independently on each source icon: clean all, comments, metadata, fixed dimensions, decimal precision, and whitespace.
+- The original local source set remains available for Reset after a batch operation.
+
+Intent-dependent transforms, such as color conversion or canvas changes, are not batch actions. They remain in the single-document Icon Workspace where their visual effect can be reviewed deliberately.
+
 ### Export Studio
 
 The lower workspace now includes `Export Studio`.

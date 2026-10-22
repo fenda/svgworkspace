@@ -281,12 +281,6 @@ export function getSafeFixLabelForFinding(findingId: string): string | null {
   return SAFE_FIXES_BY_FINDING_ID[findingId]?.label ?? null;
 }
 
-function withParsedSvg(content: string, applyFix: (svg: SVGSVGElement) => void): string {
-  const svg = parseSvgMarkup(content.trim());
-  applyFix(svg);
-  return serializeSvg(svg);
-}
-
 export function applySafeFixes(content: string): string {
   return applySafeFixesWithReport(content).content;
 }
@@ -396,11 +390,34 @@ export function applySafeFixesWithReport(content: string): AppliedSafeFixReport 
 }
 
 export function applySafeFixForFinding(content: string, finding: Finding): string {
-  const fix = SAFE_FIXES_BY_FINDING_ID[finding.id]?.apply;
+  return applySafeFixForFindingId(content, finding.id).content;
+}
 
-  if (!fix) {
+export function applySafeFixForFindingId(
+  content: string,
+  findingId: string,
+): { content: string; changed: boolean } {
+  const fixDefinition = SAFE_FIXES_BY_FINDING_ID[findingId];
+
+  if (!fixDefinition) {
     throw new Error("This issue does not have an automatic fix.");
   }
 
-  return withParsedSvg(content, fix);
+  const svg = parseSvgMarkup(content.trim());
+  const beforeMarkup = serializeSvg(svg);
+
+  if (
+    fixDefinition.getApplicability &&
+    !fixDefinition.getApplicability(svg)
+  ) {
+    return { content, changed: false };
+  }
+
+  fixDefinition.apply(svg);
+  const nextContent = serializeSvg(svg);
+
+  return {
+    content: nextContent,
+    changed: beforeMarkup !== nextContent,
+  };
 }
