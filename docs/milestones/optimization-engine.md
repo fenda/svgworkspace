@@ -4,7 +4,7 @@ Status: Next
 
 ## Output
 
-- [ ] Improve formatted SVG output
+- [x] Improve formatted SVG output while preserving text-sensitive content
 - [x] Preserve text-sensitive SVG markup during formatted output
 - [x] Better diff visualization with original and current line numbers
 - [x] Add Optimization Report after `Optimize SVG`
