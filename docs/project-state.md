@@ -117,7 +117,9 @@ Future priorities:
 
 The standalone `/sprite` route builds a hidden SVG sprite from multiple local SVG files. Each input becomes a filename-based `<symbol>` with its own usable `viewBox`. Internal IDs and local references are prefixed per symbol to avoid collisions. The builder previews the generated symbols and reuses the shared Copy and Download export behavior.
 
-Sprite Builder remains separate from the single-document Icon Workspace. Reusing optimized Icon Workspace assets directly is the next collection-workflow step.
+Sprite Builder remains separate from the single-document Icon Workspace while still accepting the current optimized asset as an explicit collection input.
+
+The current standalone SVG can be added to Sprite Builder from Export Studio. The handoff uses session-only browser storage and carries the current transformed or optimized SVG without uploading it.
 
 Destination-specific workflows are intentionally postponed until the optimization workflow is mature.
 

@@ -19,6 +19,49 @@ export type SpriteBuildResult = {
   warnings: string[];
 };
 
+const PENDING_SPRITE_SOURCES_KEY = "svg-workspace.pending-sprite-sources";
+
+export function queueSpriteBuilderSource(source: SpriteBuilderSource): void {
+  if (typeof window === "undefined") return;
+
+  const existing = readQueuedSpriteBuilderSources();
+  window.sessionStorage.setItem(
+    PENDING_SPRITE_SOURCES_KEY,
+    JSON.stringify([...existing, source]),
+  );
+}
+
+export function takeQueuedSpriteBuilderSources(): SpriteBuilderSource[] {
+  if (typeof window === "undefined") return [];
+
+  const sources = readQueuedSpriteBuilderSources();
+  window.sessionStorage.removeItem(PENDING_SPRITE_SOURCES_KEY);
+  return sources;
+}
+
+function readQueuedSpriteBuilderSources(): SpriteBuilderSource[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const parsed = JSON.parse(
+      window.sessionStorage.getItem(PENDING_SPRITE_SOURCES_KEY) ?? "[]",
+    ) as unknown;
+
+    return Array.isArray(parsed)
+      ? parsed.filter((source): source is SpriteBuilderSource =>
+          Boolean(
+            source &&
+            typeof source === "object" &&
+            typeof (source as SpriteBuilderSource).filename === "string" &&
+            typeof (source as SpriteBuilderSource).content === "string",
+          ),
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
 function toSymbolBaseId(filename: string): string {
   const withoutExtension = filename.replace(/\.svg$/i, "");
   const normalized = withoutExtension

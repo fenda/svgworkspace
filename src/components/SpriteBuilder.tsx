@@ -1,9 +1,9 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Copy, Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { buildSpriteFromSources, type SpriteBuildResult } from "@/lib/svg/sprite-builder";
+import { buildSpriteFromSources, takeQueuedSpriteBuilderSources, type SpriteBuildResult } from "@/lib/svg/sprite-builder";
 import { copySvgWithFeedback, downloadSvgWithFeedback } from "@/output/perform-svg-export";
 
 function getSymbolChildrenMarkup(markup: string): string {
@@ -16,6 +16,15 @@ export function SpriteBuilder() {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [result, setResult] = useState<SpriteBuildResult | null>(null);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const sources = takeQueuedSpriteBuilderSources();
+      if (sources.length) setResult(buildSpriteFromSources(sources));
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const build = async (files: FileList | null) => {
     if (!files?.length) return;

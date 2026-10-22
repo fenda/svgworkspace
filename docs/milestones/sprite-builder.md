@@ -13,4 +13,4 @@ Build optimized SVG sprites from cleaned icon libraries.
 - [x] Preview generated sprite symbols
 - [x] Copy sprite markup
 - [x] Download sprite
-- [ ] Support optimized icons from Icon Workspace
+- [x] Send the current optimized Icon Workspace SVG to Sprite Builder through session-only browser state

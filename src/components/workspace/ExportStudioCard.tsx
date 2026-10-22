@@ -1,10 +1,12 @@
 "use client";
 
-import { ChevronDown, ChevronRight, Copy, Download } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Download, Layers } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useSvgWorkspace } from "@/hooks/use-svg-workspace";
 import { resolveExportSources } from "@/export-studio";
 import { getStandaloneSpriteSymbol } from "@/lib/svg";
+import { queueSpriteBuilderSource } from "@/lib/svg/sprite-builder";
 import {
   copySvgWithFeedback,
   downloadSvgWithFeedback,
@@ -26,6 +28,7 @@ export function ExportStudioCard() {
   const setLastActiveWorkspace = useWorkspaceUiStore(
     (state) => state.setLastActiveWorkspace,
   );
+  const router = useRouter();
 
   if (!document) {
     return null;
@@ -64,6 +67,24 @@ export function ExportStudioCard() {
             {collapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
           </Button>
         </div>
+        {document.symbols.length === 0 ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="mt-3 border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
+            onClick={() => {
+              queueSpriteBuilderSource({
+                filename: document.filename,
+                content: document.content,
+              });
+              router.push("/sprite");
+            }}
+          >
+            <Layers aria-hidden="true" className="size-3.5" />
+            Add current SVG to Sprite Builder
+          </Button>
+        ) : null}
       </div>
 
       {collapsed ? (
