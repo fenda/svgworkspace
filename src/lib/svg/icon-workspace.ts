@@ -221,6 +221,52 @@ export function removeDefaultPreserveAspectRatio(svg: SVGSVGElement): boolean {
   return true;
 }
 
+function getUniqueSvgIds(svg: SVGSVGElement): string[] | null {
+  const ids = Array.from(svg.querySelectorAll("[id]"))
+    .map((element) => element.getAttribute("id")?.trim() ?? "")
+    .filter(Boolean);
+  return new Set(ids).size === ids.length ? ids : null;
+}
+
+function rewriteIdReferences(value: string, idMap: Map<string, string>): string {
+  let nextValue = value;
+  idMap.forEach((nextId, previousId) => {
+    const escaped = previousId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    nextValue = nextValue
+      .replace(new RegExp(`url\\((['"]?)#${escaped}\\1\\)`, "g"), `url(#${nextId})`)
+      .replace(new RegExp(`^#${escaped}$`), `#${nextId}`)
+      .replace(new RegExp(`#${escaped}(?![A-Za-z0-9_.:-])`, "g"), `#${nextId}`);
+  });
+  return nextValue;
+}
+
+export function getNormalizableIdCount(svg: SVGSVGElement): number {
+  return getUniqueSvgIds(svg)?.length ?? 0;
+}
+
+export function normalizeSvgIds(svg: SVGSVGElement): number {
+  const ids = getUniqueSvgIds(svg);
+  if (!ids?.length) return 0;
+
+  const idMap = new Map(ids.map((id, index) => [id, `svgw-${index + 1}`]));
+  Array.from(svg.querySelectorAll("[id]")).forEach((element) => {
+    const id = element.getAttribute("id")?.trim();
+    if (id) element.setAttribute("id", idMap.get(id) ?? id);
+  });
+  Array.from(svg.querySelectorAll("*")).forEach((element) => {
+    Array.from(element.attributes).forEach((attribute) => {
+      const nextValue = rewriteIdReferences(attribute.value, idMap);
+      if (nextValue !== attribute.value) element.setAttribute(attribute.name, nextValue);
+    });
+    if (element.tagName.toLowerCase() === "style") {
+      const value = element.textContent ?? "";
+      const nextValue = rewriteIdReferences(value, idMap);
+      if (nextValue !== value) element.textContent = nextValue;
+    }
+  });
+  return idMap.size;
+}
+
 export function convertSolidColorsToCurrentColor(svg: SVGSVGElement): number {
   let changedCount = 0;
 

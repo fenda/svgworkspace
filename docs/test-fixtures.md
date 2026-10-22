@@ -76,6 +76,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `icon-fill-stroke-attributes.svg` | Tests direct `fill` and `stroke` attribute removal separately from broader paint removal. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
 | `icon-xlink.svg` | Tests explicit Icon Workspace migration from `xlink:href` to native `href`. | `xlink Attribute` |
 | `icon-default-preserve-aspect-ratio.svg` | Tests removal of the explicit default `preserveAspectRatio` value. | None |
+| `icon-normalize-ids.svg` | Tests explicit normalization of unique local IDs and their `url(#...)` references. | None |
 | `geometry-portrait-icon.svg` | Tests square-canvas math on a portrait icon. | `Hardcoded Fill Colors` |
 | `geometry-landscape-icon.svg` | Tests measured artwork centering and fit-to-bounds without rewriting paths. | `Hardcoded Fill Colors` |
 | `geometry-non-zero-origin.svg` | Tests square-canvas and padding math when the viewBox origin is not zero. | `Hardcoded Fill Colors` |

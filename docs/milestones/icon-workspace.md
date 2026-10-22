@@ -39,6 +39,7 @@ Support safe, deterministic transformations for standalone icons directly inside
 - [x] Fit canvas to measured artwork bounds
 - [x] Migrate legacy `xlink:href` references to native `href`
 - [x] Remove explicit default `preserveAspectRatio` values
+- [x] Normalize unique internal IDs as an explicit external-reference-risk Transform
 
 ## Next Follow-ups
 

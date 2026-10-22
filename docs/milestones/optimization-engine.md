@@ -28,7 +28,7 @@ Transform actions are intentionally separate from automatic optimizations:
 - [x] Remove unused namespaces
 - [x] Normalize structural whitespace while preserving text-sensitive content
 - [x] Generate missing viewBox in safe cases as a Transform
-- [ ] Normalize IDs as an optional treatment (requires an explicit external-reference risk decision)
+- [x] Normalize IDs as an explicit Markup Transform with external-reference warning
 - [ ] Add additional performance optimizations
 
 ## Structure Cleanup

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <title>ID normalization fixture</title>
+  <desc>Tests explicit local ID normalization.</desc>
+  <defs><linearGradient id="brand-gradient"><stop stop-color="#000" /></linearGradient></defs>
+  <path id="brand-path" fill="url(#brand-gradient)" d="M2 2h20v20H2z" />
+</svg>

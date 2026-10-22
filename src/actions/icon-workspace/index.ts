@@ -22,6 +22,8 @@ import {
   migrateXlinkHrefAttributes,
   hasDefaultPreserveAspectRatio,
   removeDefaultPreserveAspectRatio,
+  getNormalizableIdCount,
+  normalizeSvgIds,
   getOutputSizeApplicability,
   getRemovablePaintCount,
   normalizeSquareCanvas,
@@ -231,6 +233,23 @@ const transformations: SvgTransformation[] = [
         summary: formatSummary("Removed", "stroke attribute", count),
         changeCount: count,
       };
+    },
+  },
+  {
+    id: "structure-normalize-ids",
+    label: "Normalize internal IDs",
+    description:
+      "Rename unique internal IDs and update local references. This explicit transform can affect external CSS or scripts that target the SVG.",
+    category: "structure",
+    isApplicable: (svg) => {
+      const count = getNormalizableIdCount(svg);
+      return count > 0
+        ? { applicable: true }
+        : { applicable: false, reason: "No unique IDs are available; duplicate IDs require manual review." };
+    },
+    apply: (svg) => {
+      const count = normalizeSvgIds(svg);
+      return { svgMarkup: "", changed: count > 0, summary: formatSummary("Normalized", "internal ID", count), changeCount: count };
     },
   },
   {
