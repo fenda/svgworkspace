@@ -39,7 +39,7 @@ export function SpriteBuilder() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-6 px-5 py-10">
+    <div className="space-y-6 py-6">
       <header className="max-w-2xl">
         <p className="text-xs font-medium uppercase tracking-wider text-[var(--brand)]">Sprite Builder</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-100">Build a sprite from SVG icons.</h1>
@@ -93,6 +93,6 @@ export function SpriteBuilder() {
           </div>
         </section>
       ) : null}
-    </main>
+    </div>
   );
 }
