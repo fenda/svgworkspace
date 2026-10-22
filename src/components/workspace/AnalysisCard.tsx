@@ -37,6 +37,8 @@ function getFixButtonLabel(
         case "COLORS_001":
         case "COLORS_002":
           return "Convert to currentColor";
+        case "MAINTAINABILITY_003":
+          return "Migrate xlink";
         default:
           return "Configure";
       }
@@ -250,7 +252,8 @@ export function AnalysisCard() {
                       (
                         finding.id === "STRUCTURE_001" ||
                         finding.id === "COLORS_001" ||
-                        finding.id === "COLORS_002"
+                  finding.id === "COLORS_002" ||
+                  finding.id === "MAINTAINABILITY_003"
                       );
                     const isActionable = isAutoFix || isTransformFix;
                     const buttonLabel = getFixButtonLabel(fixType, finding.id);

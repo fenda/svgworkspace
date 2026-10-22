@@ -16,7 +16,7 @@ This lets a clean SVG reach `100` without optional markup. It also keeps a comme
 
 ## Summary
 
-- SVG Health rules: 26
+- SVG Health rules: 27
 - React Ready rules: 5
 - Auto-capable Health rules: 14
 - Health rules with explicit metadata in code: 24
@@ -72,6 +72,7 @@ This lets a clean SVG reach `100` without optional markup. It also keeps a comme
 | --- | --- | --- | --- | --- | --- | --- |
 | `MAINTAINABILITY_001` | Inline Styles | Warning | 3 | Optimize when every declaration is safe; otherwise Review | inline-style fixtures | Existing Auto/Review behavior remains unchanged. |
 | `MAINTAINABILITY_002` | Embedded CSS Classes | Warning | 3 | Optimize when at least one rule is safe; otherwise Review | CSS class fixtures | Safe rules can be partially inlined while unsafe rules remain. |
+| `MAINTAINABILITY_003` | Legacy xlink Attributes | Info | 1 | Transform | `icon-xlink.svg` | Migrates only after explicit user action. |
 
 ## React Ready
 

@@ -13,6 +13,7 @@ import {
 } from "@/actions/safe-fixes/apply-safe-fixes";
 import { applyCurrentColorTransform } from "@/actions/transforms/current-color";
 import { applyGenerateViewBox } from "@/actions/transforms/generate-viewbox";
+import { applyMigrateXlinkHref } from "@/actions/transforms/migrate-xlink-href";
 import { EXAMPLE_SVG } from "@/lib/mock-data";
 import {
   trackAnalyticsEvent,
@@ -510,6 +511,12 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
                 toast: "Applied currentColor",
                 analyticsId: "use_currentcolor",
                 }
+              : finding.id === "MAINTAINABILITY_003"
+                ? {
+                    apply: applyMigrateXlinkHref,
+                    toast: "Migrated xlink references",
+                    analyticsId: "migrate_xlink_href",
+                  }
               : null;
 
       if (!transformConfig) {

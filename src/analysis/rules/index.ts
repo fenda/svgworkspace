@@ -7,6 +7,7 @@ import { colors001HardcodedFillColors } from "./colors/colors-001-hardcoded-fill
 import { colors002HardcodedStrokeColors } from "./colors/colors-002-hardcoded-stroke-colors";
 import { maintainability001InlineStyles } from "./maintainability/maintainability-001-inline-styles";
 import { maintainability002EmbeddedCssClasses } from "./maintainability/maintainability-002-embedded-css-classes";
+import { maintainability003LegacyXlink } from "./maintainability/maintainability-003-legacy-xlink";
 import { performance001MetadataFound } from "./performance/performance-001-metadata-found";
 import { performance002CommentsFound } from "./performance/performance-002-comments-found";
 import { performance003HighDecimalPrecision } from "./performance/performance-003-high-decimal-precision";
@@ -71,6 +72,7 @@ const accessibilityRules: AnalysisRule[] = [
 const maintainabilityRules: AnalysisRule[] = [
   maintainability001InlineStyles,
   maintainability002EmbeddedCssClasses,
+  maintainability003LegacyXlink,
 ];
 
 const svgHealthRuleGroups: AnalysisRule[] = [

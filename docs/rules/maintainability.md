@@ -22,6 +22,7 @@ Unlike destination-specific React Ready checks, Maintainability rules are platfo
 | --- | --- | --- | --- | --- |
 | `MAINTAINABILITY_001` | Inline Styles | Warning | 3 | Auto when every declaration is safely convertible, otherwise Manual |
 | `MAINTAINABILITY_002` | Embedded CSS Classes | Warning | 3 | Auto when at least one class rule is safely inlineable, otherwise Manual |
+| `MAINTAINABILITY_003` | Legacy xlink Attributes | Info | 1 | Explicit Transform |
 
 ---
 
@@ -32,6 +33,7 @@ Unlike destination-specific React Ready checks, Maintainability rules are platfo
   - safe simple class rules can be inlined
   - unsupported rules remain in the `<style>` block
   - the `<style>` block is removed only when no rules remain
+- `Legacy xlink Attributes` offers an explicit migration to native `href` values. It is never part of `Optimize SVG`.
 - Manual CSS findings expose review guidance that identifies whether complex selectors, unsupported declarations, or unsupported syntax blocked automatic treatment.
 - These treatments are implemented in the optimization engine and are already available through `Optimize SVG` and individual auto-fix actions.
 
@@ -39,7 +41,7 @@ Unlike destination-specific React Ready checks, Maintainability rules are platfo
 
 ## Scoring Notes
 
-- Both maintainability rules are currently `Warning` findings with a score impact of `3`.
+- CSS maintainability rules are `Warning` findings with a score impact of `3`; legacy xlink attributes are an `Info` portability concern with a one-point impact.
 - This keeps style-related cleanup visible without weighting it as heavily as structural breakage.
 - The current scoring is provisional and should remain aligned with how much authoring friction these patterns actually create in practice.
 
@@ -57,6 +59,7 @@ Unlike destination-specific React Ready checks, Maintainability rules are platfo
 - `css-classes-unsafe-declaration.svg`
 - `react-inline-style.svg`
 - `messy.svg`
+- `icon-xlink.svg`
 
 See [docs/test-fixtures.md](/Users/fernandasampaio/Work/svg-workspace/docs/test-fixtures.md) for fixture descriptions.
 

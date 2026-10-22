@@ -74,7 +74,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `icon-css-variable.svg` | Tests that currentColor conversion skips CSS variable paint values. | None |
 | `icon-inline-styles.svg` | Tests Icon Workspace appearance transforms on eligible inline fill and stroke style declarations. | `Inline Styles` |
 | `icon-fill-stroke-attributes.svg` | Tests direct `fill` and `stroke` attribute removal separately from broader paint removal. | `Hardcoded Fill Colors`, `Hardcoded Stroke Colors` |
-| `icon-xlink.svg` | Tests explicit Icon Workspace migration from `xlink:href` to native `href`. | `xlink Attribute` |
+| `icon-xlink.svg` | Tests explicit migration from `xlink:href` to native `href`. | `Legacy xlink Attributes`, `xlink Attribute` |
 | `icon-default-preserve-aspect-ratio.svg` | Tests removal of the explicit default `preserveAspectRatio` value. | None |
 | `icon-normalize-ids.svg` | Tests explicit normalization of unique local IDs and their `url(#...)` references. | None |
 | `geometry-portrait-icon.svg` | Tests square-canvas math on a portrait icon. | `Hardcoded Fill Colors` |
