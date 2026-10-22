@@ -113,6 +113,12 @@ Future priorities:
 - HTML
 - Batch Processing
 
+## Sprite Builder
+
+The standalone `/sprite` route builds a hidden SVG sprite from multiple local SVG files. Each input becomes a filename-based `<symbol>` with its own usable `viewBox`. Internal IDs and local references are prefixed per symbol to avoid collisions. The builder previews the generated symbols and reuses the shared Copy and Download export behavior.
+
+Sprite Builder remains separate from the single-document Icon Workspace. Reusing optimized Icon Workspace assets directly is the next collection-workflow step.
+
 Destination-specific workflows are intentionally postponed until the optimization workflow is mature.
 
 ---
