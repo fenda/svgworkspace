@@ -36,7 +36,8 @@ export const structure003DuplicateIds: AnalysisRule = {
     }
 
     return createRuleFinding(structure003DuplicateIds, {
-      recommendation: "Ensure each id is unique within the SVG.",
+      recommendation:
+        "Ensure each id is unique within the SVG and update every local reference. SVG Workspace leaves this for review because IDs can also be referenced by host-page CSS, scripts, or fragments outside the file.",
     });
   },
 };

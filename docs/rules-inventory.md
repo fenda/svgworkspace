@@ -28,7 +28,7 @@ This lets a clean SVG reach `100` without optional markup. It also keeps a comme
 | --- | --- | --- | --- | --- | --- | --- |
 | `STRUCTURE_001` | Missing viewBox | Warning | 6 | Transform when numeric width/height make generation safe; otherwise Review | `missing-viewbox.svg`, scalability fixtures, sprite viewBox fixtures | Sprites suppress the irrelevant root check and aggregate symbol viewBox gaps. |
 | `STRUCTURE_002` | Fixed Width & Height | Info | 1 | Optimize with a valid viewBox; otherwise Review | fixed-dimensions fixtures, `messy.svg` | Fixed output dimensions are a small reusability concern, not a rendering failure. |
-| `STRUCTURE_003` | Duplicate IDs | Warning | 5 | Review | `duplicate-ids.svg` | Duplicate IDs can break local references. |
+| `STRUCTURE_003` | Duplicate IDs | Warning | 5 | Review | `duplicate-ids.svg` | Duplicate IDs can break local references. ID normalization remains manual because host-page references are not observable from the SVG. |
 | `STRUCTURE_004` | Empty Groups | Info | 1 | Optimize | `empty-groups.svg`, `messy.svg` | Safe export-noise cleanup. |
 | `STRUCTURE_005` | Empty Paths | Info | 1 | Optimize | `empty-paths.svg`, `messy.svg` | Empty paths are normally removable export residue. |
 | `STRUCTURE_006` | Empty Definitions | Info | 1 | Optimize | `empty-defs.svg` | Runs after dependent cleanup steps. |
