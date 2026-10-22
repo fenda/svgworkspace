@@ -656,6 +656,7 @@ Current rules:
 - PERFORMANCE_005 — Unused Definitions
 - PERFORMANCE_006 — Unused Namespaces
 - PERFORMANCE_007 — Excess Whitespace
+- PERFORMANCE_008 — Embedded Raster Images
 
 ### Colors
 

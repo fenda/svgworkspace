@@ -29,7 +29,7 @@ Transform actions are intentionally separate from automatic optimizations:
 - [x] Normalize structural whitespace while preserving text-sensitive content
 - [x] Generate missing viewBox in safe cases as a Transform
 - [x] Normalize IDs as an explicit Markup Transform with external-reference warning
-- [ ] Add additional performance optimizations
+- [x] Add measured performance optimization and review coverage
 
 ## Structure Cleanup
 
@@ -48,12 +48,12 @@ Transform actions are intentionally separate from automatic optimizations:
 
 - [x] Add optional SVG type context and contextual Insights in the Inspector
 - [x] Complete an SVG Analysis and Health Quality Pass with objective scoring, context-aware accessibility guidance, and verified internal-reference detection
-- [ ] Add more performance rules
+- [x] Add embedded-raster performance guidance
 - [x] Add measured legacy xlink maintainability guidance with an explicit migration Transform
 - [x] Explain each finding's Health impact directly in the issues list
 - [x] Group findings by Health category for easier scanning
 
 ## Future Treatments
 
-- [ ] Inline CSS / style extraction: convert safe inline style declarations into SVG presentation attributes directly on SVG elements and paths when safe, while keeping complex CSS and manual styles as Review
+- [x] Inline CSS / style extraction for safe presentation properties while keeping complex CSS as Review
 - [x] Convert eligible direct `fill` and `stroke` attributes to `currentColor` as an explicit Transform

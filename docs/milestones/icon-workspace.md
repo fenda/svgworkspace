@@ -43,6 +43,6 @@ Support safe, deterministic transformations for standalone icons directly inside
 
 ## Next Follow-ups
 
-- [ ] Safe geometry transformations that still avoid direct path editing
-- [ ] Add more icon-specific transformations where parser facts make them deterministic
-- [ ] Consider future multi-icon collection workflows separately from the standalone Icon Workspace
+- [x] Safe geometry transformations that still avoid direct path editing
+- [x] Add deterministic markup transformations based on parser facts
+- [x] Keep multi-icon collection workflows separate through Sprite Builder
