@@ -408,6 +408,23 @@ export function IconWorkspaceCard() {
               ))}
           </WorkspaceGroup>
 
+          <WorkspaceGroup title="Markup">
+            {transformationStates
+              .filter((state) => state.category === "structure")
+              .map((state) => (
+                <TransformationButton
+                  key={state.id}
+                  id={state.id}
+                  label={state.label}
+                  description={state.description}
+                  applicable={state.applicability.applicable}
+                  reason={state.applicability.reason}
+                  disabled={!state.applicability.applicable || isProcessing}
+                  onClick={() => applyIconWorkspaceTransformation(state.id)}
+                />
+              ))}
+          </WorkspaceGroup>
+
           <WorkspaceGroup title="History">
             <div className="grid gap-2">
               <Button

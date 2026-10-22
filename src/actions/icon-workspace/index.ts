@@ -18,6 +18,8 @@ import {
   getGeometryInfo,
   getCurrentColorEligibleCount,
   getInlinePaintAttributeCount,
+  getXlinkHrefCount,
+  migrateXlinkHrefAttributes,
   getOutputSizeApplicability,
   getRemovablePaintCount,
   normalizeSquareCanvas,
@@ -225,6 +227,28 @@ const transformations: SvgTransformation[] = [
         svgMarkup: "",
         changed: count > 0,
         summary: formatSummary("Removed", "stroke attribute", count),
+        changeCount: count,
+      };
+    },
+  },
+  {
+    id: "structure-migrate-xlink-href",
+    label: "Migrate xlink references",
+    description:
+      "Replace legacy xlink:href attributes with native SVG href attributes without changing their values.",
+    category: "structure",
+    isApplicable: (svg) => {
+      const count = getXlinkHrefCount(svg);
+      return count > 0
+        ? { applicable: true }
+        : { applicable: false, reason: "No legacy xlink:href attributes found." };
+    },
+    apply: (svg) => {
+      const count = migrateXlinkHrefAttributes(svg);
+      return {
+        svgMarkup: "",
+        changed: count > 0,
+        summary: formatSummary("Migrated", "xlink reference", count),
         changeCount: count,
       };
     },

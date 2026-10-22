@@ -184,6 +184,30 @@ export function getCurrentColorEligibleCount(svg: SVGSVGElement): number {
   return count;
 }
 
+export function getXlinkHrefCount(svg: SVGSVGElement): number {
+  return Array.from(svg.querySelectorAll("*")).filter((element) =>
+    element.hasAttribute("xlink:href"),
+  ).length;
+}
+
+export function migrateXlinkHrefAttributes(svg: SVGSVGElement): number {
+  let changedCount = 0;
+
+  Array.from(svg.querySelectorAll("*")).forEach((element) => {
+    const value = element.getAttribute("xlink:href");
+
+    if (value === null || element.hasAttribute("href")) {
+      return;
+    }
+
+    element.setAttribute("href", value);
+    element.removeAttribute("xlink:href");
+    changedCount += 1;
+  });
+
+  return changedCount;
+}
+
 export function convertSolidColorsToCurrentColor(svg: SVGSVGElement): number {
   let changedCount = 0;
 
