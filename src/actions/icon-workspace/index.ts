@@ -20,6 +20,8 @@ import {
   getInlinePaintAttributeCount,
   getXlinkHrefCount,
   migrateXlinkHrefAttributes,
+  hasDefaultPreserveAspectRatio,
+  removeDefaultPreserveAspectRatio,
   getOutputSizeApplicability,
   getRemovablePaintCount,
   normalizeSquareCanvas,
@@ -230,6 +232,23 @@ const transformations: SvgTransformation[] = [
         changeCount: count,
       };
     },
+  },
+  {
+    id: "structure-remove-default-preserve-aspect-ratio",
+    label: "Remove default aspect ratio setting",
+    description:
+      "Remove the explicit xMidYMid meet value because it is already SVG's default behavior.",
+    category: "structure",
+    isApplicable: (svg) =>
+      hasDefaultPreserveAspectRatio(svg)
+        ? { applicable: true }
+        : { applicable: false, reason: "The SVG does not declare the default preserveAspectRatio value." },
+    apply: (svg) => ({
+      svgMarkup: "",
+      changed: removeDefaultPreserveAspectRatio(svg),
+      summary: "Removed the default aspect ratio setting.",
+      changeCount: 1,
+    }),
   },
   {
     id: "structure-migrate-xlink-href",

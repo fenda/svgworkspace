@@ -38,6 +38,7 @@ Support safe, deterministic transformations for standalone icons directly inside
 - [x] Center artwork from measured browser bounds
 - [x] Fit canvas to measured artwork bounds
 - [x] Migrate legacy `xlink:href` references to native `href`
+- [x] Remove explicit default `preserveAspectRatio` values
 
 ## Next Follow-ups
 

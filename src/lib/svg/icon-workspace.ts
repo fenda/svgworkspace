@@ -208,6 +208,19 @@ export function migrateXlinkHrefAttributes(svg: SVGSVGElement): number {
   return changedCount;
 }
 
+export function hasDefaultPreserveAspectRatio(svg: SVGSVGElement): boolean {
+  return svg.getAttribute("preserveAspectRatio")?.trim() === "xMidYMid meet";
+}
+
+export function removeDefaultPreserveAspectRatio(svg: SVGSVGElement): boolean {
+  if (!hasDefaultPreserveAspectRatio(svg)) {
+    return false;
+  }
+
+  svg.removeAttribute("preserveAspectRatio");
+  return true;
+}
+
 export function convertSolidColorsToCurrentColor(svg: SVGSVGElement): number {
   let changedCount = 0;
 

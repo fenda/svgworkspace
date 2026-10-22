@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet">
+  <title>Default aspect ratio fixture</title>
+  <desc>Tests removal of an explicit SVG default.</desc>
+  <path d="M2 2h20v20H2z" fill="currentColor" />
+</svg>
