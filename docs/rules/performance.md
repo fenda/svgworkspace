@@ -33,6 +33,7 @@ These rules mostly focus on safe cleanup opportunities:
 | `PERFORMANCE_005` | Unused Definitions | Info | 1 | Auto |
 | `PERFORMANCE_006` | Unused Namespaces | Info | 0 | Auto |
 | `PERFORMANCE_007` | Excess Whitespace | Info | 0 | Auto |
+| `PERFORMANCE_008` | Embedded Raster Images | Info | 1 | Manual |
 
 ---
 
@@ -62,6 +63,7 @@ These rules mostly focus on safe cleanup opportunities:
 - `unused-namespaces.svg`
 - `namespace-in-use.svg`
 - `excess-whitespace.svg`
+- `embedded-raster-image.svg`
 - `messy.svg`
 - `illustrator-export.svg`
 

@@ -51,6 +51,7 @@ These fixtures are used for manual testing, demos, regression checks, and future
 | `unused-namespaces.svg` | Tests `PERFORMANCE_006` unused namespace removal while preserving the default SVG namespace. | `Unused Namespaces` |
 | `namespace-in-use.svg` | Tests that namespace declarations remain when prefixed elements or attributes still use them. | None |
 | `excess-whitespace.svg` | Tests `PERFORMANCE_007` structural whitespace cleanup while preserving `<style>` and `xml:space="preserve"` text content. | `Excess Whitespace` |
+| `embedded-raster-image.svg` | Tests `PERFORMANCE_008` detection of inline base64 raster payloads. | `Embedded Raster Images` |
 | `inline-styles-safe.svg` | Tests safe inline style conversion to presentation attributes. | `Inline Styles` |
 | `inline-styles-unsafe.svg` | Tests inline styles that remain manual because they contain unsafe declarations. | `Inline Styles` |
 | `css-classes-safe.svg` | Tests safe embedded CSS class inlining to presentation attributes. | `Embedded CSS Classes` |

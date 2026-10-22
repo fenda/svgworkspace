@@ -14,6 +14,7 @@ import { performance004HiddenElements } from "./performance/performance-004-hidd
 import { performance005UnusedDefinitions } from "./performance/performance-005-unused-definitions";
 import { performance006UnusedNamespaces } from "./performance/performance-006-unused-namespaces";
 import { performance007ExcessWhitespace } from "./performance/performance-007-excess-whitespace";
+import { performance008EmbeddedRasterImages } from "./performance/performance-008-embedded-raster-images";
 import { react001ClassAttribute } from "./react-ready/react-001-class-attribute";
 import { react002KebabCaseAttributes } from "./react-ready/react-002-kebab-case-attributes";
 import { react003InlineStyleString } from "./react-ready/react-003-inline-style-string";
@@ -51,6 +52,7 @@ const performanceRules: AnalysisRule[] = [
   performance005UnusedDefinitions,
   performance006UnusedNamespaces,
   performance007ExcessWhitespace,
+  performance008EmbeddedRasterImages,
 ];
 
 const colorRules: AnalysisRule[] = [
