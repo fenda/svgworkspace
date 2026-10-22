@@ -272,6 +272,8 @@ Transform and Review findings should remain visible in the issues list, but they
 
 Issues are grouped by Health category in the order Structure, Performance, Colors, Accessibility, and Maintainability. Grouping improves scanning without changing finding priority, treatment, or scoring.
 
+Each issue also explains whether it deducts from Health or is guidance-only. This makes the score model visible without duplicating the overall Health score.
+
 ---
 
 ## SVG Details

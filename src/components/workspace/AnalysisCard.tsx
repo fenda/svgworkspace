@@ -272,6 +272,11 @@ export function AnalysisCard() {
                             <p className="mt-0.5 text-xs leading-5 text-zinc-400">
                               {finding.description}
                             </p>
+                            <p className="mt-1 text-[11px] leading-4 text-zinc-500">
+                              {finding.scoreImpact > 0
+                                ? `Health impact: -${finding.scoreImpact}`
+                                : "Health impact: guidance only"}
+                            </p>
                             {fixType === "manual" ? (
                               <p
                                 id={reviewGuidanceId}
