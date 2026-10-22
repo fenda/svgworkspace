@@ -22,7 +22,7 @@ Transform actions are intentionally separate from automatic optimizations:
 - `Generate ViewBox` is the first intent-dependent Transform action
 - `Convert to currentColor` is an explicit Transform for direct hardcoded paint attributes only
 
-- [ ] Remove unused defs
+- [x] Remove unused defs
 - [x] Remove empty defs
 - [x] Remove empty symbols
 - [x] Remove unused namespaces
