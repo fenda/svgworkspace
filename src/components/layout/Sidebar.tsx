@@ -17,7 +17,9 @@ function isActiveRoute(pathname: string, href: string) {
 
 export function Sidebar() {
   const pathname = usePathname();
-  const previewNavItems = navItems.filter((item) => item.href === "/");
+  const workspaceNavItems = navItems.filter(
+    (item) => item.href === "/" || item.href === "/sprite",
+  );
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 flex w-16 flex-col border-r border-white/10 bg-[#0a0a0c] lg:w-56">
@@ -31,7 +33,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex flex-1 flex-col gap-4 overflow-y-auto px-2 pb-3 lg:px-3">
-        {previewNavItems.map((item) => {
+        {workspaceNavItems.map((item) => {
           const Icon = item.icon;
           const active = isActiveRoute(pathname, item.href);
 

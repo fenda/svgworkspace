@@ -20,7 +20,7 @@ export const navItems: {
   { label: "Optimize", href: "/optimize", icon: Sparkles },
   { label: "Convert", href: "/convert", icon: Code2 },
   { label: "Colors", href: "/colors", icon: Palette },
-  { label: "Sprite", href: "/sprite", icon: Layers },
+  { label: "Sprite Builder", href: "/sprite", icon: Layers },
   { label: "Inspect", href: "/inspect", icon: Eye },
 ];
 

@@ -15,7 +15,9 @@ function getSymbolChildrenMarkup(markup: string): string {
 export function SpriteBuilder() {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const dragDepth = useRef(0);
   const [result, setResult] = useState<SpriteBuildResult | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -44,10 +46,34 @@ export function SpriteBuilder() {
         <p className="mt-3 text-sm leading-6 text-zinc-400">Icons stay in your browser. Each source becomes a symbol with a stable filename-based ID and isolated internal references.</p>
       </header>
 
-      <section className="rounded-2xl border border-dashed border-white/15 bg-[#111114] p-8 text-center">
+      <section
+        aria-label="Add SVG icon files to the sprite builder"
+        onDragEnter={(event) => {
+          event.preventDefault();
+          dragDepth.current += 1;
+          setIsDragging(true);
+        }}
+        onDragOver={(event) => event.preventDefault()}
+        onDragLeave={(event) => {
+          event.preventDefault();
+          dragDepth.current = Math.max(0, dragDepth.current - 1);
+          if (dragDepth.current === 0) setIsDragging(false);
+        }}
+        onDrop={(event) => {
+          event.preventDefault();
+          dragDepth.current = 0;
+          setIsDragging(false);
+          void build(event.dataTransfer.files);
+        }}
+        className={`rounded-2xl border border-dashed bg-[#111114] p-8 text-center transition-colors ${
+          isDragging
+            ? "border-[var(--brand)] bg-[var(--brand)]/5"
+            : "border-white/15"
+        }`}
+      >
         <input ref={inputRef} id={inputId} type="file" accept=".svg,image/svg+xml" multiple className="sr-only" onChange={(event) => { void build(event.target.files); event.target.value = ""; }} />
         <Upload aria-hidden="true" className="mx-auto size-8 text-[var(--brand)]" />
-        <p className="mt-3 text-sm font-medium text-zinc-200">Choose SVG icons</p>
+        <p className="mt-3 text-sm font-medium text-zinc-200">Drop SVG icons here</p>
         <p className="mt-1 text-xs text-zinc-500">Multiple files supported. Files without a usable canvas are skipped.</p>
         <Button className="mt-5 bg-[var(--brand)] text-white hover:bg-[var(--brand-hover)]" onClick={() => inputRef.current?.click()}>Browse icon files</Button>
       </section>
