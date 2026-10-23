@@ -23,6 +23,14 @@ export const metadata: Metadata = {
   title: SITE_TITLE,
   description: SITE_DESCRIPTION,
   applicationName: "SVG Workspace",
+  creator: "Hypeberries",
+  publisher: "Hypeberries",
+  authors: [
+    {
+      name: "Hypeberries",
+      url: "https://hypeberries.com/",
+    },
+  ],
   openGraph: {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,

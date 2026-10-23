@@ -3,7 +3,11 @@
 import { GitHubIcon } from "@/components/icons/GitHubIcon";
 import { buttonVariants } from "@/components/ui/button";
 import { openCookieSettings } from "@/lib/cookie-consent";
-import { GITHUB_URL } from "@/lib/constants";
+import {
+  GITHUB_URL,
+  HYPEBERRIES_TOOLS_URL,
+  HYPEBERRIES_URL,
+} from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const highlights = [
@@ -69,26 +73,44 @@ export function MobileLanding() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 pt-8">
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View SVG Workspace on GitHub"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "border-white/10 bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]",
-            )}
-          >
-            View on GitHub
-          </a>
-          <button
-            type="button"
-            onClick={() => void openCookieSettings()}
-            className="text-sm text-zinc-400 transition-colors hover:text-zinc-200"
-          >
-            Cookie settings
-          </button>
+        <div className="space-y-3 pt-8 text-sm">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View SVG Workspace on GitHub"
+              className={cn(
+                buttonVariants({ variant: "outline", size: "sm" }),
+                "border-white/10 bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]",
+              )}
+            >
+              View on GitHub
+            </a>
+            <a
+              href={HYPEBERRIES_TOOLS_URL}
+              className="text-zinc-300 transition-colors hover:text-zinc-100 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70"
+            >
+              All Hypeberries tools
+            </a>
+            <button
+              type="button"
+              onClick={() => void openCookieSettings()}
+              className="text-zinc-400 transition-colors hover:text-zinc-200 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70"
+            >
+              Cookie settings
+            </button>
+          </div>
+          <p className="text-xs text-zinc-500">
+            Part of{" "}
+            <a
+              href={HYPEBERRIES_URL}
+              className="text-zinc-300 underline-offset-4 transition-colors hover:text-zinc-100 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70"
+            >
+              Hypeberries
+            </a>
+            <span className="text-zinc-600"> — small tools, built to be useful.</span>
+          </p>
         </div>
       </div>
     </div>

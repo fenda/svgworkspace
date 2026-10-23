@@ -410,7 +410,7 @@ export function SpriteBuilder() {
                   <span className="text-right text-zinc-600">{line.originalLineNumber ?? ""}</span>
                   <span className="text-right text-zinc-600">{line.currentLineNumber ?? ""}</span>
                   <span>{getDiffMarker(line.kind)}</span>
-                  <code className="whitespace-pre-wrap break-all">{line.value}</code>
+                  <code className="whitespace-pre-wrap break-all">{line.text}</code>
                 </div>
               )) : (
                 <div className="px-4 py-10 text-center">
