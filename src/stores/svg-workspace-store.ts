@@ -178,11 +178,17 @@ function getPersistedSelectedSymbolKey(
   currentKey: string | null,
   availableKeys: Set<string>,
 ): string | null {
-  if (!currentKey || !availableKeys.has(currentKey)) {
-    return null;
+  if (currentKey && availableKeys.has(currentKey)) {
+    return currentKey;
   }
 
-  return currentKey;
+  // A sprite is immediately useful after load: select its first symbol when
+  // there is no prior valid selection to preserve.
+  for (const key of availableKeys) {
+    return key;
+  }
+
+  return null;
 }
 
 function updateRecentSelectionKeys(
@@ -261,7 +267,10 @@ export const useSvgWorkspaceStore = create<SvgWorkspaceStore>((set, get) => {
         optimizationValidation: null,
         optimizationReport: null,
         svgType: null,
-        selectedSymbolKey: null,
+        selectedSymbolKey: getPersistedSelectedSymbolKey(
+          null,
+          getAvailableSymbolKeys(document),
+        ),
         spriteSearchQuery: "",
         spriteSortMode: "original",
         recentlySelectedSymbolKeys: [],

@@ -52,7 +52,7 @@ export function ExportStudioCard() {
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm font-medium text-zinc-200">Export Studio</p>
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-zinc-400">
               Export sources adapt to the current document state and reuse the existing copy/download pipeline.
             </p>
           </div>
@@ -89,7 +89,7 @@ export function ExportStudioCard() {
 
       {collapsed ? (
         <div className="px-4 py-3">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-400">
             {exportSources.length} export sources are available in this workspace.
           </p>
         </div>
@@ -111,7 +111,7 @@ export function ExportStudioCard() {
               {source.warning ? (
                 <p
                   className={`mt-2 text-xs leading-5 ${
-                    source.available ? "text-amber-300" : "text-zinc-500"
+                    source.available ? "text-amber-300" : "text-zinc-400"
                   }`}
                 >
                   {source.warning}
@@ -168,7 +168,7 @@ export function ExportStudioCard() {
             </div>
 
             {source.filename ? (
-              <p className="mt-3 truncate text-xs text-zinc-500">
+              <p className="mt-3 truncate text-xs text-zinc-400">
                 {source.filename}
               </p>
             ) : null}

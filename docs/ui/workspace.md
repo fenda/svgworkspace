@@ -76,7 +76,7 @@ The Sprite Explorer:
 - renders symbols in a responsive grid
 - supports instant search by symbol ID, title, and description
 - supports sorting by original order, alphabetical order, and recent selection
-- stores selection in workspace state so it survives tab switches and optimization when the symbol still exists
+- automatically selects the first symbol when a sprite is loaded, then stores selection in workspace state so it survives tab switches and optimization when the symbol still exists
 - shows each symbol ID or `Unnamed symbol`
 - shows each symbol `viewBox` when available
 
@@ -87,7 +87,7 @@ Symbol presence is an objective parser fact and does not depend on optional user
 Below the gallery, the Preview tab now extends into a read-only Sprite Workspace:
 
 - `Symbol Details` shows factual parser data for the selected symbol
-- `Export` provides original sprite, current sprite, and selected symbol copy/download actions
+- export actions live in the dedicated `Export Studio`, avoiding a second competing export surface in the Preview tab
 
 Standalone symbol export:
 
@@ -117,7 +117,7 @@ Intent-dependent transforms, such as color conversion or canvas changes, are not
 
 The lower workspace now includes `Export Studio`.
 
-Export Studio is the single export destination for the current session, even though existing copy/download entry points remain in Preview and Sprite Workspace.
+Export Studio is the single export destination for the current session. The standard Preview copy/download controls remain available for standalone SVG documents.
 
 It resolves export sources from workspace state instead of hardcoding them into individual UI sections.
 

@@ -142,7 +142,7 @@ export function AnalysisCard() {
 
       {collapsed ? (
         <div className="px-4 py-3">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-400">
             {hasFindings
               ? `${health.findingCount} issues found with ${automaticFixCount} automatic optimizations available.`
               : "No issues detected."}
@@ -166,7 +166,9 @@ export function AnalysisCard() {
               <span className="ml-1 text-sm font-normal text-zinc-400">/ 100</span>
             </p>
             <p className="mt-1 text-[11px] leading-4 text-zinc-400">
+              <span className={cn(hasFindings && "font-medium text-amber-200")}>
               {hasFindings ? `${health.findingCount} ${health.findingCount === 1 ? "Issue" : "Issues"} Found` : "No issues detected."}
+              </span>
               <span className="mx-1 text-zinc-700">/</span>
               {health.checkCount} {health.checkCount === 1 ? "Health Check" : "Health Checks"}
             </p>
@@ -178,7 +180,7 @@ export function AnalysisCard() {
         {automaticFixCount > 0 ? (
           <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-400">
                 Automatic optimizations
               </p>
               <p className="text-xs text-zinc-400">
@@ -218,12 +220,27 @@ export function AnalysisCard() {
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-3">
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-400">
-            Issues
-          </p>
+        <div
+          className={cn(
+            "mb-2 flex items-center justify-between gap-3",
+            hasFindings && "rounded-lg border border-amber-400/15 bg-amber-400/[0.05] px-3 py-2",
+          )}
+        >
+          <div>
+            <p className={cn(
+              "text-[11px] font-medium uppercase tracking-wider text-zinc-400",
+              hasFindings && "font-semibold text-amber-200",
+            )}>
+              {hasFindings ? "Issues to review" : "Issues"}
+            </p>
+            {hasFindings ? (
+              <p className="mt-0.5 text-xs text-amber-100/80">
+                {health.findingCount} {health.findingCount === 1 ? "item needs" : "items need"} attention
+              </p>
+            ) : null}
+          </div>
           {hasFindings ? (
-            <p className="text-xs text-zinc-400">Scrollable list</p>
+            <p className="text-xs text-amber-100/70">Scrollable list</p>
           ) : null}
         </div>
 
@@ -234,12 +251,12 @@ export function AnalysisCard() {
                 <div className="mb-1.5 flex items-center gap-2">
                   <p
                     id={`issue-category-${category}`}
-                    className="text-[10px] font-medium uppercase tracking-wider text-zinc-500"
+                    className="text-[11px] font-medium uppercase tracking-wider text-zinc-400"
                   >
                     {getCategoryLabel(category)}
                   </p>
                   <span className="h-px flex-1 bg-white/[0.06]" aria-hidden="true" />
-                  <p className="font-metric text-[10px] text-zinc-500">
+                  <p className="font-metric text-[11px] text-zinc-400">
                     {categoryFindings.length}
                   </p>
                 </div>
@@ -275,7 +292,7 @@ export function AnalysisCard() {
                             <p className="mt-0.5 text-xs leading-5 text-zinc-400">
                               {finding.description}
                             </p>
-                            <p className="mt-1 text-[11px] leading-4 text-zinc-500">
+                            <p className="mt-1 text-xs leading-5 text-zinc-400">
                               {finding.scoreImpact > 0
                                 ? `Health impact: -${finding.scoreImpact}`
                                 : "Health impact: guidance only"}
@@ -291,7 +308,7 @@ export function AnalysisCard() {
                             ) : null}
                             <Badge
                               variant="outline"
-                              className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[9px] font-normal uppercase text-zinc-400"
+                              className="mt-1.5 border-white/[0.06] bg-transparent px-1.5 py-0 text-[10px] font-normal uppercase text-zinc-300"
                             >
                               {getFixTypeLabel(fixType)}
                             </Badge>

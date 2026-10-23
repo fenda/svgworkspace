@@ -116,7 +116,7 @@ function formatValuePair(label: string, value: ReactNode) {
       key={label}
       className="grid gap-1 border-b border-white/[0.06] py-2.5 last:border-b-0 last:pb-0 first:pt-0 sm:grid-cols-[88px_minmax(0,1fr)] sm:items-start sm:gap-3"
     >
-      <p className="text-[10px] uppercase tracking-wider text-zinc-500">
+      <p className="text-[11px] uppercase tracking-wider text-zinc-400">
         {label}
       </p>
       <div className="min-w-0">{value}</div>
@@ -136,7 +136,7 @@ function formatTypeValue(
           <p className="font-metric text-sm font-medium text-zinc-300">
             {value}
           </p>
-          <p className="mt-0.5 text-xs text-zinc-500">
+          <p className="mt-0.5 text-xs text-zinc-400">
             {isSpecified ? "Optional user context" : "Not specified"}
           </p>
         </div>
@@ -193,7 +193,7 @@ export function DetailsCard() {
   const report = optimizationReport;
   const hasTimelineReport = Boolean(report);
   const showFallbackSummary = hasChanges && !hasTimelineReport;
-  const summaryLabelClass = "text-[10px] uppercase tracking-wider text-zinc-400";
+  const summaryLabelClass = "text-[11px] uppercase tracking-wider text-zinc-300";
   const changedSteps = report?.steps.filter((step) => step.status === "changed") ?? [];
   const secondarySteps = report?.steps.filter((step) => step.status !== "changed") ?? [];
   const secondaryStepCountLabel = report ? getSecondaryStepCountLabel(report) : null;
@@ -237,7 +237,7 @@ export function DetailsCard() {
 
       {collapsed ? (
         <div className="px-4 py-3">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-400">
             SVG information, insights, and optimization details are available here.
           </p>
         </div>
@@ -265,7 +265,7 @@ export function DetailsCard() {
                     {insight.explanation}
                   </p>
                   {insight.suggestedAction ? (
-                    <p className="mt-1.5 text-[11px] text-zinc-500">
+                    <p className="mt-1.5 text-xs text-zinc-400">
                       Suggested: {insight.suggestedAction}
                     </p>
                   ) : null}
@@ -286,19 +286,19 @@ export function DetailsCard() {
             <div className="mt-3 space-y-3">
               <div className="grid gap-2">
                 <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-wider text-zinc-500">
+                  <p className="text-[11px] uppercase tracking-wider text-zinc-400">
                     Original
                   </p>
                   {formatStaticValue(formatBytes(report.originalSizeBytes))}
                 </div>
                 <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-wider text-zinc-500">
+                  <p className="text-[11px] uppercase tracking-wider text-zinc-400">
                     Optimized
                   </p>
                   {formatStaticValue(formatBytes(report.optimizedSizeBytes))}
                 </div>
                 <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-wider text-zinc-500">
+                  <p className="text-[11px] uppercase tracking-wider text-zinc-400">
                     Saved
                   </p>
                   {formatStaticValue(
@@ -309,7 +309,7 @@ export function DetailsCard() {
                   )}
                 </div>
                 <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-wider text-zinc-500">
+                  <p className="text-[11px] uppercase tracking-wider text-zinc-400">
                     Changed steps
                   </p>
                   {formatStaticValue(`${report.changedStepCount}`)}
@@ -321,7 +321,7 @@ export function DetailsCard() {
                   {formatFinalSummary(report)}
                 </p>
                 {secondaryStepCountLabel ? (
-                  <p className="text-xs leading-5 text-zinc-500">
+                  <p className="text-xs leading-5 text-zinc-400">
                     {secondaryStepCountLabel}
                   </p>
                 ) : null}
@@ -343,7 +343,7 @@ export function DetailsCard() {
               <p className="text-sm text-zinc-300">
                 Current output differs from the original SVG.
               </p>
-              <p className="text-xs leading-5 text-zinc-500">
+              <p className="text-xs leading-5 text-zinc-400">
                 Reset to original to restore the uploaded SVG exactly as it was.
               </p>
               <Button
@@ -371,7 +371,7 @@ export function DetailsCard() {
             <div className="mt-3 space-y-3">
               <ol className="space-y-3">
                 <li className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
-                  <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                  <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                     Original
                   </p>
                   <p className="mt-1 font-metric text-sm font-medium text-zinc-200">
@@ -389,7 +389,7 @@ export function DetailsCard() {
                         <p className="text-sm font-medium text-zinc-200">
                           {step.label}
                         </p>
-                        <p className="mt-1 text-xs text-zinc-500">
+                        <p className="mt-1 text-xs text-zinc-400">
                           {getStepStatusText(step)}
                         </p>
                       </div>
@@ -417,7 +417,7 @@ export function DetailsCard() {
                 ))}
 
                 <li className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
-                  <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                  <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                     Optimized
                   </p>
                   <p className="mt-1 font-metric text-sm font-medium text-zinc-200">

@@ -99,7 +99,7 @@ function TransformationButton({
       >
         {label}
       </Button>
-      <p id={helpId} className="mt-2 text-xs leading-5 text-zinc-500">
+      <p id={helpId} className="mt-2 text-xs leading-5 text-zinc-400">
         {description}
       </p>
       {!applicable && reason ? (
@@ -365,7 +365,7 @@ export function IconWorkspaceCard() {
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm font-medium text-zinc-200">Icon Workspace</p>
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-zinc-400">
               Deterministic transformations for standalone SVGs. Sprites remain isolated in Sprite Workspace.
             </p>
           </div>
@@ -384,7 +384,7 @@ export function IconWorkspaceCard() {
 
       {collapsed ? (
         <div className="px-4 py-3">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-400">
             Appearance tools, geometry controls, history, and preview preferences are available here.
           </p>
         </div>
@@ -464,7 +464,7 @@ export function IconWorkspaceCard() {
                 Reset to original
               </Button>
             </div>
-            <p className="text-xs leading-5 text-zinc-500">
+            <p className="text-xs leading-5 text-zinc-400">
               Shortcuts: <span className="font-metric">Ctrl/Cmd + Z</span> for Undo and <span className="font-metric">Ctrl/Cmd + Shift + Z</span> for Redo.
             </p>
           </WorkspaceGroup>
@@ -492,7 +492,7 @@ export function IconWorkspaceCard() {
                 ))}
               </div>
             </fieldset>
-            <p className="text-xs leading-5 text-zinc-500">
+            <p className="text-xs leading-5 text-zinc-400">
               Background modes affect only Preview. They never modify the SVG markup.
             </p>
           </WorkspaceGroup>
@@ -502,11 +502,11 @@ export function IconWorkspaceCard() {
           <WorkspaceGroup title="Geometry">
             <div className="grid gap-3 lg:grid-cols-3">
               <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-wider text-zinc-500">Current</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400">Current</p>
                 <p className="mt-1 font-metric text-sm text-zinc-200">
                   {formatViewBoxDisplay(geometry.effectiveViewBox)}
                 </p>
-                <p className="mt-1 text-xs text-zinc-500">
+                <p className="mt-1 text-xs text-zinc-400">
                   {geometry.viewBoxSource === "derived"
                     ? "Derived from width and height"
                     : geometry.viewBoxSource === "explicit"
@@ -515,16 +515,16 @@ export function IconWorkspaceCard() {
                 </p>
               </div>
               <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-wider text-zinc-500">Result</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400">Result</p>
                 <p className="mt-1 font-metric text-sm text-zinc-200">
                   {formatViewBoxDisplay(pendingInspectorBox)}
                 </p>
-                <p className="mt-1 text-xs text-zinc-500">
+                <p className="mt-1 text-xs text-zinc-400">
                   {viewBoxValidation.valid ? "Pending custom viewBox" : "Current result"}
                 </p>
               </div>
               <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-wider text-zinc-500">Delta</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400">Delta</p>
                 <p className="mt-1 text-xs leading-5 text-zinc-300">
                   {formatDeltaDisplay(inspectorDelta)}
                 </p>
@@ -533,7 +533,7 @@ export function IconWorkspaceCard() {
 
             {geometrySummaryItems.length > 0 ? (
               <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-wider text-zinc-500">Geometry summary</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400">Geometry summary</p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {geometrySummaryItems.map((item) => (
                     <span
@@ -617,7 +617,7 @@ export function IconWorkspaceCard() {
                 Reset canvas
               </Button>
             </div>
-            <div className="space-y-1 text-xs text-zinc-500">
+            <div className="space-y-1 text-xs text-zinc-400">
               <p id="center-artwork-help">
                 {centerArtworkApplicability.applicable
                   ? "Center measured artwork while keeping the canvas dimensions unchanged."
@@ -646,7 +646,7 @@ export function IconWorkspaceCard() {
             </div>
 
             <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
-              <p className="text-[10px] uppercase tracking-wider text-zinc-500">Uniform padding</p>
+              <p className="text-[11px] uppercase tracking-wider text-zinc-400">Uniform padding</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {PADDING_OPTIONS.map((padding) => {
                   const applicability = getIconWorkspaceTransformationApplicability(
@@ -677,15 +677,15 @@ export function IconWorkspaceCard() {
                   );
                 })}
               </div>
-              <p className="mt-2 text-xs leading-5 text-zinc-500">
+              <p className="mt-2 text-xs leading-5 text-zinc-400">
                 Padding expands the current effective viewBox. It never moves or scales the paths themselves.
               </p>
             </div>
 
             <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-[10px] uppercase tracking-wider text-zinc-500">Custom viewBox</p>
-                <p className="text-[11px] text-zinc-500">minX minY width height</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400">Custom viewBox</p>
+                <p className="text-[11px] text-zinc-400">minX minY width height</p>
               </div>
               <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                 {(
@@ -737,7 +737,7 @@ export function IconWorkspaceCard() {
                   Apply custom viewBox
                 </Button>
                 {!customViewBoxApplicability.applicable && customViewBoxApplicability.reason ? (
-                  <p className="mt-2 text-xs leading-5 text-zinc-500">
+                  <p className="mt-2 text-xs leading-5 text-zinc-400">
                     Unavailable: {customViewBoxApplicability.reason}
                   </p>
                 ) : null}
@@ -746,7 +746,7 @@ export function IconWorkspaceCard() {
 
             <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-[10px] uppercase tracking-wider text-zinc-500">Output size</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400">Output size</p>
                 <button
                   type="button"
                   className={cn(
@@ -860,7 +860,7 @@ export function IconWorkspaceCard() {
                 </label>
               </div>
               {(!outputApplicability.applicable && outputApplicability.reason) ? (
-                <p className="mt-2 text-xs leading-5 text-zinc-500">
+                <p className="mt-2 text-xs leading-5 text-zinc-400">
                   Unavailable: {outputApplicability.reason}
                 </p>
               ) : null}
@@ -885,13 +885,13 @@ export function IconWorkspaceCard() {
                   Apply output size
                 </Button>
               </div>
-              <p className="mt-2 text-xs leading-5 text-zinc-500">
+              <p className="mt-2 text-xs leading-5 text-zinc-400">
                 Output dimensions affect export width and height only. They never modify the viewBox.
               </p>
             </div>
 
             <div className="rounded-md border border-white/[0.06] bg-black/10 px-3 py-2.5">
-              <p className="text-[10px] uppercase tracking-wider text-zinc-500">Preview size</p>
+              <p className="text-[11px] uppercase tracking-wider text-zinc-400">Preview size</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 <Button
                   type="button"
@@ -923,7 +923,7 @@ export function IconWorkspaceCard() {
                   </Button>
                 ))}
               </div>
-              <p className="mt-2 text-xs leading-5 text-zinc-500">
+              <p className="mt-2 text-xs leading-5 text-zinc-400">
                 Preview size changes only the inspection canvas. It never affects exported SVG markup.
               </p>
             </div>

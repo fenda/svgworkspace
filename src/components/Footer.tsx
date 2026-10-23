@@ -28,15 +28,15 @@ export function Footer() {
           </Link>
           <div className="space-y-0.5 pl-5">
             <p
-              className="text-xs text-zinc-500"
+              className="text-xs text-zinc-400"
               title={SHORT_COMMIT_SHA ? `Commit ${SHORT_COMMIT_SHA}` : undefined}
             >
               {APP_VERSION}
               {SHORT_COMMIT_SHA ? (
-                <span className="ml-2 text-zinc-600">{SHORT_COMMIT_SHA}</span>
+                <span className="ml-2 text-zinc-500">{SHORT_COMMIT_SHA}</span>
               ) : null}
             </p>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-zinc-400">
               Part of{" "}
               <a
                 href={HYPEBERRIES_URL}
@@ -47,7 +47,7 @@ export function Footer() {
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-500">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400">
           <a
             href={GITHUB_URL}
             target="_blank"

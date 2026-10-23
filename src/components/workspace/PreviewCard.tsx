@@ -14,8 +14,6 @@ import {
   Check,
   Copy,
   Download,
-  FileDown,
-  Files,
   Grid3X3,
   Maximize2,
   Minus,
@@ -36,7 +34,6 @@ import {
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import {
   getSharedResourceUsageSummary,
-  getStandaloneSpriteSymbol,
   matchesSpriteSymbolSearch,
   sortSpriteSymbols,
   type SvgSymbolPreview,
@@ -315,7 +312,6 @@ export function PreviewCard() {
   const originalContent = document?.originalContent ?? "";
   const symbols = document?.symbols ?? EMPTY_SYMBOLS;
   const hasSymbols = symbols.length > 0;
-  const spriteResources = document?.spriteResources ?? null;
   const formattedCurrent = document ? formatSvg(content) : "";
   const formattedOriginal = document ? formatSvg(originalContent) : "";
   const diffLines = document
@@ -339,11 +335,6 @@ export function PreviewCard() {
       symbols.find((symbol) => symbol.key === selectedSymbolKey) ?? null
     );
   }, [selectedSymbolKey, symbols]);
-  const selectedSymbolExport = useMemo(() => {
-    return selectedSymbol
-      ? getStandaloneSpriteSymbol(selectedSymbol, spriteResources)
-      : null;
-  }, [selectedSymbol, spriteResources]);
   const selectedSymbolSharedUsage = selectedSymbol
     ? getSharedResourceUsageSummary(selectedSymbol)
     : [];
@@ -385,28 +376,6 @@ export function PreviewCard() {
     }
   }
 
-  async function handleCopyWithToast(
-    svgMarkup: string,
-    successMessage: string,
-    warnings: string[] = [],
-  ) {
-    await copySvgWithFeedback({ svgMarkup, successMessage, warnings });
-  }
-
-  function handleDownloadWithToast(
-    svgMarkup: string,
-    downloadName: string,
-    successMessage: string,
-    warnings: string[] = [],
-  ) {
-    downloadSvgWithFeedback({
-      svgMarkup,
-      filename: downloadName,
-      successMessage,
-      warnings,
-    });
-  }
-
   if (activeTab === "preview") {
     tabContent = hasSymbols ? (
       <div className="p-4">
@@ -418,7 +387,7 @@ export function PreviewCard() {
                 {symbols.length} {symbols.length === 1 ? "symbol" : "symbols"}
               </p>
             </div>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-zinc-400">
               Symbols are rendered independently from the root SVG.
             </p>
           </div>
@@ -507,7 +476,7 @@ export function PreviewCard() {
                           </span>
                         ) : null}
                       </div>
-                      <p className="font-metric text-xs text-zinc-500">
+                      <p className="font-metric text-xs text-zinc-400">
                         {symbol.viewBox ?? "No viewBox"}
                       </p>
                     </div>
@@ -518,16 +487,15 @@ export function PreviewCard() {
           ) : (
             <div className="rounded-xl border border-dashed border-white/[0.08] bg-[#0b0b0d] px-4 py-8 text-center">
               <p className="text-sm text-zinc-300">No symbols match the current search.</p>
-              <p className="mt-1 text-xs text-zinc-500">Try a different ID, title, or description.</p>
+              <p className="mt-1 text-xs text-zinc-400">Try a different ID, title, or description.</p>
             </div>
           )}
 
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
-            <section className="rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-4">
+          <section className="rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-medium text-zinc-100">Symbol Details</p>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-zinc-400">
                     Factual parser information for the selected symbol.
                   </p>
                 </div>
@@ -577,7 +545,7 @@ export function PreviewCard() {
                       ["Masks", formatBooleanFact(selectedSymbol.usesMasks)],
                     ].map(([label, value]) => (
                       <div key={label} className="rounded-lg border border-white/[0.06] bg-black/10 px-3 py-2.5">
-                        <p className="text-[10px] uppercase tracking-wider text-zinc-500">{label}</p>
+                        <p className="text-[11px] uppercase tracking-wider text-zinc-400">{label}</p>
                         <p className="mt-1 text-sm text-zinc-200 break-words">{value}</p>
                       </div>
                     ))}
@@ -585,7 +553,7 @@ export function PreviewCard() {
 
                   {selectedSymbolSharedUsage.length > 0 ? (
                     <div className="rounded-lg border border-white/[0.06] bg-black/10 px-3 py-2.5">
-                      <p className="text-[10px] uppercase tracking-wider text-zinc-500">Shared resources</p>
+                      <p className="text-[11px] uppercase tracking-wider text-zinc-400">Shared resources</p>
                       <p className="mt-1 text-sm text-zinc-300">
                         {selectedSymbolSharedUsage.join(", ")}
                       </p>
@@ -595,142 +563,10 @@ export function PreviewCard() {
               ) : (
                 <div className="mt-4 rounded-xl border border-dashed border-white/[0.08] bg-black/10 px-4 py-8 text-center">
                   <p className="text-sm text-zinc-300">Select a symbol in Sprite Explorer.</p>
-                  <p className="mt-1 text-xs text-zinc-500">Selection survives tab switches and optimization when the symbol still exists.</p>
+                  <p className="mt-1 text-xs text-zinc-400">Selection survives tab switches and optimization when the symbol still exists.</p>
                 </div>
               )}
-            </section>
-
-            <section className="rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-4">
-              <div>
-                <p className="text-sm font-medium text-zinc-100">Export</p>
-                <p className="mt-1 text-xs text-zinc-500">
-                  Copy or download the original sprite, the current sprite, or the selected symbol.
-                </p>
-              </div>
-
-              <div className="mt-4 space-y-4">
-                <div className="space-y-2">
-                  <p className="text-[10px] uppercase tracking-wider text-zinc-500">Sprite</p>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
-                      onClick={() => void handleCopyWithToast(originalContent, "Copied original sprite")}
-                    >
-                      <Files className="size-3.5" />
-                      Copy original sprite
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05]"
-                      onClick={() => handleDownloadWithToast(originalContent, filename, "Downloaded original sprite")}
-                    >
-                      <FileDown className="size-3.5" />
-                      Download original sprite
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled={!hasChanges}
-                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
-                      onClick={() => void handleCopyWithToast(content, "Copied optimized sprite")}
-                    >
-                      <Files className="size-3.5" />
-                      Copy optimized sprite
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled={!hasChanges}
-                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
-                      onClick={() => handleDownloadWithToast(content, filename, "Downloaded optimized sprite")}
-                    >
-                      <FileDown className="size-3.5" />
-                      Download optimized sprite
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-[10px] uppercase tracking-wider text-zinc-500">Selected symbol</p>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled={!selectedSymbolExport?.markup}
-                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
-                      onClick={() => {
-                        if (!selectedSymbolExport?.markup) {
-                          return;
-                        }
-
-                        void handleCopyWithToast(
-                          selectedSymbolExport.markup,
-                          "Copied symbol",
-                          selectedSymbolExport.warnings,
-                        );
-                      }}
-                    >
-                      <Copy className="size-3.5" />
-                      Copy selected symbol
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled={!selectedSymbolExport?.markup}
-                      className="justify-start border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.05] disabled:text-zinc-600"
-                      onClick={() => {
-                        if (!selectedSymbolExport?.markup) {
-                          return;
-                        }
-
-                        handleDownloadWithToast(
-                          selectedSymbolExport.markup,
-                          selectedSymbolExport.filename,
-                          "Downloaded symbol",
-                          selectedSymbolExport.warnings,
-                        );
-                      }}
-                    >
-                      <Download className="size-3.5" />
-                      Download selected symbol
-                    </Button>
-                  </div>
-
-                  {selectedSymbol ? (
-                    <div className="rounded-lg border border-white/[0.06] bg-black/10 px-3 py-2.5">
-                      <p className="text-xs text-zinc-300">
-                        {selectedSymbolExport?.markup
-                          ? `Exports ${getSymbolDisplayName(selectedSymbol)} as a standalone SVG.`
-                          : "This symbol does not have enough information to export as a standalone SVG yet."}
-                      </p>
-                      {selectedSymbolExport?.warnings.length ? (
-                        <p className="mt-1 text-xs leading-5 text-amber-300">
-                          {selectedSymbolExport.warnings[0]}
-                        </p>
-                      ) : (
-                        <p className="mt-1 text-xs leading-5 text-zinc-500">
-                          Shared defs and root styles are included only when the selected symbol references them.
-                        </p>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-zinc-500">
-                      Select a symbol in Sprite Explorer to enable standalone export.
-                    </p>
-                  )}
-                </div>
-              </div>
-            </section>
-          </div>
+          </section>
         </div>
       </div>
     ) : (
@@ -986,7 +822,7 @@ export function PreviewCard() {
 
       {collapsed ? (
         <div className="px-4 py-3">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-400">
             Preview, SVG source, diff, and sprite exploration are available here.
           </p>
         </div>

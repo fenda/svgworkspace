@@ -23,7 +23,7 @@ export function WorkspaceToolbar() {
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#0d0d10] px-4 py-3">
       <div className="space-y-1">
         <p className="text-sm font-medium text-zinc-200">Workspace</p>
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-zinc-400">
           Keyboard-first controls for navigation, optimization, and export.
         </p>
       </div>
@@ -49,7 +49,7 @@ export function WorkspaceToolbar() {
         >
           <Search className="size-3.5" />
           Command Palette
-          <span className="ml-1 text-[10px] text-zinc-500">Ctrl/Cmd + K</span>
+          <span className="ml-1 text-[11px] text-zinc-400">Ctrl/Cmd + K</span>
         </Button>
 
         <Button

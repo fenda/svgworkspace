@@ -100,7 +100,7 @@ export function MobileLanding() {
               Cookie settings
             </button>
           </div>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-400">
             Part of{" "}
             <a
               href={HYPEBERRIES_URL}
@@ -108,7 +108,7 @@ export function MobileLanding() {
             >
               Hypeberries
             </a>
-            <span className="text-zinc-600"> — small tools, built to be useful.</span>
+            <span className="text-zinc-500"> — small tools, built to be useful.</span>
           </p>
         </div>
       </div>

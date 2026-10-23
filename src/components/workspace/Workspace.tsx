@@ -154,7 +154,9 @@ export function Workspace() {
       </div>
 
       <div className="grid gap-4 px-5 pb-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)] lg:items-stretch">
-        <PreviewCard />
+        <PreviewCard
+          key={`${currentDocument.filename}:${currentDocument.originalContent}`}
+        />
         {showHealthCard ? <AnalysisCard /> : null}
       </div>
 

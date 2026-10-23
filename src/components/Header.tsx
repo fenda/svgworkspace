@@ -31,7 +31,7 @@ export function Header() {
       >
         <Command className="size-3.5" />
         Command Palette
-        <span className="ml-1 text-[10px] text-zinc-500">Ctrl/Cmd + K</span>
+        <span className="ml-1 text-[11px] text-zinc-400">Ctrl/Cmd + K</span>
       </Button>
     </header>
   );

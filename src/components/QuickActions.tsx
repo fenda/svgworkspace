@@ -6,7 +6,7 @@ import { quickActions } from "@/lib/mock-data";
 export function QuickActions() {
   return (
     <section className="space-y-4">
-      <p className="text-sm text-zinc-500">Already know what you want?</p>
+      <p className="text-sm text-zinc-400">Already know what you want?</p>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {quickActions.map((action) => {
           const Icon = action.icon;

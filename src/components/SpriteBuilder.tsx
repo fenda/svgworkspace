@@ -283,7 +283,7 @@ export function SpriteBuilder() {
         />
         <Upload aria-hidden="true" className="mx-auto size-8 text-[var(--brand)]" />
         <p className="mt-3 text-sm font-medium text-zinc-200">Drop SVG icons here</p>
-        <p className="mt-1 text-xs text-zinc-500">Multiple files supported. Files without a usable canvas are skipped.</p>
+        <p className="mt-1 text-xs text-zinc-400">Multiple files supported. Files without a usable canvas are skipped.</p>
         <Button className="mt-5 bg-[var(--brand)] text-white hover:bg-[var(--brand-hover)]" onClick={() => inputRef.current?.click()}>
           Browse icon files
         </Button>
@@ -294,7 +294,7 @@ export function SpriteBuilder() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-sm font-medium text-zinc-100">Generated sprite</h2>
-              <p className="mt-1 text-xs text-zinc-500">{result.symbols.length} {result.symbols.length === 1 ? "symbol" : "symbols"} ready to export.</p>
+              <p className="mt-1 text-xs text-zinc-400">{result.symbols.length} {result.symbols.length === 1 ? "symbol" : "symbols"} ready to export.</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" disabled={!result.symbols.length} onClick={() => void copySvgWithFeedback({ svgMarkup: result.markup, successMessage: "Copied sprite" })}>
@@ -361,7 +361,7 @@ export function SpriteBuilder() {
                   <Wrench className="size-4 text-[var(--brand)]" aria-hidden="true" />
                   <h3 className="text-sm font-medium text-zinc-100">Sprite tools</h3>
                 </div>
-                <p className="mt-1 text-xs text-zinc-500">Safe Workspace cleanup runs independently on each source icon before the sprite is generated.</p>
+                <p className="mt-1 text-xs text-zinc-400">Safe Workspace cleanup runs independently on each source icon before the sprite is generated.</p>
               </div>
               {hasChanges ? (
                 <Button type="button" variant="outline" size="sm" onClick={resetSources}>
@@ -393,7 +393,7 @@ export function SpriteBuilder() {
                     <div aria-hidden="true" className="flex h-full w-full items-center justify-center [&>svg]:h-full [&>svg]:w-full [&>svg]:max-h-full [&>svg]:max-w-full" style={{ transform: `scale(${previewScale / 100})`, transition: "transform 150ms ease" }} dangerouslySetInnerHTML={{ __html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${symbol.viewBox}" aria-hidden="true">${getSymbolChildrenMarkup(symbol.markup)}</svg>` }} />
                   </div>
                   <p className="mt-3 truncate text-sm text-zinc-200">{symbol.id}</p>
-                  <p className="mt-1 font-metric text-xs text-zinc-500">{symbol.viewBox}</p>
+                  <p className="mt-1 font-metric text-xs text-zinc-400">{symbol.viewBox}</p>
                 </article>
               ))}
             </div>
@@ -416,7 +416,7 @@ export function SpriteBuilder() {
                 <div className="px-4 py-10 text-center">
                   <CodeXml className="mx-auto size-5 text-zinc-600" aria-hidden="true" />
                   <p className="mt-3 text-sm text-zinc-300">No generated sprite changes yet.</p>
-                  <p className="mt-1 text-xs text-zinc-500">Run a safe tool to inspect its source-level changes here.</p>
+                  <p className="mt-1 text-xs text-zinc-400">Run a safe tool to inspect its source-level changes here.</p>
                 </div>
               )}
             </div>
