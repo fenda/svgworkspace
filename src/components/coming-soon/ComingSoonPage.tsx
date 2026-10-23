@@ -1,11 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
 import { GitHubIcon } from "@/components/icons/GitHubIcon";
 import { BrandLogo } from "@/components/BrandLogo";
 import { AppPreviewMock } from "@/components/coming-soon/AppPreviewMock";
 import { buttonVariants } from "@/components/ui/button";
-import { GITHUB_URL } from "@/lib/constants";
+import { GITHUB_URL, HYPEBERRIES_TOOLS_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 export function ComingSoonPage() {
@@ -84,12 +86,24 @@ export function ComingSoonPage() {
         </motion.div>
       </main>
 
-      <footer className="relative z-10 border-t border-white/[0.06] px-6 py-10 text-center lg:px-10">
-        <p className="text-sm font-bold text-white">SVG Workspace</p>
-        <p className="mt-1 text-sm text-zinc-500">Built for developers.</p>
-        <p className="mt-4 text-xs text-zinc-600">
-          Browser only • No uploads • 100% private
-        </p>
+      <footer className="relative z-10 grid justify-items-center gap-3 border-t border-white/[0.06] px-6 py-10 text-center lg:px-10">
+        <Link href="/" aria-label="SVG Workspace home">
+          <Image
+            src="/svg-workspace-wordmark-reversed.svg"
+            alt=""
+            width="216"
+            height="44"
+            unoptimized
+            className="block h-9 w-auto"
+          />
+        </Link>
+        <p className="text-xs text-zinc-500">Part of Hypeberries.</p>
+        <a
+          href={HYPEBERRIES_TOOLS_URL}
+          className="text-xs text-zinc-300 underline-offset-4 hover:text-white hover:underline"
+        >
+          All Hypeberries tools
+        </a>
       </footer>
     </div>
   );

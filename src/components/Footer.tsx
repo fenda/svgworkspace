@@ -1,6 +1,7 @@
 "use client";
 
-import { Code2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { GitHubIcon } from "@/components/icons/GitHubIcon";
 import { APP_VERSION, SHORT_COMMIT_SHA } from "@/lib/app-version";
 import { openCookieSettings } from "@/lib/cookie-consent";
@@ -14,12 +15,18 @@ export function Footer() {
   return (
     <footer className="mt-auto border-t border-white/10 bg-[#0a0a0c]">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <div className="flex items-center gap-2.5">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-indigo-600">
-            <Code2 className="size-4 text-white" />
-          </div>
-          <div className="space-y-0.5">
-            <p className="text-sm font-semibold text-white">SVG Workspace</p>
+        <div className="grid justify-items-start gap-2">
+          <Link href="/" aria-label="SVG Workspace home">
+            <Image
+              src="/svg-workspace-wordmark-reversed.svg"
+              alt=""
+              width="216"
+              height="44"
+              unoptimized
+              className="block h-9 w-auto"
+            />
+          </Link>
+          <div className="space-y-0.5 pl-5">
             <p
               className="text-xs text-zinc-500"
               title={SHORT_COMMIT_SHA ? `Commit ${SHORT_COMMIT_SHA}` : undefined}
@@ -37,7 +44,6 @@ export function Footer() {
               >
                 Hypeberries
               </a>
-              <span className="text-zinc-600"> — small tools, built to be useful.</span>
             </p>
           </div>
         </div>

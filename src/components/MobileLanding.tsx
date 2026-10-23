@@ -1,6 +1,7 @@
 "use client";
 
 import { GitHubIcon } from "@/components/icons/GitHubIcon";
+import { BrandLogo } from "@/components/BrandLogo";
 import { buttonVariants } from "@/components/ui/button";
 import { openCookieSettings } from "@/lib/cookie-consent";
 import {
@@ -25,9 +26,7 @@ export function MobileLanding() {
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-md flex-col justify-between">
         <div>
           <div className="mb-10 flex items-center justify-between">
-            <div>
-              <p className="text-2xl font-bold tracking-tight">SVG Workspace</p>
-            </div>
+            <BrandLogo />
             <a
               href={GITHUB_URL}
               target="_blank"
